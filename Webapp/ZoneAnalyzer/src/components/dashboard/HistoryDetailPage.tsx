@@ -12,6 +12,7 @@ import {
 } from '../ui/table';
 import { Badge } from '../ui/badge';
 import { useTheme } from '../ThemeContext';
+import * as XLSX from 'xlsx';
 
 interface HistoryDetailPageProps {
   historyId: number;
@@ -21,47 +22,21 @@ interface HistoryDetailPageProps {
 // รายการชื่อเชื้อ
 const bacteriaList = [
   { value: "e-coli", label: "E. coli (Escherichia coli)" },
-  {
-    value: "s-aureus",
-    label: "S. aureus (Staphylococcus aureus)",
-  },
-  {
-    value: "mrsa",
-    label: "MRSA (Methicillin-resistant S. aureus)",
-  },
-  {
-    value: "p-aeruginosa",
-    label: "P. aeruginosa (Pseudomonas aeruginosa)",
-  },
-  {
-    value: "k-pneumoniae",
-    label: "K. pneumoniae (Klebsiella pneumoniae)",
-  },
-  {
-    value: "a-baumannii",
-    label: "A. baumannii (Acinetobacter baumannii)",
-  },
+  { value: "s-aureus", label: "S. aureus (Staphylococcus aureus)" },
+  { value: "mrsa", label: "MRSA (Methicillin-resistant S. aureus)" },
+  { value: "p-aeruginosa", label: "P. aeruginosa (Pseudomonas aeruginosa)" },
+  { value: "k-pneumoniae", label: "K. pneumoniae (Klebsiella pneumoniae)" },
+  { value: "a-baumannii", label: "A. baumannii (Acinetobacter baumannii)" },
   { value: "enterococcus", label: "Enterococcus spp." },
   { value: "salmonella", label: "Salmonella spp." },
-  {
-    value: "s-pneumoniae",
-    label: "S. pneumoniae (Streptococcus pneumoniae)",
-  },
-  {
-    value: "h-influenzae",
-    label: "H. influenzae (Haemophilus influenzae)",
-  },
-  {
-    value: "n-gonorrhoeae",
-    label: "N. gonorrhoeae (Neisseria gonorrhoeae)",
-  },
-  {
-    value: "c-albicans",
-    label: "C. albicans (Candida albicans)",
-  },
+  { value: "s-pneumoniae", label: "S. pneumoniae (Streptococcus pneumoniae)" },
+  { value: "h-influenzae", label: "H. influenzae (Haemophilus influenzae)" },
+  { value: "n-gonorrhoeae", label: "N. gonorrhoeae (Neisseria gonorrhoeae)" },
+  { value: "c-albicans", label: "C. albicans (Candida albicans)" },
   { value: "other", label: "อื่นๆ" },
 ];
 
+// Mock Results (ข้อมูลจำลองสำหรับยา)
 const mockResults = [
   {
     drugName: "Ampicillin",
@@ -132,7 +107,6 @@ const mockHistoryDetail: Record<number, any> = {
     batchName: 'Batch 23 ต.ค. 2568 14:32',
     date: '23 ต.ค. 2568',
     time: '14:32',
-    bacteria: 'e-coli',
     resultCount: 5,
     images: [
       { id: 1, bacteria: 'e-coli' },
@@ -147,7 +121,6 @@ const mockHistoryDetail: Record<number, any> = {
     batchName: 'Batch 22 ต.ค. 2568 09:15',
     date: '22 ต.ค. 2568',
     time: '09:15',
-    bacteria: 's-aureus',
     resultCount: 6,
     images: [
       { id: 1, bacteria: 's-aureus' },
@@ -163,7 +136,6 @@ const mockHistoryDetail: Record<number, any> = {
     batchName: 'Batch 20 ต.ค. 2568 16:45',
     date: '20 ต.ค. 2568',
     time: '16:45',
-    bacteria: 'p-aeruginosa',
     resultCount: 4,
     images: [
       { id: 1, bacteria: 'p-aeruginosa' },
@@ -177,7 +149,6 @@ const mockHistoryDetail: Record<number, any> = {
     batchName: 'Batch 18 ต.ค. 2568 11:20',
     date: '18 ต.ค. 2568',
     time: '11:20',
-    bacteria: 's-aureus',
     resultCount: 7,
     images: [
       { id: 1, bacteria: 's-aureus' },
@@ -216,6 +187,8 @@ export function HistoryDetailPage({ historyId, onBack }: HistoryDetailPageProps)
     );
   }
 
+  const currentImage = historyData.images[selectedImage];
+
   const getInterpretationColor = (interp: string) => {
     switch (interp) {
       case "S":
@@ -248,7 +221,87 @@ export function HistoryDetailPage({ historyId, onBack }: HistoryDetailPageProps)
     return bacteria?.label || "ไม่ได้ระบุชื่อเชื้อ";
   };
 
-  const currentImage = historyData.images[selectedImage];
+  // --- ฟังก์ชัน Export Excel (Updated) ---
+  const handleExportExcel = () => {
+    // 1. สร้าง Workbook ใหม่
+    const wb = XLSX.utils.book_new();
+    
+    // 2. สร้าง Array สำหรับเก็บข้อมูลทั้งหมดที่จะใส่ใน Sheet เดียว
+    const wsData: any[][] = [];
+
+    // --- ส่วน Header หลักของไฟล์ ---
+    wsData.push(["AST ANALYSIS REPORT"]);
+    wsData.push([""]); // เว้นบรรทัด
+    wsData.push(["Batch Name:", historyData.batchName]);
+    wsData.push(["Date:", historyData.date]);
+    wsData.push(["Time:", historyData.time]);
+    wsData.push(["Total Images:", historyData.images.length]);
+    wsData.push([""]); 
+    wsData.push([""]); 
+
+    // 3. วนลูปสร้างข้อมูลสำหรับ *ทุกภาพ* ใน Batch
+    historyData.images.forEach((img: any, index: number) => {
+      // Header ของแต่ละภาพ
+      wsData.push([`Image No.:`, index + 1]);
+      wsData.push([`Bacteria:`, getBacteriaName(img.bacteria)]);
+      wsData.push([""]); // เว้นบรรทัดก่อนเริ่มตาราง
+
+      // หัวตาราง
+      const tableHeader = [
+        "Drug Name", 
+        "Code", 
+        "Dose (µg)", 
+        "Zone (mm)", 
+        "CLSI Breakpoints", 
+        "EUCAST Breakpoints", 
+        "CLSI Result", 
+        "EUCAST Result"
+      ];
+      wsData.push(tableHeader);
+
+      // ข้อมูลในตาราง (ในแอปจริง ข้อมูล results จะต้องผูกกับ img แต่ละตัว)
+      // ในตัวอย่างนี้เราใช้ mockResults ซ้ำๆ เพื่อแสดงผลลัพธ์
+      mockResults.forEach(r => {
+        wsData.push([
+          r.drugName, 
+          r.drugCode, 
+          r.drugDose, 
+          r.zoneMM, 
+          r.breakpointCLSI, 
+          r.breakpointEUCAST, 
+          r.sirCLSI, 
+          r.sirEUCAST
+        ]);
+      });
+
+      // เว้นบรรทัดระหว่างภาพ เพื่อความสวยงาม และเตรียมพร้อมสำหรับภาพถัดไป
+      wsData.push([""]);
+      wsData.push([""]);
+      wsData.push(["------------------------------------------------------------"]); // เส้นคั่น (Optional)
+      wsData.push([""]);
+    });
+
+    // 4. สร้าง Worksheet จากข้อมูลที่รวมมาทั้งหมด
+    const ws = XLSX.utils.aoa_to_sheet(wsData);
+
+    // จัดความกว้างคอลัมน์
+    ws['!cols'] = [
+      { wch: 25 }, // Drug Name
+      { wch: 10 }, // Code
+      { wch: 10 }, // Dose
+      { wch: 10 }, // Zone
+      { wch: 25 }, // CLSI BP
+      { wch: 25 }, // EUCAST BP
+      { wch: 10 }, // CLSI Res
+      { wch: 10 }, // EUCAST Res
+    ];
+
+    // 5. เพิ่ม Sheet ลงใน Workbook และบันทึกไฟล์
+    XLSX.utils.book_append_sheet(wb, ws, "Full Report");
+    
+    const safeBatchName = historyData.batchName.replace(/[^a-z0-9ก-๙]/gi, '_');
+    XLSX.writeFile(wb, `AST_Report_${safeBatchName}_All.xlsx`);
+  };
 
   return (
     <div className="max-w-7xl mx-auto px-4 py-8 pb-24 md:pb-8">
@@ -448,9 +501,12 @@ export function HistoryDetailPage({ historyId, onBack }: HistoryDetailPageProps)
           </div>
 
           <div className="mt-6">
-            <Button className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
+            <Button 
+              onClick={handleExportExcel}
+              className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 text-white rounded-lg"
+            >
               <Download className="w-4 h-4 mr-2" />
-              ดาวน์โหลดรายงาน (XLSX)
+              ดาวน์โหลดรายงานรวม (XLSX)
             </Button>
           </div>
         </div>

@@ -5,6 +5,7 @@ import { Input } from '../ui/input';
 import { Search, Eye, Trash2, Calendar } from 'lucide-react';
 import { Badge } from '../ui/badge';
 import { useTheme } from '../ThemeContext';
+import { HistoryDetailPage } from './HistoryDetailPage'; // <--- 1. เพิ่มบรรทัดนี้
 
 const mockHistory = [
   {
@@ -58,10 +59,9 @@ export function HistoryPage() {
     setSelectedHistoryId(null);
   };
 
-  // If viewing detail, show detail page
+  // ถ้ามีการเลือกรายการที่จะดูรายละเอียด ให้แสดงหน้า HistoryDetailPage
   if (selectedHistoryId !== null) {
-    // Import dynamically
-    const { HistoryDetailPage } = require('./HistoryDetailPage');
+    // <--- 2. ลบ require ออก แล้วเรียกใช้ Component ได้เลย
     return <HistoryDetailPage historyId={selectedHistoryId} onBack={handleBackFromDetail} />;
   }
 
