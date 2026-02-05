@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Card } from "../ui/card";
 import { Button } from "../ui/button";
 import { Input } from "../ui/input";
@@ -6,57 +6,54 @@ import { Search, Eye, Trash2, Calendar, AlertCircle, RefreshCw } from "lucide-re
 import { Badge } from "../ui/badge";
 import { useTheme } from "../ThemeContext";
 // เพิ่มบรรทัดนี้: Import Component โดยตรง
-import { HistoryDetailPage } from "./HistoryDetailPage"; 
+import { HistoryDetailPage } from "./HistoryDetailPage";
 
-const mockHistory = [
-  {
-    id: 1,
-    batchName: "Batch 23 ต.ค. 2568 14:32",
-    date: "23 ต.ค. 2568",
-    time: "14:32",
-    resultCount: 5,
-    daysUntilExpiry: 3,
-  },
-  {
-    id: 2,
-    batchName: "Batch 22 ต.ค. 2568 09:15",
-    date: "22 ต.ค. 2568",
-    time: "09:15",
-    resultCount: 6,
-    daysUntilExpiry: 15,
-  },
-  {
-    id: 3,
-    batchName: "Batch 20 ต.ค. 2568 16:45",
-    date: "20 ต.ค. 2568",
-    time: "16:45",
-    resultCount: 4,
-    daysUntilExpiry: 5,
-  },
-  {
-    id: 4,
-    batchName: "Batch 18 ต.ค. 2568 11:20",
-    date: "18 ต.ค. 2568",
-    time: "11:20",
-    resultCount: 7,
-    daysUntilExpiry: 22,
-  },
-];
+
+
 
 export function HistoryPage() {
   const { theme } = useTheme();
   const isDark = theme === "dark";
   const [searchQuery, setSearchQuery] = useState("");
-  const [history, setHistory] = useState(mockHistory);
-  const [selectedHistoryId, setSelectedHistoryId] = useState<number | null>(null);
+  const [history, setHistory] = useState<any[]>([]);
+  const [selectedHistoryId, setSelectedHistoryId] = useState<string | null>(null);
 
-  const handleDelete = (id: number) => {
+  useEffect(() => {
+    fetchHistory();
+  }, []);
+
+  const fetchHistory = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/batches");
+      if (response.ok) {
+        const data = await response.json();
+        // Map API data to component structure
+        const mappedHistory = data.map((batch: any) => ({
+          id: batch.batch_id,
+          batchName: batch.batch_name || "Untitled Batch",
+          date: new Date(batch.created_at).toLocaleDateString("th-TH", {
+            day: "numeric", month: "short", year: "numeric"
+          }),
+          time: new Date(batch.created_at).toLocaleTimeString("th-TH", {
+            hour: '2-digit', minute: '2-digit'
+          }),
+          resultCount: batch.plates ? batch.plates.length : 0,
+          daysUntilExpiry: 30, // Mock expiry for now
+        }));
+        setHistory(mappedHistory);
+      }
+    } catch (error) {
+      console.error("Failed to fetch history:", error);
+    }
+  };
+
+  const handleDelete = (id: string) => {
     if (confirm("คุณต้องการลบรายการนี้ใช่หรือไม่?")) {
       setHistory(history.filter((item) => item.id !== id));
     }
   };
 
-  const handleViewDetail = (id: number) => {
+  const handleViewDetail = (id: string) => {
     setSelectedHistoryId(id);
   };
 
@@ -64,10 +61,10 @@ export function HistoryPage() {
     setSelectedHistoryId(null);
   };
 
-  const handleExtendExpiry = (id: number) => {
+  const handleExtendExpiry = (id: string) => {
     if (confirm("คุณต้องการต่ออายุการเก็บข้อมูลอีก 30 วันใช่หรือไม่?")) {
-      setHistory(history.map((item) => 
-        item.id === id 
+      setHistory(history.map((item) =>
+        item.id === id
           ? { ...item, daysUntilExpiry: item.daysUntilExpiry + 30 }
           : item
       ));
@@ -121,33 +118,30 @@ export function HistoryPage() {
       <div className="space-y-4">
         {filteredHistory.map((item) => {
           const isExpiringSoon = item.daysUntilExpiry <= 7;
-          
+
           return (
             <Card
               key={item.id}
-              className={`p-6 transition-colors shadow-lg ${
-                isExpiringSoon
+              className={`p-6 transition-colors shadow-lg ${isExpiringSoon
                   ? isDark
                     ? "bg-gray-900 border-red-800 border-2 hover:border-red-700"
                     : "bg-white border-red-500 border-2 hover:border-red-400"
                   : isDark
                     ? "bg-gray-900 border-gray-800 hover:border-gray-700"
                     : "bg-white border-gray-200 hover:border-gray-300"
-              }`}
+                }`}
             >
               {/* Warning banner for expiring items */}
               {isExpiringSoon && (
                 <div
-                  className={`mb-4 p-3 rounded-lg border flex items-start gap-3 ${
-                    isDark
+                  className={`mb-4 p-3 rounded-lg border flex items-start gap-3 ${isDark
                       ? "bg-red-950/50 border-red-800"
                       : "bg-red-50 border-red-200"
-                  }`}
+                    }`}
                 >
                   <AlertCircle
-                    className={`w-5 h-5 flex-shrink-0 mt-0.5 ${
-                      isDark ? "text-red-400" : "text-red-600"
-                    }`}
+                    className={`w-5 h-5 flex-shrink-0 mt-0.5 ${isDark ? "text-red-400" : "text-red-600"
+                      }`}
                   />
                   <div className="flex-grow">
                     <p
@@ -158,9 +152,8 @@ export function HistoryPage() {
                       </span>
                     </p>
                     <p
-                      className={`text-sm mt-1 ${
-                        isDark ? "text-red-400" : "text-red-600"
-                      }`}
+                      className={`text-sm mt-1 ${isDark ? "text-red-400" : "text-red-600"
+                        }`}
                     >
                       กดปุ่มต่ออายุเพื่อเก็บข้อมูลไว้อีก 30 วัน
                     </p>

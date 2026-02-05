@@ -7,6 +7,8 @@ import { Separator } from '../ui/separator';
 import { User, Building, Lock, LogOut, Edit, Save } from 'lucide-react';
 import { useTheme } from '../ThemeContext';
 
+import { useEffect } from 'react';
+
 interface ProfilePageProps {
   onLogout: () => void;
 }
@@ -16,17 +18,62 @@ export function ProfilePage({ onLogout }: ProfilePageProps) {
   const isDark = theme === 'dark';
   const [editingName, setEditingName] = useState(false);
   const [editingInstitution, setEditingInstitution] = useState(false);
-  const [name, setName] = useState('ทดสอบ ผู้ใช้งาน');
-  const [institution, setInstitution] = useState('โรงพยาบาลตัวอย่าง');
+  const [name, setName] = useState('');
+  const [institution, setInstitution] = useState('');
+  const [email, setEmail] = useState('');
 
-  const handleSaveName = () => {
-    setEditingName(false);
-    alert('บันทึกข้อมูลเรียบร้อยแล้ว');
+  useEffect(() => {
+    fetchUserProfile();
+  }, []);
+
+  const fetchUserProfile = async () => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/users/me");
+      if (response.ok) {
+        const data = await response.json();
+        setName(data.full_name || "");
+        setInstitution(data.institution || "");
+        setEmail(data.email || "");
+      }
+    } catch (error) {
+      console.error("Error fetching profile:", error);
+    }
   };
 
-  const handleSaveInstitution = () => {
-    setEditingInstitution(false);
-    alert('บันทึกข้อมูลเรียบร้อยแล้ว');
+  const updateUserProfile = async (updates: { full_name?: string, institution?: string }) => {
+    try {
+      const response = await fetch("http://127.0.0.1:8000/users/me", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(updates),
+      });
+      if (!response.ok) {
+        alert("Failed to update profile");
+        return false;
+      }
+      return true;
+    } catch (error) {
+      console.error("Error updating profile:", error);
+      return false;
+    }
+  };
+
+  const handleSaveName = async () => {
+    const success = await updateUserProfile({ full_name: name });
+    if (success) {
+      setEditingName(false);
+      // alert('บันทึกข้อมูลเรียบร้อยแล้ว'); 
+    }
+  };
+
+  const handleSaveInstitution = async () => {
+    const success = await updateUserProfile({ institution: institution });
+    if (success) {
+      setEditingInstitution(false);
+      // alert('บันทึกข้อมูลเรียบร้อยแล้ว');
+    }
   };
 
   const handleChangePassword = (e: React.FormEvent) => {
@@ -45,7 +92,7 @@ export function ProfilePage({ onLogout }: ProfilePageProps) {
           <div className="space-y-2">
             <Label className={isDark ? 'text-gray-300' : 'text-gray-700'}>อีเมล</Label>
             <Input
-              value="user@example.com"
+              value={email}
               readOnly
               className={isDark ? 'bg-gray-800 border-gray-700 text-gray-400 cursor-not-allowed' : 'bg-gray-100 border-gray-300 text-gray-500 cursor-not-allowed'}
             />

@@ -12,12 +12,14 @@ import {
 } from "../ui/table";
 import { Badge } from "../ui/badge";
 import { useTheme } from "../ThemeContext";
+import { exportToXLSX } from "../../utils/exportUtils";
 
 interface ResultsViewProps {
   mode: "single" | "batch";
   fileCount: number;
   bacteriaSelections: Record<number, string>;
   onSave: () => void;
+  analysisResults: any[];
 }
 
 // รายการชื่อเชื้อ
@@ -64,74 +66,14 @@ const bacteriaList = [
   { value: "other", label: "อื่นๆ" },
 ];
 
-const mockResults = [
-  {
-    drugName: "Ampicillin",
-    drugCode: "AMP",
-    drugDose: "10",
-    breakpointCLSI: "S≥17, I=14-16, R≤13",
-    breakpointEUCAST: "S≥14, R<14",
-    zoneMM: 12,
-    sirCLSI: "R",
-    sirEUCAST: "R",
-  },
-  {
-    drugName: "Ciprofloxacin",
-    drugCode: "CIP",
-    drugDose: "5",
-    breakpointCLSI: "S≥21, I=16-20, R≤15",
-    breakpointEUCAST: "S≥25, I=22-24, R≤21",
-    zoneMM: 18,
-    sirCLSI: "I",
-    sirEUCAST: "R",
-  },
-  {
-    drugName: "Gentamicin",
-    drugCode: "GEN",
-    drugDose: "10",
-    breakpointCLSI: "S≥15, I=13-14, R≤12",
-    breakpointEUCAST: "S≥17, R<17",
-    zoneMM: 22,
-    sirCLSI: "S",
-    sirEUCAST: "S",
-  },
-  {
-    drugName: "Tetracycline",
-    drugCode: "TET",
-    drugDose: "30",
-    breakpointCLSI: "S≥15, I=12-14, R≤11",
-    breakpointEUCAST: "S≥16, I=13-15, R≤12",
-    zoneMM: 14,
-    sirCLSI: "I",
-    sirEUCAST: "I",
-  },
-  {
-    drugName: "Ceftriaxone",
-    drugCode: "CRO",
-    drugDose: "30",
-    breakpointCLSI: "S≥23, I=20-22, R≤19",
-    breakpointEUCAST: "S≥25, I=22-24, R≤21",
-    zoneMM: 32,
-    sirCLSI: "S",
-    sirEUCAST: "S",
-  },
-  {
-    drugName: "Amoxicillin-Clavulanate",
-    drugCode: "AMC",
-    drugDose: "20/10",
-    breakpointCLSI: "S≥18, I=14-17, R≤13",
-    breakpointEUCAST: "S≥19, R<19",
-    zoneMM: 16,
-    sirCLSI: "I",
-    sirEUCAST: "R",
-  },
-];
+// Mock results removed
 
 export function ResultsView({
   mode,
   fileCount,
   bacteriaSelections,
   onSave,
+  analysisResults,
 }: ResultsViewProps) {
   const { theme } = useTheme();
   const isDark = theme === "dark";
@@ -171,6 +113,20 @@ export function ResultsView({
     return bacteria?.label || "ไม่ได้ระบุชื่อเชื้อ";
   };
 
+  const handleDownload = () => {
+    // Format data for export
+    const exportData = analysisResults.map((result, index) => ({
+      batchName: "Current Analysis",
+      date: new Date().toLocaleDateString("th-TH"),
+      time: new Date().toLocaleTimeString("th-TH"),
+      plate: {
+        ...result.plate,
+        strain_code: getBacteriaName(index)
+      }
+    }));
+    exportToXLSX(exportData, "analysis_report");
+  };
+
   return (
     <Card className={`p-6 shadow-xl ${isDark ? "bg-gray-900 border-gray-800" : "bg-white border-gray-200"}`}>
       <h2 className={`text-2xl mb-6 ${isDark ? "text-gray-100" : "text-gray-900"}`}>
@@ -183,24 +139,26 @@ export function ResultsView({
             <button
               key={idx}
               onClick={() => setSelectedImage(idx)}
-              className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${
-                selectedImage === idx
-                  ? "border-blue-500 shadow-lg shadow-blue-500/20"
-                  : isDark ? "border-gray-700 hover:border-gray-600" : "border-gray-300 hover:border-gray-400"
-              }`}
+              className={`aspect-square rounded-lg overflow-hidden border-2 transition-all ${selectedImage === idx
+                ? "border-blue-500 shadow-lg shadow-blue-500/20"
+                : isDark ? "border-gray-700 hover:border-gray-600" : "border-gray-300 hover:border-gray-400"
+                }`}
             >
-              <div className={`w-full h-full flex items-center justify-center ${isDark ? "bg-gray-800" : "bg-gray-50"}`}>
-                <div className="text-center">
-                  <div className={`w-16 h-16 mx-auto mb-2 rounded-full flex items-center justify-center ${isDark ? "bg-gray-700" : "bg-gray-200"}`}>
-                    <div className="w-12 h-12 rounded-full border-2 border-blue-400 relative">
-                      <div className="absolute top-1 left-2 w-2 h-2 rounded-full bg-red-500 ring-2 ring-red-400/40"></div>
-                      <div className="absolute bottom-2 right-1 w-1.5 h-1.5 rounded-full bg-red-500 ring-2 ring-red-400/40"></div>
-                    </div>
-                  </div>
-                  <p className={`text-xs ${isDark ? "text-gray-400" : "text-gray-600"}`}>
-                    รูปภาพที่ {idx + 1}
-                  </p>
+              <div className={`w-full h-full flex flex-col items-center justify-center p-2 ${isDark ? "bg-gray-800" : "bg-gray-50"}`}>
+                <div className={`w-16 h-16 mb-2 rounded-md overflow-hidden bg-gray-200`}>
+                  {analysisResults[idx]?.plate?.result_image_url ? (
+                    <img
+                      src={`http://127.0.0.1:8000/uploaded_images/${analysisResults[idx].plate.result_image_url.split('\\').pop().split('/').pop()}`}
+                      alt={`Plate ${idx + 1}`}
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">No Image</div>
+                  )}
                 </div>
+                <p className={`text-xs truncate max-w-full px-1 ${isDark ? "text-gray-400" : "text-gray-600"}`}>
+                  รูปภาพที่ {idx + 1}
+                </p>
               </div>
             </button>
           ))}
@@ -215,39 +173,16 @@ export function ResultsView({
         <div className={`aspect-square max-w-2xl mx-auto rounded-lg overflow-hidden border shadow-lg ${isDark ? "bg-gray-800 border-gray-700" : "bg-gray-50 border-gray-200"}`}>
           <div className="w-full h-full flex items-center justify-center p-8">
             <div className="relative w-full max-w-sm aspect-square">
-              {/* Petri dish */}
-              <div className="absolute inset-0 rounded-full bg-gradient-to-br from-gray-700 to-gray-800 border-4 border-gray-600 shadow-2xl"></div>
-
-              {/* Clear zones with detection circles */}
-              <div className="absolute top-1/4 left-1/4 w-16 h-16">
-                <div className="w-full h-full rounded-full bg-red-400/30 ring-4 ring-green-500 flex items-center justify-center">
-                  <div className="w-8 h-8 rounded-full bg-red-500/60"></div>
-                </div>
-              </div>
-
-              <div className="absolute top-1/3 right-1/4 w-20 h-20">
-                <div className="w-full h-full rounded-full bg-red-400/30 ring-4 ring-blue-500 flex items-center justify-center">
-                  <div className="w-10 h-10 rounded-full bg-red-500/60"></div>
-                </div>
-              </div>
-
-              <div className="absolute bottom-1/4 left-1/3 w-14 h-14">
-                <div className="w-full h-full rounded-full bg-red-400/30 ring-4 ring-green-500 flex items-center justify-center">
-                  <div className="w-7 h-7 rounded-full bg-red-500/60"></div>
-                </div>
-              </div>
-
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-12 h-12">
-                <div className="w-full h-full rounded-full bg-red-400/30 ring-4 ring-yellow-500 flex items-center justify-center">
-                  <div className="w-6 h-6 rounded-full bg-red-500/60"></div>
-                </div>
-              </div>
-
-              <div className="absolute bottom-1/3 right-1/3 w-18 h-18">
-                <div className="w-full h-full rounded-full bg-red-400/30 ring-4 ring-green-500 flex items-center justify-center">
-                  <div className="w-9 h-9 rounded-full bg-red-500/60"></div>
-                </div>
-              </div>
+              {/* Display Image from Backend */}
+              {analysisResults[selectedImage]?.plate?.result_image_url ? (
+                <img
+                  src={`http://127.0.0.1:8000/uploaded_images/${analysisResults[selectedImage].plate.result_image_url.split('\\').pop().split('/').pop()}`}
+                  alt="Analyzed Plate"
+                  className="w-full h-full object-contain rounded-lg shadow-md"
+                />
+              ) : (
+                <div className="flex items-center justify-center h-full text-gray-500">No Image Available</div>
+              )}
             </div>
           </div>
         </div>
@@ -256,7 +191,7 @@ export function ResultsView({
       {/* ตารางสรุปผล */}
       <div>
         <h3 className={`text-lg mb-3 ${isDark ? "text-gray-200" : "text-gray-800"}`}>สรุปผล</h3>
-        
+
         {/* Bacteria name header */}
         <div className={`rounded-t-lg border-t border-x px-4 py-3 ${isDark ? "bg-gray-800/70 border-gray-700" : "bg-blue-50 border-gray-200"}`}>
           <h4 className={`${isDark ? "text-blue-400" : "text-blue-700"}`}>
@@ -296,48 +231,48 @@ export function ResultsView({
                 </TableRow>
               </TableHeader>
               <TableBody>
-                {mockResults.map((result, idx) => (
+                {(analysisResults[selectedImage]?.plate?.results || []).map((result: any, idx: number) => (
                   <TableRow
                     key={idx}
                     className={isDark ? "border-gray-700 hover:bg-gray-750" : "border-gray-200 hover:bg-gray-50"}
                   >
                     <TableCell className={isDark ? "text-gray-200" : "text-gray-900"}>
-                      {result.drugName}
+                      {result.antibiotic?.name || "Unknown"}
                     </TableCell>
                     <TableCell className={`text-center ${isDark ? "text-gray-300" : "text-gray-700"}`}>
-                      {result.drugCode}
+                      {result.antibiotic?.name ? result.antibiotic.name.substring(0, 3).toUpperCase() : "-"}
                     </TableCell>
                     <TableCell className={`text-center ${isDark ? "text-gray-300" : "text-gray-700"}`}>
-                      {result.drugDose}
+                      {result.antibiotic?.concentration_ug || "-"}
                     </TableCell>
                     <TableCell className={`text-center ${isDark ? "text-gray-300" : "text-gray-700"}`}>
-                      {result.zoneMM}
+                      {result.diameter_mm.toFixed(1)}
                     </TableCell>
                     <TableCell className={`text-center text-xs ${isDark ? "text-gray-400" : "text-gray-600"}`}>
-                      {result.breakpointCLSI}
+                      - {/* TODO: Add breakpoints to API response */}
                     </TableCell>
                     <TableCell className={`text-center text-xs ${isDark ? "text-gray-400" : "text-gray-600"}`}>
-                      {result.breakpointEUCAST}
+                      -
                     </TableCell>
                     <TableCell className="text-center">
                       <Badge
                         className={getInterpretationColor(
-                          result.sirCLSI,
+                          result.clsi_interpretation || "S" // Default or actual
                         )}
                       >
                         {getInterpretationText(
-                          result.sirCLSI,
+                          result.clsi_interpretation || "S"
                         )}
                       </Badge>
                     </TableCell>
                     <TableCell className="text-center">
                       <Badge
                         className={getInterpretationColor(
-                          result.sirEUCAST,
+                          result.eucast_interpretation || "S"
                         )}
                       >
                         {getInterpretationText(
-                          result.sirEUCAST,
+                          result.eucast_interpretation || "S"
                         )}
                       </Badge>
                     </TableCell>
@@ -349,7 +284,7 @@ export function ResultsView({
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mt-6">
-          <Button className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
+          <Button onClick={handleDownload} className="bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
             <Download className="w-4 h-4 mr-2" />
             ดาวน์โหลดรายงาน (XLSX)
           </Button>
