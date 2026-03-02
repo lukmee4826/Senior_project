@@ -4,7 +4,8 @@ import { Button } from "../ui/button";
 import { Input } from "../ui/input";
 import { Search, Eye, Trash2, Calendar, AlertCircle, RefreshCw } from "lucide-react";
 import { Badge } from "../ui/badge";
-import { useTheme } from "../ThemeContext";
+import { useTheme } from '../ThemeContext';
+import { fetchWithAuth } from '../../utils/api';
 // เพิ่มบรรทัดนี้: Import Component โดยตรง
 import { HistoryDetailPage } from "./HistoryDetailPage";
 
@@ -24,7 +25,7 @@ export function HistoryPage() {
 
   const fetchHistory = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/batches");
+      const response = await fetchWithAuth('/batches');
       if (response.ok) {
         const data = await response.json();
         // Map API data to component structure
@@ -47,9 +48,21 @@ export function HistoryPage() {
     }
   };
 
-  const handleDelete = (id: string) => {
+  const handleDelete = async (id: string) => {
     if (confirm("คุณต้องการลบรายการนี้ใช่หรือไม่?")) {
-      setHistory(history.filter((item) => item.id !== id));
+      try {
+        const response = await fetchWithAuth(`/batches/${id}`, {
+          method: 'DELETE',
+        });
+        if (response.ok) {
+          setHistory(history.filter((item) => item.id !== id));
+        } else {
+          alert("เกิดข้อผิดพลาดในการลบข้อมูล");
+        }
+      } catch (error) {
+        console.error("Failed to delete batch:", error);
+        alert("เกิดข้อผิดพลาดในการเชื่อมต่อกับเซิร์ฟเวอร์");
+      }
     }
   };
 
@@ -123,20 +136,20 @@ export function HistoryPage() {
             <Card
               key={item.id}
               className={`p-6 transition-colors shadow-lg ${isExpiringSoon
-                  ? isDark
-                    ? "bg-gray-900 border-red-800 border-2 hover:border-red-700"
-                    : "bg-white border-red-500 border-2 hover:border-red-400"
-                  : isDark
-                    ? "bg-gray-900 border-gray-800 hover:border-gray-700"
-                    : "bg-white border-gray-200 hover:border-gray-300"
+                ? isDark
+                  ? "bg-gray-900 border-red-800 border-2 hover:border-red-700"
+                  : "bg-white border-red-500 border-2 hover:border-red-400"
+                : isDark
+                  ? "bg-gray-900 border-gray-800 hover:border-gray-700"
+                  : "bg-white border-gray-200 hover:border-gray-300"
                 }`}
             >
               {/* Warning banner for expiring items */}
               {isExpiringSoon && (
                 <div
                   className={`mb-4 p-3 rounded-lg border flex items-start gap-3 ${isDark
-                      ? "bg-red-950/50 border-red-800"
-                      : "bg-red-50 border-red-200"
+                    ? "bg-red-950/50 border-red-800"
+                    : "bg-red-50 border-red-200"
                     }`}
                 >
                   <AlertCircle

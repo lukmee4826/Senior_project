@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ThemeProvider, useTheme } from './components/ThemeContext';
 import { HomePage } from './components/HomePage';
 import { LoginPage } from './components/auth/LoginPage';
@@ -10,15 +10,36 @@ import { AnalysisDashboard } from './components/dashboard/AnalysisDashboard';
 import { HistoryPage } from './components/dashboard/HistoryPage';
 import { ProfilePage } from './components/dashboard/ProfilePage';
 import { Toaster } from './components/ui/sonner';
+import { getAuthToken, removeAuthToken, fetchWithAuth } from './utils/api';
 
 type AuthPage = 'home' | 'login' | 'register' | 'forgot-password';
 type AppPage = 'dashboard' | 'history' | 'profile';
 
 function AppContent() {
   const { theme } = useTheme();
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(!!getAuthToken());
   const [authPage, setAuthPage] = useState<AuthPage>('home');
   const [currentPage, setCurrentPage] = useState<AppPage>('dashboard');
+
+  useEffect(() => {
+    const handleUnauthorized = () => {
+      setIsAuthenticated(false);
+      setAuthPage('login');
+      removeAuthToken();
+    };
+
+    window.addEventListener('auth-unauthorized', handleUnauthorized);
+
+    if (isAuthenticated) {
+      fetchWithAuth('/users/me').then(res => {
+        if (!res.ok) handleUnauthorized();
+      }).catch(() => handleUnauthorized());
+    }
+
+    return () => {
+      window.removeEventListener('auth-unauthorized', handleUnauthorized);
+    };
+  }, [isAuthenticated]);
 
   const handleLogin = () => {
     setIsAuthenticated(true);
@@ -31,6 +52,7 @@ function AppContent() {
   };
 
   const handleLogout = () => {
+    removeAuthToken();
     setIsAuthenticated(false);
     setAuthPage('home');
   };
@@ -59,7 +81,7 @@ function AppContent() {
   return (
     <div className={theme === 'dark' ? 'min-h-screen bg-gray-950' : 'min-h-screen bg-gray-50'}>
       <Navbar currentPage={currentPage} onNavigate={handleAppNavigate} onLogout={handleLogout} />
-      
+
       <main className="min-h-[calc(100vh-4rem)]">
         {currentPage === 'dashboard' && <AnalysisDashboard />}
         {currentPage === 'history' && <HistoryPage />}

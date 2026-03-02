@@ -8,6 +8,8 @@ import { Logo } from '../Logo';
 import { ThemeToggle } from '../ThemeToggle';
 import { useTheme } from '../ThemeContext';
 import { Eye, EyeOff } from 'lucide-react';
+import { setAuthToken } from '../../utils/api';
+import { toast } from 'sonner';
 
 interface LoginPageProps {
   onLogin: () => void;
@@ -21,9 +23,40 @@ export function LoginPage({ onLogin, onNavigate }: LoginPageProps) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onLogin();
+    setIsLoading(true);
+
+    try {
+      const formData = new URLSearchParams();
+      formData.append('username', email); // OAuth2PasswordRequestForm expects 'username'
+      formData.append('password', password);
+
+      const response = await fetch('http://127.0.0.1:8000/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error('อีเมลหรือรหัสผ่านไม่ถูกต้อง');
+      }
+
+      const data = await response.json();
+      setAuthToken(data.access_token);
+
+      toast.success('เข้าสู่ระบบสำเร็จ');
+      onLogin();
+
+    } catch (error) {
+      toast.error(error instanceof Error ? error.message : 'เกิดข้อผิดพลาดในการเข้าสู่ระบบ');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -86,8 +119,8 @@ export function LoginPage({ onLogin, onNavigate }: LoginPageProps) {
                 ลืมรหัสผ่าน?
               </button>
             </div>
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
-              เข้าสู่ระบบ
+            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg" disabled={isLoading}>
+              {isLoading ? 'กำลังเข้าสู่ระบบ...' : 'เข้าสู่ระบบ'}
             </Button>
             <div className="relative">
               <div className="absolute inset-0 flex items-center">

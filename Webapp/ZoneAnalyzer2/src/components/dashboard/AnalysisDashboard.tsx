@@ -1,4 +1,6 @@
-import React, { useState } from "react";
+import { motion, AnimatePresence } from 'framer-motion';
+import { fetchWithAuth } from '../../utils/api';
+import React, { useState, useEffect } from "react";
 import { Button } from "../ui/button";
 import { Card } from "../ui/card";
 import {
@@ -28,49 +30,11 @@ import {
   PopoverTrigger,
 } from "../ui/popover";
 
-// รายการชื่อเชื้อ
-const bacteriaList = [
-  { value: "e-coli", label: "E. coli (Escherichia coli)" },
-  {
-    value: "s-aureus",
-    label: "S. aureus (Staphylococcus aureus)",
-  },
-  {
-    value: "mrsa",
-    label: "MRSA (Methicillin-resistant S. aureus)",
-  },
-  {
-    value: "p-aeruginosa",
-    label: "P. aeruginosa (Pseudomonas aeruginosa)",
-  },
-  {
-    value: "k-pneumoniae",
-    label: "K. pneumoniae (Klebsiella pneumoniae)",
-  },
-  {
-    value: "a-baumannii",
-    label: "A. baumannii (Acinetobacter baumannii)",
-  },
-  { value: "enterococcus", label: "Enterococcus spp." },
-  { value: "salmonella", label: "Salmonella spp." },
-  {
-    value: "s-pneumoniae",
-    label: "S. pneumoniae (Streptococcus pneumoniae)",
-  },
-  {
-    value: "h-influenzae",
-    label: "H. influenzae (Haemophilus influenzae)",
-  },
-  {
-    value: "n-gonorrhoeae",
-    label: "N. gonorrhoeae (Neisseria gonorrhoeae)",
-  },
-  {
-    value: "c-albicans",
-    label: "C. albicans (Candida albicans)",
-  },
-  { value: "other", label: "อื่นๆ" },
-];
+// We will fetch this from the database
+interface BacteriaOption {
+  value: string;
+  label: string;
+}
 
 export function AnalysisDashboard() {
   const { theme } = useTheme();
@@ -93,6 +57,28 @@ export function AnalysisDashboard() {
   >({});
   const [showCamera, setShowCamera] = useState(false);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+
+  const [bacteriaList, setBacteriaList] = useState<BacteriaOption[]>([]);
+
+  useEffect(() => {
+    const fetchMicrobes = async () => {
+      try {
+        const response = await fetchWithAuth('/microbes');
+        if (response.ok) {
+          const data = await response.json();
+          // Map DB models to component options
+          const options = data.map((m: any) => ({
+            value: m.strain_name,
+            label: m.strain_name
+          }));
+          setBacteriaList([{ value: "other", label: "อื่นๆ" }, ...options]);
+        }
+      } catch (error) {
+        console.error("Failed to fetch microbes:", error);
+      }
+    };
+    fetchMicrobes();
+  }, []);
 
   // Multi-select states
   const [selectedFiles, setSelectedFiles] = useState<number[]>([]);
@@ -159,19 +145,46 @@ export function AnalysisDashboard() {
     const totalFiles = uploadedFiles.length;
 
     const processFiles = async () => {
+      // 1. Create Batch
+      let batchId = null; // This batchId is for the current analysis run
+      let backendBatchId = batchId; // Initialize backendBatchId with the current batchId (which is null initially)
+
+      try {
+        // toast.info("กำลังสร้าง Batch ใหม่...", { id: "batch-create" }); // Assuming toast is imported elsewhere
+        const batchResponse = await fetchWithAuth('/batches', {
+          method: 'POST',
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ batch_name: `Batch ${new Date().toLocaleString('th-TH')}` })
+        });
+
+        if (batchResponse.ok) {
+          const batchData = await batchResponse.json();
+          backendBatchId = batchData.batch_id; // Update backendBatchId if batch creation is successful
+          console.log("Created batch:", backendBatchId);
+        } else {
+          console.error("Failed to create batch, proceeding with individual batches");
+        }
+      } catch (error) {
+        console.error("Error creating batch:", error);
+      }
+
       for (let i = 0; i < totalFiles; i++) {
         const file = uploadedFiles[i];
         const formData = new FormData();
         formData.append("file", file);
+        if (backendBatchId) { // Use backendBatchId here
+          formData.append("batch_id", backendBatchId);
+        }
 
         // Get selected bacteria for this file
         const bacteriaValue = bacteriaSelections[i] || "test-strain";
         const bacteriaLabel = bacteriaList.find(b => b.value === bacteriaValue)?.label || "Test Strain";
         formData.append("microbe_name", bacteriaLabel);
+        formData.append('batch_id', backendBatchId); // This line was added as per instruction
 
         try {
-          const response = await fetch("http://127.0.0.1:8000/analyze", {
-            method: "POST",
+          const response = await fetchWithAuth('/analyze', {
+            method: 'POST',
             body: formData,
           });
 

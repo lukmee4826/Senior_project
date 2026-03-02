@@ -1,5 +1,5 @@
 from sqlalchemy.orm import Session
-import models, schemas
+import models, schemas, auth
 import uuid
 import datetime
 
@@ -7,11 +7,10 @@ def get_user_by_email(db: Session, email: str):
     return db.query(models.User).filter(models.User.email == email).first()
 
 def create_user(db: Session, user: schemas.UserCreate):
-    # In a real app, hash the password!
-    fake_hashed_password = user.password + "notreallyhashed"
+    hashed_password = auth.get_password_hash(user.password)
     db_user = models.User(
         email=user.email,
-        password_hash=fake_hashed_password,
+        password_hash=hashed_password,
         full_name=user.full_name,
         institution=user.institution
     )
@@ -68,5 +67,43 @@ def get_batch(db: Session, batch_id: str):
 def get_microbe_by_name(db: Session, name: str):
     return db.query(models.Microbe).filter(models.Microbe.strain_name == name).first()
 
+def get_all_microbes(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Microbe).offset(skip).limit(limit).all()
+
 def get_antibiotic_by_name(db: Session, name: str):
     return db.query(models.Antibiotic).filter(models.Antibiotic.name == name).first()
+
+def get_all_antibiotics(db: Session, skip: int = 0, limit: int = 100):
+    return db.query(models.Antibiotic).offset(skip).limit(limit).all()
+
+def get_breakpoint(db: Session, standard_id: int, microbe_id: int, antibiotic_id: int):
+    return db.query(models.BreakpointDiskDiffusion).filter(
+        models.BreakpointDiskDiffusion.standard_id == standard_id,
+        models.BreakpointDiskDiffusion.microbe_id == microbe_id,
+        models.BreakpointDiskDiffusion.antibiotic_id == antibiotic_id
+    ).first()
+
+def delete_batch(db: Session, batch_id: str):
+    batch = db.query(models.AnalysisBatch).filter(models.AnalysisBatch.batch_id == batch_id).first()
+    if batch:
+        db.delete(batch)
+        db.commit()
+        return True
+    return False
+
+def get_plate_result(db: Session, result_id: str):
+    return db.query(models.PlateResult).filter(models.PlateResult.result_id == result_id).first()
+
+def update_plate_result(db: Session, result_id: str, antibiotic_id: int, diameter_mm: float, clsi: str, eucast: str):
+    result = db.query(models.PlateResult).filter(models.PlateResult.result_id == result_id).first()
+    if result:
+        result.antibiotic_id = antibiotic_id
+        result.diameter_mm = diameter_mm
+        result.clsi_interpretation = clsi
+        result.eucast_interpretation = eucast
+        db.commit()
+        db.refresh(result)
+    return result
+
+def get_batch(db: Session, batch_id: str):
+    return db.query(models.AnalysisBatch).filter(models.AnalysisBatch.batch_id == batch_id).first()

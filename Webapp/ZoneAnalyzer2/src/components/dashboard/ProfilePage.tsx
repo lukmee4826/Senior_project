@@ -6,6 +6,8 @@ import { Label } from '../ui/label';
 import { Separator } from '../ui/separator';
 import { User, Building, Lock, LogOut, Edit, Save } from 'lucide-react';
 import { useTheme } from '../ThemeContext';
+import { toast } from 'sonner';
+import { fetchWithAuth } from '../../utils/api';
 
 import { useEffect } from 'react';
 
@@ -23,12 +25,12 @@ export function ProfilePage({ onLogout }: ProfilePageProps) {
   const [email, setEmail] = useState('');
 
   useEffect(() => {
-    fetchUserProfile();
+    fetchProfile();
   }, []);
 
-  const fetchUserProfile = async () => {
+  const fetchProfile = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/users/me");
+      const response = await fetchWithAuth('/users/me');
       if (response.ok) {
         const data = await response.json();
         setName(data.full_name || "");
@@ -42,7 +44,7 @@ export function ProfilePage({ onLogout }: ProfilePageProps) {
 
   const updateUserProfile = async (updates: { full_name?: string, institution?: string }) => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/users/me", {
+      const response = await fetchWithAuth('/users/me', {
         method: "PUT",
         headers: {
           "Content-Type": "application/json",

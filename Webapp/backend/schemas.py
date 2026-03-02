@@ -5,6 +5,10 @@ import uuid
 
 # --- Base Schemas ---
 
+class Token(BaseModel):
+    access_token: str
+    token_type: str
+
 class StandardBase(BaseModel):
     standard_name: str
     standard_version: str
@@ -42,6 +46,10 @@ class PlateResult(PlateResultBase):
     antibiotic: Optional[Antibiotic] = None
     class Config:
         orm_mode = True
+
+class PlateResultUpdate(BaseModel):
+    antibiotic_id: Optional[int] = None
+    diameter_mm: Optional[float] = None
 
 class PlateBase(BaseModel):
     microbe_id: int
@@ -90,5 +98,9 @@ class User(UserBase):
 # --- API Specific Schemas ---
 
 class AnalysisResponse(BaseModel):
+    plate: Plate
+    message: str
+
+class PlateResultResponse(BaseModel):
     plate: Plate
     message: str

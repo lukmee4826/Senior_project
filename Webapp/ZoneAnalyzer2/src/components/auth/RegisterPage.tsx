@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { toast } from 'sonner';
 import { Card, CardContent, CardFooter, CardHeader, CardTitle } from '../ui/card';
 import { Input } from '../ui/input';
 import { Button } from '../ui/button';
@@ -20,9 +21,45 @@ export function RegisterPage({ onRegister, onNavigate }: RegisterPageProps) {
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const [fullname, setFullname] = useState('');
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [isLoading, setIsLoading] = useState(false);
+
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    onRegister();
+    if (password !== confirmPassword) {
+      toast.error('รหัสผ่านและการยืนยันรหัสผ่านไม่ตรงกัน');
+      return;
+    }
+
+    try {
+      setIsLoading(true);
+      const data = {
+        full_name: fullname,
+        email: email,
+        password: password
+      };
+
+      const response = await fetch('http://127.0.0.1:8000/register', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(data)
+      });
+
+      if (response.ok) {
+        toast.success('สมัครสมาชิกสำเร็จ กรุณาเข้าสู่ระบบ');
+        onNavigate('login');
+      } else {
+        const errorData = await response.json();
+        toast.error(errorData.detail || 'เกิดข้อผิดพลาดในการสมัครสมาชิก');
+      }
+    } catch (error) {
+      toast.error('ไม่สามารถเชื่อมต่อกับเซิร์ฟเวอร์ได้');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -44,6 +81,8 @@ export function RegisterPage({ onRegister, onNavigate }: RegisterPageProps) {
               <Input
                 id="fullname"
                 type="text"
+                value={fullname}
+                onChange={(e) => setFullname(e.target.value)}
                 className={isDark ? 'bg-gray-800 border-gray-700 text-gray-100 focus:border-blue-500' : 'bg-white border-gray-300 text-gray-900 focus:border-blue-500'}
                 required
               />
@@ -53,6 +92,8 @@ export function RegisterPage({ onRegister, onNavigate }: RegisterPageProps) {
               <Input
                 id="email"
                 type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className={isDark ? 'bg-gray-800 border-gray-700 text-gray-100 focus:border-blue-500' : 'bg-white border-gray-300 text-gray-900 focus:border-blue-500'}
                 required
               />
@@ -63,6 +104,8 @@ export function RegisterPage({ onRegister, onNavigate }: RegisterPageProps) {
                 <Input
                   id="password"
                   type={showPassword ? 'text' : 'password'}
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
                   className={isDark ? 'bg-gray-800 border-gray-700 text-gray-100 focus:border-blue-500 pr-10' : 'bg-white border-gray-300 text-gray-900 focus:border-blue-500 pr-10'}
                   required
                 />
@@ -81,6 +124,8 @@ export function RegisterPage({ onRegister, onNavigate }: RegisterPageProps) {
                 <Input
                   id="confirmPassword"
                   type={showConfirmPassword ? 'text' : 'password'}
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
                   className={isDark ? 'bg-gray-800 border-gray-700 text-gray-100 focus:border-blue-500 pr-10' : 'bg-white border-gray-300 text-gray-900 focus:border-blue-500 pr-10'}
                   required
                 />
@@ -99,8 +144,8 @@ export function RegisterPage({ onRegister, onNavigate }: RegisterPageProps) {
                 ฉันยอมรับข้อตกลงและนโยบายความเป็นส่วนตัว
               </label>
             </div>
-            <Button type="submit" className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
-              สมัครสมาชิก
+            <Button type="submit" disabled={isLoading} className="w-full bg-blue-600 hover:bg-blue-700 text-white rounded-lg">
+              {isLoading ? 'กำลังสมัครสมาชิก...' : 'สมัครสมาชิก'}
             </Button>
           </form>
         </CardContent>
