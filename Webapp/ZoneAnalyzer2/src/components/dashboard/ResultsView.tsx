@@ -73,16 +73,20 @@ export function ResultsView({
   const [antibiotics, setAntibiotics] = useState<any[]>([]);
   const [bacteriaList, setBacteriaList] = useState<BacteriaOption[]>([]);
   const [openPopovers, setOpenPopovers] = useState<Record<string, boolean>>({});
+  const [breakpointMap, setBreakpointMap] = useState<Record<string, any>>({});
 
   useEffect(() => {
     setLocalResults(analysisResults);
   }, [analysisResults]);
 
   useEffect(() => {
-    // Fetch antibiotics list logic
-    const fetchAntibiotics = async () => {
+    // Fetch antibiotics - filtered by current plate's microbe if editing
+    const fetchAntibiotics = async (microbeName?: string) => {
       try {
-        const response = await fetchWithAuth('/antibiotics');
+        const url = microbeName
+          ? `/antibiotics?microbe_name=${encodeURIComponent(microbeName)}`
+          : '/antibiotics?limit=500';
+        const response = await fetchWithAuth(url);
         if (response.ok) {
           const data = await response.json();
           setAntibiotics(data);
@@ -91,7 +95,10 @@ export function ResultsView({
         console.error("Failed to fetch antibiotics", error);
       }
     };
-    fetchAntibiotics();
+
+    // Get microbe name from current plate
+    const currentMicrobeName = localResults[selectedImage]?.plate?.strain_code;
+    fetchAntibiotics(currentMicrobeName || undefined);
 
     const fetchMicrobes = async () => {
       try {
@@ -109,7 +116,18 @@ export function ResultsView({
       }
     };
     fetchMicrobes();
-  }, []);
+
+    // Fetch breakpoint mm thresholds for the current plate
+    const plateId = localResults[selectedImage]?.plate?.plate_id;
+    if (plateId) {
+      fetchWithAuth(`/plates/${plateId}/breakpoints`)
+        .then(r => r.ok ? r.json() : {})
+        .then(data => setBreakpointMap(data))
+        .catch(() => { });
+    } else {
+      setBreakpointMap({});
+    }
+  }, [selectedImage, localResults]);
 
   const getInterpretationColor = (interp: string) => {
     switch (interp) {
@@ -431,30 +449,50 @@ export function ResultsView({
                         )}
                       </TableCell>
                       <TableCell className={`text-center text-xs ${isDark ? "text-gray-400" : "text-gray-600"}`}>
-                        - {/* TODO: Add breakpoints to API response */}
+                        {(() => {
+                          const bp = breakpointMap[String(result.result_id)]?.clsi;
+                          if (!bp) return <span className="opacity-40">—</span>;
+                          return (
+                            <span className="space-x-1">
+                              {bp.susceptible_min_mm != null && <span className="text-green-500">S≥{bp.susceptible_min_mm}</span>}
+                              {bp.intermediate_min_mm != null && bp.intermediate_max_mm != null && <span className="text-yellow-500">I:{bp.intermediate_min_mm}-{bp.intermediate_max_mm}</span>}
+                              {bp.resistant_max_mm != null && <span className="text-red-500">R≤{bp.resistant_max_mm}</span>}
+                            </span>
+                          );
+                        })()}
                       </TableCell>
                       <TableCell className={`text-center text-xs ${isDark ? "text-gray-400" : "text-gray-600"}`}>
-                        -
+                        {(() => {
+                          const bp = breakpointMap[String(result.result_id)]?.eucast;
+                          if (!bp) return <span className="opacity-40">—</span>;
+                          return (
+                            <span className="space-x-1">
+                              {bp.susceptible_min_mm != null && <span className="text-green-500">S≥{bp.susceptible_min_mm}</span>}
+                              {bp.intermediate_min_mm != null && bp.intermediate_max_mm != null && <span className="text-yellow-500">I:{bp.intermediate_min_mm}-{bp.intermediate_max_mm}</span>}
+                              {bp.resistant_max_mm != null && <span className="text-red-500">R≤{bp.resistant_max_mm}</span>}
+                            </span>
+                          );
+                        })()}
                       </TableCell>
                       <TableCell className="text-center">
                         <Badge
                           className={getInterpretationColor(
-                            result.clsi_interpretation || "S" // Default or actual
+                            result.clsi_interpretation || "Unknown"
                           )}
                         >
                           {getInterpretationText(
-                            result.clsi_interpretation || "S"
+                            result.clsi_interpretation || "Unknown"
                           )}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-center">
                         <Badge
                           className={getInterpretationColor(
-                            result.eucast_interpretation || "S"
+                            result.eucast_interpretation || "Unknown"
                           )}
                         >
                           {getInterpretationText(
-                            result.eucast_interpretation || "S"
+                            result.eucast_interpretation || "Unknown"
                           )}
                         </Badge>
                       </TableCell>

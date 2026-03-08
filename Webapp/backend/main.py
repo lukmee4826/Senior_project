@@ -154,42 +154,43 @@ async def analyze_image(
     )
     plate = crud.create_plate(db, plate_data, batch.batch_id)
 
-    # Get Standard (Default CLSI)
-    standard = db.query(models.Standard).filter(models.Standard.standard_name == "CLSI").first()
-    
-    # Save Results
-    if not analysis_results:
-        # Handle "No Disk Detected" - Create an empty result set or just return empty
-        pass
+    # Get Standard
+    clsi_standard = db.query(models.Standard).filter(models.Standard.standard_name == "CLSI").first()
+    eucast_standard = db.query(models.Standard).filter(models.Standard.standard_name == "EUCAST").first()
 
     for res in analysis_results:
-        # Check if antibiotic exists
+        # Find antibiotic by class_name (abbreviation or full name from YOLO)
         ab_name = res.get('class_name', 'Unknown')
-        ab = crud.get_antibiotic_by_name(db, ab_name)
+        ab = crud.get_best_antibiotic_match(db, query=ab_name, microbe_id=microbe.microbe_id)
         
         if not ab:
-            # Auto-create antibiotic (default concentration 0 or 10?)
-            # If manually creating, maybe set a flag? 
-            # For now, create with 0 if not found in DB
-            ab = models.Antibiotic(name=ab_name, concentration_ug=0)
+            # Auto-create antibiotic if completely unknown
+            ab = models.Antibiotic(name=ab_name, abbreviation=ab_name.upper() if len(ab_name) <= 5 else None, concentration_ug=0)
             db.add(ab)
             db.commit()
             db.refresh(ab)
         
-        diameter = res.get('diameter_mm', 0.0) 
+        diameter = res.get('diameter_mm', 0.0)
         
-        # Calculate Interpretation
+        # Calculate CLSI Interpretation
         clsi_interp = "Unknown"
-        if standard:
-            bp = crud.get_breakpoint(db, standard.standard_id, microbe.microbe_id, ab.antibiotic_id)
+        if clsi_standard:
+            bp = crud.get_breakpoint(db, clsi_standard.standard_id, microbe.microbe_id, ab.antibiotic_id)
             if bp:
                 clsi_interp = calculate_interpretation(diameter, bp)
+
+        # Calculate EUCAST Interpretation
+        eucast_interp = "Unknown"
+        if eucast_standard:
+            bp_eu = crud.get_breakpoint(db, eucast_standard.standard_id, microbe.microbe_id, ab.antibiotic_id)
+            if bp_eu:
+                eucast_interp = calculate_interpretation(diameter, bp_eu)
 
         result_data = schemas.PlateResultBase(
             antibiotic_id=ab.antibiotic_id,
             diameter_mm=diameter,
             clsi_interpretation=clsi_interp,
-            eucast_interpretation="Unknown" # Placeholder for EUCAST if needed
+            eucast_interpretation=eucast_interp
         )
         crud.create_plate_result(db, result_data, plate.plate_id)
     
@@ -231,6 +232,34 @@ def calculate_interpretation(diameter: float, bp: models.BreakpointDiskDiffusion
 def read_root():
     return {"Hello": "World"}
 
+@app.get("/plates/{plate_id}/breakpoints")
+def get_plate_breakpoints(plate_id: str, db: Session = Depends(get_db)):
+    """Return S/I/R mm breakpoint thresholds for each result in a plate."""
+    plate = db.query(models.Plate).filter(models.Plate.plate_id == plate_id).first()
+    if not plate:
+        raise HTTPException(status_code=404, detail="Plate not found")
+    clsi_std = db.query(models.Standard).filter(models.Standard.standard_name == "CLSI").first()
+    eucast_std = db.query(models.Standard).filter(models.Standard.standard_name == "EUCAST").first()
+    result_map = {}
+    for res in plate.results:
+        clsi_bp = crud.get_breakpoint(db, clsi_std.standard_id, plate.microbe_id, res.antibiotic_id) if clsi_std else None
+        eucast_bp = crud.get_breakpoint(db, eucast_std.standard_id, plate.microbe_id, res.antibiotic_id) if eucast_std else None
+        result_map[res.result_id] = {
+            "clsi": {
+                "susceptible_min_mm": clsi_bp.susceptible_min_mm if clsi_bp else None,
+                "intermediate_min_mm": clsi_bp.intermediate_min_mm if clsi_bp else None,
+                "intermediate_max_mm": clsi_bp.intermediate_max_mm if clsi_bp else None,
+                "resistant_max_mm": clsi_bp.resistant_max_mm if clsi_bp else None,
+            } if clsi_bp else None,
+            "eucast": {
+                "susceptible_min_mm": eucast_bp.susceptible_min_mm if eucast_bp else None,
+                "intermediate_min_mm": eucast_bp.intermediate_min_mm if eucast_bp else None,
+                "intermediate_max_mm": eucast_bp.intermediate_max_mm if eucast_bp else None,
+                "resistant_max_mm": eucast_bp.resistant_max_mm if eucast_bp else None,
+            } if eucast_bp else None,
+        }
+    return result_map
+
 @app.get("/batches", response_model=List[schemas.AnalysisBatch])
 def read_batches(skip: int = 0, limit: int = 100, db: Session = Depends(get_db), current_user: models.User = Depends(get_current_user)):
     batches = crud.get_batches_by_user(db, user_id=current_user.user_id, skip=skip, limit=limit)
@@ -253,9 +282,73 @@ def update_user_me(user_update: schemas.UserUpdate, db: Session = Depends(get_db
     return updated_user
 
 @app.get("/antibiotics", response_model=List[schemas.Antibiotic])
-def read_antibiotics(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
-    antibiotics = crud.get_all_antibiotics(db, skip=skip, limit=limit)
-    return antibiotics
+def read_antibiotics(skip: int = 0, limit: int = 500, microbe_name: str = None, db: Session = Depends(get_db)):
+    if microbe_name:
+        results = crud.get_antibiotics_by_microbe_name(db, microbe_name)
+        if results:
+            return results
+    return crud.get_all_antibiotics(db, skip=skip, limit=limit)
+
+# --- Standards ---
+@app.get("/standards", response_model=List[schemas.Standard])
+def read_standards(db: Session = Depends(get_db)):
+    return crud.get_all_standards(db)
+
+@app.post("/standards", response_model=schemas.Standard, status_code=201)
+def create_standard(body: schemas.StandardCreate, db: Session = Depends(get_db)):
+    return crud.create_standard(db, body.standard_name, body.standard_version)
+
+@app.put("/standards/{standard_id}", response_model=schemas.Standard)
+def update_standard(standard_id: int, body: schemas.StandardUpdate, db: Session = Depends(get_db)):
+    std = crud.update_standard(db, standard_id, body.standard_name, body.standard_version)
+    if not std:
+        raise HTTPException(status_code=404, detail="Standard not found")
+    return std
+
+@app.delete("/standards/{standard_id}")
+def delete_standard(standard_id: int, db: Session = Depends(get_db)):
+    if not crud.delete_standard(db, standard_id):
+        raise HTTPException(status_code=404, detail="Standard not found")
+    return {"message": "Deleted"}
+
+# --- Microbes CRUD ---
+@app.post("/microbes", response_model=schemas.Microbe, status_code=201)
+def create_microbe(body: schemas.MicrobeCreate, db: Session = Depends(get_db)):
+    existing = crud.get_microbe_by_name(db, body.strain_name)
+    if existing:
+        raise HTTPException(status_code=409, detail="Microbe already exists")
+    return crud.create_microbe(db, body.strain_name)
+
+@app.put("/microbes/{microbe_id}", response_model=schemas.Microbe)
+def update_microbe(microbe_id: int, body: schemas.MicrobeUpdate, db: Session = Depends(get_db)):
+    updated = crud.update_microbe(db, microbe_id, body.strain_name)
+    if not updated:
+        raise HTTPException(status_code=404, detail="Microbe not found")
+    return updated
+
+@app.delete("/microbes/{microbe_id}")
+def delete_microbe(microbe_id: int, db: Session = Depends(get_db)):
+    if not crud.delete_microbe(db, microbe_id):
+        raise HTTPException(status_code=404, detail="Microbe not found")
+    return {"message": "Deleted"}
+
+# --- Antibiotics CRUD ---
+@app.post("/antibiotics", response_model=schemas.Antibiotic, status_code=201)
+def create_antibiotic(body: schemas.AntibioticCreate, db: Session = Depends(get_db)):
+    return crud.create_antibiotic(db, body.name, body.abbreviation, body.concentration_ug)
+
+@app.put("/antibiotics/{antibiotic_id}", response_model=schemas.Antibiotic)
+def update_antibiotic(antibiotic_id: int, body: schemas.AntibioticUpdate, db: Session = Depends(get_db)):
+    updated = crud.update_antibiotic(db, antibiotic_id, body.name, body.abbreviation, body.concentration_ug)
+    if not updated:
+        raise HTTPException(status_code=404, detail="Antibiotic not found")
+    return updated
+
+@app.delete("/antibiotics/{antibiotic_id}")
+def delete_antibiotic(antibiotic_id: int, db: Session = Depends(get_db)):
+    if not crud.delete_antibiotic(db, antibiotic_id):
+        raise HTTPException(status_code=404, detail="Antibiotic not found")
+    return {"message": "Deleted"}
 
 @app.put("/results/{result_id}", response_model=schemas.PlateResult)
 def update_result(result_id: str, result_update: schemas.PlateResultUpdate, db: Session = Depends(get_db)):
@@ -273,14 +366,21 @@ def update_result(result_id: str, result_update: schemas.PlateResultUpdate, db: 
     plate = result.plate
     microbe_id = plate.microbe_id
     
-    # 3.2 Get Standard (CLSI default)
-    standard = db.query(models.Standard).filter(models.Standard.standard_name == "CLSI").first()
+    # 3.2 Get Standards
+    clsi_standard = db.query(models.Standard).filter(models.Standard.standard_name == "CLSI").first()
+    eucast_standard = db.query(models.Standard).filter(models.Standard.standard_name == "EUCAST").first()
     
     clsi_interp = "Unknown"
-    if standard:
-        bp = crud.get_breakpoint(db, standard.standard_id, microbe_id, new_ab_id)
+    if clsi_standard:
+        bp = crud.get_breakpoint(db, clsi_standard.standard_id, microbe_id, new_ab_id)
         if bp:
             clsi_interp = calculate_interpretation(new_diameter, bp)
+    
+    eucast_interp = "Unknown"
+    if eucast_standard:
+        bp_eu = crud.get_breakpoint(db, eucast_standard.standard_id, microbe_id, new_ab_id)
+        if bp_eu:
+            eucast_interp = calculate_interpretation(new_diameter, bp_eu)
     
     # 4. Save
     updated_result = crud.update_plate_result(
@@ -289,7 +389,7 @@ def update_result(result_id: str, result_update: schemas.PlateResultUpdate, db: 
         antibiotic_id=new_ab_id, 
         diameter_mm=new_diameter, 
         clsi=clsi_interp, 
-        eucast="Unknown"
+        eucast=eucast_interp
     )
     return updated_result
 
@@ -299,3 +399,67 @@ def delete_batch(batch_id: str, db: Session = Depends(get_db)):
     if not success:
         raise HTTPException(status_code=404, detail="Batch not found")
     return {"message": "Batch deleted successfully"}
+
+# --- Breakpoint DiskDiffusion CRUD ---
+@app.get("/breakpoints")
+def read_breakpoints(skip: int = 0, limit: int = 200, microbe_id: int = None, standard_id: int = None, db: Session = Depends(get_db)):
+    query = db.query(models.BreakpointDiskDiffusion)
+    if microbe_id:
+        query = query.filter(models.BreakpointDiskDiffusion.microbe_id == microbe_id)
+    if standard_id:
+        query = query.filter(models.BreakpointDiskDiffusion.standard_id == standard_id)
+    bps = query.offset(skip).limit(limit).all()
+    result = []
+    for bp in bps:
+        result.append({
+            "breakpoint_id": bp.breakpoint_id,
+            "standard_id": bp.standard_id,
+            "standard_name": bp.standard.standard_name if bp.standard else None,
+            "microbe_id": bp.microbe_id,
+            "strain_name": bp.microbe.strain_name if bp.microbe else None,
+            "antibiotic_id": bp.antibiotic_id,
+            "antibiotic_name": bp.antibiotic.name if bp.antibiotic else None,
+            "antibiotic_abbrev": bp.antibiotic.abbreviation if bp.antibiotic else None,
+            "susceptible_min_mm": bp.susceptible_min_mm,
+            "intermediate_min_mm": bp.intermediate_min_mm,
+            "intermediate_max_mm": bp.intermediate_max_mm,
+            "resistant_max_mm": bp.resistant_max_mm,
+        })
+    return result
+
+@app.get("/breakpoints/count")
+def count_breakpoints(db: Session = Depends(get_db)):
+    return {"count": crud.get_breakpoints_count(db)}
+
+@app.post("/breakpoints", status_code=201)
+def create_breakpoint(body: schemas.BreakpointCreate, db: Session = Depends(get_db)):
+    # Check if already exists
+    existing = crud.get_breakpoint(db, body.standard_id, body.microbe_id, body.antibiotic_id)
+    if existing:
+        raise HTTPException(status_code=409, detail="Breakpoint already exists for this combination")
+    bp = crud.create_breakpoint(db, body.standard_id, body.microbe_id, body.antibiotic_id,
+                                 body.susceptible_min_mm, body.intermediate_min_mm,
+                                 body.intermediate_max_mm, body.resistant_max_mm)
+    return {
+        "breakpoint_id": bp.breakpoint_id, "standard_id": bp.standard_id,
+        "microbe_id": bp.microbe_id, "antibiotic_id": bp.antibiotic_id,
+        "susceptible_min_mm": bp.susceptible_min_mm, "intermediate_min_mm": bp.intermediate_min_mm,
+        "intermediate_max_mm": bp.intermediate_max_mm, "resistant_max_mm": bp.resistant_max_mm,
+    }
+
+@app.put("/breakpoints/{breakpoint_id}")
+def update_breakpoint(breakpoint_id: int, body: schemas.BreakpointUpdate, db: Session = Depends(get_db)):
+    bp = crud.update_breakpoint(db, breakpoint_id,
+                                 body.susceptible_min_mm, body.intermediate_min_mm,
+                                 body.intermediate_max_mm, body.resistant_max_mm)
+    if not bp:
+        raise HTTPException(status_code=404, detail="Breakpoint not found")
+    return {"breakpoint_id": bp.breakpoint_id, "susceptible_min_mm": bp.susceptible_min_mm,
+            "intermediate_min_mm": bp.intermediate_min_mm, "intermediate_max_mm": bp.intermediate_max_mm,
+            "resistant_max_mm": bp.resistant_max_mm}
+
+@app.delete("/breakpoints/{breakpoint_id}")
+def delete_breakpoint(breakpoint_id: int, db: Session = Depends(get_db)):
+    if not crud.delete_breakpoint(db, breakpoint_id):
+        raise HTTPException(status_code=404, detail="Breakpoint not found")
+    return {"message": "Deleted"}

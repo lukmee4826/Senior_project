@@ -9,11 +9,12 @@ import { MobileNav } from './components/layout/MobileNav';
 import { AnalysisDashboard } from './components/dashboard/AnalysisDashboard';
 import { HistoryPage } from './components/dashboard/HistoryPage';
 import { ProfilePage } from './components/dashboard/ProfilePage';
+import { AdminPage } from './components/dashboard/AdminPage';
 import { Toaster } from './components/ui/sonner';
 import { getAuthToken, removeAuthToken, fetchWithAuth } from './utils/api';
 
 type AuthPage = 'home' | 'login' | 'register' | 'forgot-password';
-type AppPage = 'dashboard' | 'history' | 'profile';
+type AppPage = 'dashboard' | 'history' | 'profile' | 'admin';
 
 function AppContent() {
   const { theme } = useTheme();
@@ -86,6 +87,7 @@ function AppContent() {
         {currentPage === 'dashboard' && <AnalysisDashboard />}
         {currentPage === 'history' && <HistoryPage />}
         {currentPage === 'profile' && <ProfilePage onLogout={handleLogout} />}
+        {currentPage === 'admin' && <AdminPage />}
       </main>
 
       <MobileNav currentPage={currentPage} onNavigate={handleAppNavigate} />

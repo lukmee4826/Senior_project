@@ -15,6 +15,7 @@ class Standard(Base):
     standard_version = Column(String, nullable=False)
 
     breakpoints = relationship("BreakpointDiskDiffusion", back_populates="standard")
+    mic_breakpoints = relationship("BreakpointMIC", back_populates="standard")
 
 class Microbe(Base):
     __tablename__ = "Microbes"
@@ -23,6 +24,7 @@ class Microbe(Base):
     strain_name = Column(String, unique=True, nullable=False)
 
     breakpoints = relationship("BreakpointDiskDiffusion", back_populates="microbe")
+    mic_breakpoints = relationship("BreakpointMIC", back_populates="microbe")
     plates = relationship("Plate", back_populates="microbe")
 
 class Antibiotic(Base):
@@ -30,11 +32,13 @@ class Antibiotic(Base):
 
     antibiotic_id = Column(Integer, primary_key=True, index=True)
     name = Column(String, nullable=False)
+    abbreviation = Column(String, nullable=True)
     concentration_ug = Column(Integer, nullable=False)
 
     __table_args__ = (UniqueConstraint('name', 'concentration_ug', name='_name_concentration_uc'),)
 
     breakpoints = relationship("BreakpointDiskDiffusion", back_populates="antibiotic")
+    mic_breakpoints = relationship("BreakpointMIC", back_populates="antibiotic")
     plate_results = relationship("PlateResult", back_populates="antibiotic")
 
 class BreakpointDiskDiffusion(Base):
@@ -55,6 +59,25 @@ class BreakpointDiskDiffusion(Base):
     standard = relationship("Standard", back_populates="breakpoints")
     microbe = relationship("Microbe", back_populates="breakpoints")
     antibiotic = relationship("Antibiotic", back_populates="breakpoints")
+
+class BreakpointMIC(Base):
+    __tablename__ = "Breakpoints_MIC"
+
+    breakpoint_id = Column(Integer, primary_key=True, index=True)
+    standard_id = Column(Integer, ForeignKey("Standards.standard_id"), nullable=False)
+    microbe_id = Column(Integer, ForeignKey("Microbes.microbe_id"), nullable=False)
+    antibiotic_id = Column(Integer, ForeignKey("Antibiotics.antibiotic_id"), nullable=False)
+
+    susceptible_max_ug_ml = Column(Float, nullable=True)
+    intermediate_min_ug_ml = Column(Float, nullable=True)
+    intermediate_max_ug_ml = Column(Float, nullable=True)
+    resistant_min_ug_ml = Column(Float, nullable=True)
+
+    __table_args__ = (UniqueConstraint('standard_id', 'microbe_id', 'antibiotic_id', name='_std_microbe_ab_mic_uc'),)
+
+    standard = relationship("Standard", back_populates="mic_breakpoints")
+    microbe = relationship("Microbe", back_populates="mic_breakpoints")
+    antibiotic = relationship("Antibiotic", back_populates="mic_breakpoints")
 
 class User(Base):
     __tablename__ = "Users"
