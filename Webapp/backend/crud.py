@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy.exc import IntegrityError
 import models, schemas, auth
 import uuid
 import datetime
@@ -83,32 +84,110 @@ def get_antibiotic_by_name_or_abbrev(db: Session, query: str):
         ab = db.query(models.Antibiotic).filter(models.Antibiotic.abbreviation == query.upper()).first()
     return ab
 
+def _extract_abbreviation(text: str) -> str:
+    """Extract abbreviation from OCR text like 'Cn10' -> 'CN', 'AMC20' -> 'AMC', 'CN 10' -> 'CN'."""
+    import re
+    # Remove numbers and special characters, keep only letters
+    letters_only = re.sub(r'[^A-Za-z]', '', text)
+    return letters_only.upper() if letters_only else ""
+
+def _extract_parts(query: str) -> list:
+    """Extract all possible search terms from OCR text.
+    E.g. 'Cn10 Gentamicin' -> ['CN10 GENTAMICIN', 'CN10', 'GENTAMICIN', 'CN', 'GENTAMICIN']
+    """
+    import re
+    parts = []
+    query_stripped = query.strip()
+    
+    # Full query as-is
+    parts.append(query_stripped)
+    
+    # Split by spaces and try each word
+    words = query_stripped.split()
+    for w in words:
+        parts.append(w)
+        # Extract letters-only from each word (e.g. 'Cn10' -> 'CN')
+        letters = re.sub(r'[^A-Za-z]', '', w)
+        if letters and letters.upper() != w.upper():
+            parts.append(letters)
+    
+    # Also try letters-only from the full first word
+    if words:
+        first_letters = re.sub(r'[^A-Za-z]', '', words[0])
+        if first_letters:
+            parts.append(first_letters)
+    
+    # Remove duplicates while preserving order
+    seen = set()
+    unique = []
+    for p in parts:
+        p_upper = p.upper()
+        if p_upper not in seen and len(p_upper) >= 1:
+            seen.add(p_upper)
+            unique.append(p)
+    
+    return unique
+
 def get_best_antibiotic_match(db: Session, query: str, microbe_id: int):
     """
-    Look up antibiotic prioritize abbreviation over name,
-    and prioritize antibiotics that have a breakpoint for the given microbe.
+    Look up antibiotic with improved fuzzy matching for OCR output.
+    Handles cases like 'Cn10 Gentamicin', 'AMC 20', 'AMP', etc.
+    Prioritizes matches that have breakpoints for the given microbe.
     """
-    # 1. Exact abbreviation match that HAS a breakpoint for this microbe
-    ab = db.query(models.Antibiotic).join(models.BreakpointDiskDiffusion).filter(
-        models.Antibiotic.abbreviation == query.upper(),
-        models.BreakpointDiskDiffusion.microbe_id == microbe_id
-    ).first()
-    if ab: return ab
+    import re
     
-    # 2. Exact name match that HAS a breakpoint for this microbe
-    ab = db.query(models.Antibiotic).join(models.BreakpointDiskDiffusion).filter(
-        models.Antibiotic.name == query,
-        models.BreakpointDiskDiffusion.microbe_id == microbe_id
-    ).first()
-    if ab: return ab
+    if not query or query.strip() == "" or query.startswith("Disk_") or query == "Unknown":
+        return None
+    
+    # Generate all possible search terms from OCR text
+    search_parts = _extract_parts(query)
+    
+    # Phase 1: Try to find exact match WITH breakpoint for this microbe
+    for part in search_parts:
+        # Try as abbreviation
+        ab = db.query(models.Antibiotic).join(models.BreakpointDiskDiffusion).filter(
+            models.Antibiotic.abbreviation == part.upper(),
+            models.BreakpointDiskDiffusion.microbe_id == microbe_id
+        ).first()
+        if ab: return ab
+        
+        # Try as exact name (case-insensitive)
+        ab = db.query(models.Antibiotic).join(models.BreakpointDiskDiffusion).filter(
+            models.Antibiotic.name.ilike(part),
+            models.BreakpointDiskDiffusion.microbe_id == microbe_id
+        ).first()
+        if ab: return ab
 
-    # 3. Fallback to abbreviation match (no breakpoint constraint)
-    ab = db.query(models.Antibiotic).filter(models.Antibiotic.abbreviation == query.upper()).first()
-    if ab: return ab
+    # Phase 2: Try partial/contains name match WITH breakpoint
+    for part in search_parts:
+        if len(part) >= 3:  # Only try contains-match for 3+ chars
+            ab = db.query(models.Antibiotic).join(models.BreakpointDiskDiffusion).filter(
+                models.Antibiotic.name.ilike(f"%{part}%"),
+                models.BreakpointDiskDiffusion.microbe_id == microbe_id
+            ).first()
+            if ab: return ab
 
-    # 4. Fallback to name match (no breakpoint constraint)
-    ab = db.query(models.Antibiotic).filter(models.Antibiotic.name == query).first()
-    return ab
+    # Phase 3: Fallback — match WITHOUT breakpoint constraint
+    for part in search_parts:
+        ab = db.query(models.Antibiotic).filter(
+            models.Antibiotic.abbreviation == part.upper()
+        ).first()
+        if ab: return ab
+        
+        ab = db.query(models.Antibiotic).filter(
+            models.Antibiotic.name.ilike(part)
+        ).first()
+        if ab: return ab
+
+    # Phase 4: Partial name match without breakpoint
+    for part in search_parts:
+        if len(part) >= 3:
+            ab = db.query(models.Antibiotic).filter(
+                models.Antibiotic.name.ilike(f"%{part}%")
+            ).first()
+            if ab: return ab
+
+    return None
 
 def get_all_antibiotics(db: Session, skip: int = 0, limit: int = 100):
     return db.query(models.Antibiotic).offset(skip).limit(limit).all()
@@ -164,9 +243,13 @@ def update_microbe(db: Session, microbe_id: int, strain_name: str):
 def delete_microbe(db: Session, microbe_id: int):
     microbe = db.query(models.Microbe).filter(models.Microbe.microbe_id == microbe_id).first()
     if microbe:
-        db.delete(microbe)
-        db.commit()
-        return True
+        try:
+            db.delete(microbe)
+            db.commit()
+            return True
+        except IntegrityError:
+            db.rollback()
+            raise ValueError("ไม่สามารถลบเชื้อนี้ได้ เนื่องจากมี Breakpoint หรือ Plate ที่อ้างอิงอยู่")
     return False
 
 # --- Antibiotic CRUD ---
@@ -190,9 +273,13 @@ def update_antibiotic(db: Session, antibiotic_id: int, name: str = None, abbrevi
 def delete_antibiotic(db: Session, antibiotic_id: int):
     ab = db.query(models.Antibiotic).filter(models.Antibiotic.antibiotic_id == antibiotic_id).first()
     if ab:
-        db.delete(ab)
-        db.commit()
-        return True
+        try:
+            db.delete(ab)
+            db.commit()
+            return True
+        except IntegrityError:
+            db.rollback()
+            raise ValueError("ไม่สามารถลบยานี้ได้ เนื่องจากมี Breakpoint หรือผลการวิเคราะห์ที่อ้างอิงอยู่")
     return False
 
 def get_antibiotics_by_microbe_name(db: Session, microbe_name: str):
@@ -231,9 +318,13 @@ def update_standard(db: Session, standard_id: int, standard_name: str = None, st
 def delete_standard(db: Session, standard_id: int):
     std = db.query(models.Standard).filter(models.Standard.standard_id == standard_id).first()
     if std:
-        db.delete(std)
-        db.commit()
-        return True
+        try:
+            db.delete(std)
+            db.commit()
+            return True
+        except IntegrityError:
+            db.rollback()
+            raise ValueError("ไม่สามารถลบ Standard นี้ได้ เนื่องจากมี Breakpoint ที่อ้างอิงอยู่")
     return False
 
 # --- Breakpoint DiskDiffusion CRUD ---

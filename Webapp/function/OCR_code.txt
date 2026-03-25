@@ -1,0 +1,222 @@
+from preprocessing_func import *
+import torch
+from PIL import Image
+import torchvision
+from torchvision.models.detection.faster_rcnn import FastRCNNPredictor
+from torchvision import transforms as T
+import matplotlib.pyplot as plt
+import cv2
+import numpy as np
+import easyocr
+import re
+
+# ==========================
+# 1. โหลดโมเดล
+# ==========================
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
+
+model = torchvision.models.detection.fasterrcnn_resnet50_fpn(pretrained=False)
+num_classes = 3
+in_features = model.roi_heads.box_predictor.cls_score.in_features
+model.roi_heads.box_predictor = FastRCNNPredictor(in_features, num_classes)
+
+model.load_state_dict(torch.load(
+    r"C:\Users\bmzaz\Documents\GitHub\SP-Detect_AST_with_Disk_Diffusion\FASTER_RCNN\Experiment_datav32\fasterrcnn_epoch_6.pth",
+    map_location=device
+))
+model.to(device)
+model.eval()
+
+# ==========================
+# 2. Transform
+# ==========================
+transform = T.Compose([T.ToTensor()])
+
+# ==========================
+# 3. Load image
+# ==========================
+# img_path = r"C:\Users\bmzaz\Documents\GitHub\SP-Detect_AST_with_Disk_Diffusion\test2.jpg"
+img_path = r"C:\Users\bmzaz\Documents\GitHub\SP-Detect_AST_with_Disk_Diffusion\FASTER_RCNN\Detect_Circle_AST-32\test\images\syn_fixed_0922.jpg"
+image = Image.open(img_path).convert("RGB")
+img_tensor = transform(image).to(device)
+img_np = np.array(image)
+
+# ==========================
+# 4. Inference
+# ==========================
+with torch.no_grad():
+    prediction = model([img_tensor])
+
+boxes  = prediction[0]['boxes'].cpu().numpy()
+labels = prediction[0]['labels'].cpu().numpy()
+scores = prediction[0]['scores'].cpu().numpy()
+
+threshold = 0.5
+filtered_boxes  = boxes[scores >= threshold]
+filtered_labels = labels[scores >= threshold]
+filtered_scores = scores[scores >= threshold]
+
+# ==========================
+# 5. Crop + pad 640x640 (ใช้จริง)
+# ==========================
+cropped_640 = []
+
+for box, label in zip(filtered_boxes, filtered_labels):
+    if label == 2:  # antibiotic disk
+        crop_640 = crop_and_pad_640(img_np, box)
+        gray = cv2.cvtColor(crop_640, cv2.COLOR_RGB2GRAY)
+        # processed = sharpening(gray)
+        processed = global_threshold(gray, 200)
+        cropped_640.append(processed)
+
+# ==========================
+# 6. OCR reader
+# ==========================
+reader = easyocr.Reader(['en'])
+
+# ==========================
+# 7. OCR + show text on image
+# ==========================
+# ocr_results = []
+# angles = list(range(-180, 180, 15))
+
+# for i, crop in enumerate(cropped_640):
+#     print(f"\n===== Antibiotic Disk {i+1} =====")
+
+#     n_imgs = len(angles) + 1  # +1 สำหรับ BEST
+#     cols = 5
+#     rows = int(np.ceil(n_imgs / cols))
+
+#     fig, axes = plt.subplots(rows, cols, figsize=(2.8 * cols, 2.8 * rows))
+#     axes = axes.flatten()
+
+#     best_text = ""
+#     best_conf = 0
+#     best_angle = 0
+
+#     for idx, angle in enumerate(angles):
+#         rotated = rotate_image(crop, angle)
+
+#         result = reader.readtext(
+#             rotated,
+#             allowlist='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789',
+#             detail=1
+#         )
+
+#         texts = []
+#         confs = []
+
+#         for bbox, text, conf in result:
+#             texts.append(text)
+#             confs.append(conf)
+
+#         display_text = " ".join(texts) if texts else "No text"
+#         avg_conf = np.mean(confs) if confs else 0
+#         adj_conf = adjust_confidence_with_regex(display_text, avg_conf)
+
+#         # เก็บผลที่ดีที่สุด
+#         if adj_conf > best_conf:
+#             best_conf = adj_conf
+#             best_text = display_text
+#             best_angle = angle
+
+#         axes[idx].imshow(rotated, cmap="gray")
+#         axes[idx].set_title(f"{angle}°\n{display_text}\nconf={adj_conf:.2f}")
+#         axes[idx].axis("off")
+
+#     # ช่องสุดท้ายแสดง best result
+#     axes[-1].imshow(crop, cmap="gray")
+#     axes[-1].set_title(
+#         f"BEST\nAngle: {best_angle}°\nText: {best_text}\nconf={best_conf:.2f}"
+#     )
+#     axes[-1].axis("off")
+
+#     plt.tight_layout()
+#     plt.show()
+
+# ==========================
+# 7. OCR + show ONLY BEST
+# ==========================
+ocr_results = []
+angles = list(range(-180, 180, 15))
+
+for i, crop in enumerate(cropped_640):
+    print(f"\n===== Antibiotic Disk {i+1} =====")
+
+    best_text = ""
+    best_conf = 0
+    best_angle = 0
+    best_image = None   # เก็บภาพที่ดีที่สุดไว้
+
+    for angle in angles:
+        rotated = rotate_image(crop, angle)
+
+        result = reader.readtext(
+            rotated,
+            allowlist='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.',
+            detail=1
+        )
+
+        texts = []
+        confs = []
+
+        for bbox, text, conf in result:
+            texts.append(text)
+            confs.append(conf)
+
+        display_text = " ".join(texts) if texts else "No text"
+        avg_conf = np.mean(confs) if confs else 0
+        adj_conf = adjust_confidence_with_regex(display_text, avg_conf)
+
+        # เก็บผลที่ดีที่สุด
+        if adj_conf > best_conf:
+            best_conf = adj_conf
+            best_text = display_text
+            best_angle = angle
+            best_image = rotated.copy()
+
+        # ==========================
+        # FIX: กรณีไม่เจอข้อความเลย
+        # ==========================
+        if best_conf == 0 or best_text.strip() == "" or best_text == "No text":
+            best_text = "Can't Detect"
+            best_angle = "-"
+            best_conf = 0
+
+        # ==========================
+        # FIX: กรณี best_image เป็น None
+        # ==========================
+        if best_image is None or not isinstance(best_image, np.ndarray):
+            best_image = np.zeros((400, 400), dtype=np.uint8)
+
+            # ใส่ข้อความลงภาพว่าง
+            cv2.putText(
+                best_image,
+                "Can't Detect",
+                (40, 200),
+                cv2.FONT_HERSHEY_SIMPLEX,
+                1,
+                (255),
+                2,
+                cv2.LINE_AA
+            )
+
+        # ==========================
+        # FIX: dtype ไม่ถูกต้อง
+        # ==========================
+        if best_image.dtype != np.uint8:
+            best_image = best_image.astype(np.uint8)
+
+    # ==========================
+    # แสดงเฉพาะ BEST
+    # ==========================
+    plt.figure(figsize=(4,4))
+    plt.imshow(best_image, cmap="gray")
+    plt.title(
+        f"Disk {i+1}\nAngle: {best_angle}°\nText: {best_text}\nconf={best_conf:.2f}"
+    )
+    plt.axis("off")
+    plt.tight_layout()
+    plt.show()
+
+    ocr_results.append((i+1, best_text, best_conf, best_angle))

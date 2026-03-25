@@ -11,3 +11,5 @@ httpx
 passlib[bcrypt]
 python-jose[cryptography]
 python-dotenv
+easyocr
+scikit-image

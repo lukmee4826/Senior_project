@@ -21,8 +21,9 @@ export function AdminPage() {
     const selCls = `h-8 px-2 text-sm border rounded ${isDark ? "bg-gray-800 border-gray-600 text-gray-100" : "bg-white border-gray-300 text-gray-900"}`;
     // Table wrapper: scrollable area inside a clipped border
     const tableWrap = "rounded-lg border overflow-hidden";
-    const tableScroll = "overflow-auto max-h-[500px]";
+    const tableScroll = "overflow-auto max-h-[800px]";
 
+    const MB_PAGE_SIZE = 100;
     const AB_PAGE_SIZE = 100;
     const BP_PAGE_SIZE = 50;
 
@@ -31,6 +32,7 @@ export function AdminPage() {
     const [newMicrobeName, setNewMicrobeName] = useState("");
     const [editMicrobe, setEditMicrobe] = useState<{ id: number; name: string } | null>(null);
     const [microbeError, setMicrobeError] = useState("");
+    const [microbePage, setMicrobePage] = useState(0);
 
     const fetchMicrobes = useCallback(async () => {
         const r = await fetchWithAuth("/microbes?limit=500");
@@ -52,7 +54,12 @@ export function AdminPage() {
     };
     const deleteMicrobe = async (id: number) => {
         if (!confirm("ลบเชื้อนี้?")) return;
-        await fetchWithAuth(`/microbes/${id}`, { method: "DELETE" });
+        const r = await fetchWithAuth(`/microbes/${id}`, { method: "DELETE" });
+        if (!r.ok) {
+            const e = await r.json();
+            alert(e.detail || "ลบเชื้อไม่สำเร็จ");
+            return;
+        }
         fetchMicrobes();
     };
 
@@ -80,7 +87,12 @@ export function AdminPage() {
     };
     const deleteAntibiotic = async (id: number) => {
         if (!confirm("ลบยานี้?")) return;
-        await fetchWithAuth(`/antibiotics/${id}`, { method: "DELETE" });
+        const r = await fetchWithAuth(`/antibiotics/${id}`, { method: "DELETE" });
+        if (!r.ok) {
+            const e = await r.json();
+            alert(e.detail || "ลบยาไม่สำเร็จ");
+            return;
+        }
         fetchAntibiotics();
     };
 
@@ -107,7 +119,12 @@ export function AdminPage() {
     };
     const deleteStandard = async (id: number) => {
         if (!confirm("ลบ Standard นี้?")) return;
-        await fetchWithAuth(`/standards/${id}`, { method: "DELETE" });
+        const r = await fetchWithAuth(`/standards/${id}`, { method: "DELETE" });
+        if (!r.ok) {
+            const e = await r.json();
+            alert(e.detail || "ลบ Standard ไม่สำเร็จ");
+            return;
+        }
         fetchStandards();
     };
 
@@ -175,6 +192,8 @@ export function AdminPage() {
         <input type="number" value={val ?? ""} onChange={(e) => onChange(e.target.value === "" ? null : parseInt(e.target.value))} className={`${inputCls} w-16 text-center`} />
     );
 
+    const pagedMicrobes = microbes.slice(microbePage * MB_PAGE_SIZE, (microbePage + 1) * MB_PAGE_SIZE);
+    const totalMicrobePages = Math.max(1, Math.ceil(microbes.length / MB_PAGE_SIZE));
     const pagedAntibiotics = antibiotics.slice(abPage * AB_PAGE_SIZE, (abPage + 1) * AB_PAGE_SIZE);
     const totalAbPages = Math.max(1, Math.ceil(antibiotics.length / AB_PAGE_SIZE));
     const totalBpPages = Math.max(1, Math.ceil(bpCount / BP_PAGE_SIZE));
@@ -208,7 +227,7 @@ export function AdminPage() {
                                     <tr><th className={thCls}>ID</th><th className={thCls}>ชื่อเชื้อ</th><th className={`${thCls} text-right`}>จัดการ</th></tr>
                                 </thead>
                                 <tbody>
-                                    {microbes.map((m) => (
+                                    {pagedMicrobes.map((m) => (
                                         <tr key={m.microbe_id} className={rowCls}>
                                             <td className={`${tdCls} w-16 text-gray-500`}>{m.microbe_id}</td>
                                             <td className={tdCls}>
@@ -234,6 +253,11 @@ export function AdminPage() {
                                 </tbody>
                             </table>
                         </div>
+                    </div>
+                    <div className="flex items-center gap-3 mt-3">
+                        <Button size="sm" variant="outline" onClick={() => setMicrobePage(p => Math.max(0, p - 1))} disabled={microbePage === 0}>← ก่อนหน้า</Button>
+                        <span className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>หน้า {microbePage + 1} / {totalMicrobePages} ({microbes.length} รายการ)</span>
+                        <Button size="sm" variant="outline" onClick={() => setMicrobePage(p => p + 1)} disabled={microbePage + 1 >= totalMicrobePages}>ถัดไป →</Button>
                     </div>
                 </Card>
             )}

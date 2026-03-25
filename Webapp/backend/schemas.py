@@ -16,7 +16,7 @@ class StandardBase(BaseModel):
 class Standard(StandardBase):
     standard_id: int
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class BreakpointDiskDiffusionDetail(BaseModel):
     breakpoint_id: int
@@ -53,7 +53,7 @@ class MicrobeBase(BaseModel):
 class Microbe(MicrobeBase):
     microbe_id: int
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class MicrobeCreate(BaseModel):
     strain_name: str
@@ -69,7 +69,7 @@ class AntibioticBase(BaseModel):
 class Antibiotic(AntibioticBase):
     antibiotic_id: int
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class AntibioticCreate(BaseModel):
     name: str
@@ -101,7 +101,7 @@ class BreakpointMICBase(BaseModel):
 class BreakpointMIC(BreakpointMICBase):
     breakpoint_id: int
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class PlateResultBase(BaseModel):
     antibiotic_id: int
@@ -113,7 +113,7 @@ class PlateResult(PlateResultBase):
     result_id: str
     antibiotic: Optional[Antibiotic] = None
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class PlateResultUpdate(BaseModel):
     antibiotic_id: Optional[int] = None
@@ -130,7 +130,7 @@ class Plate(PlateBase):
     batch_id: str
     results: List[PlateResult] = []
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class AnalysisBatchBase(BaseModel):
     batch_name: Optional[str] = None
@@ -141,7 +141,7 @@ class AnalysisBatch(AnalysisBatchBase):
     created_at: datetime
     plates: List[Plate] = []
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 class UserBase(BaseModel):
     email: str
@@ -161,7 +161,7 @@ class User(UserBase):
     created_at: datetime
     # batches: List[AnalysisBatch] = [] # Avoid circular dependency or too much nesting for now
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 # --- API Specific Schemas ---
 

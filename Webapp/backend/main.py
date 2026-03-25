@@ -3,9 +3,10 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from typing import List
-from datetime import timedelta
+from datetime import timedelta, datetime
 from jose import JWTError, jwt
 import crud, models, schemas, analysis, auth
+from analysis import draw_detections_on_image
 from database import SessionLocal, engine
 import shutil
 import os
@@ -119,11 +120,16 @@ async def analyze_image(
         # Pass the file path to the analysis function
         # This function should be implemented by YOU to return real data
         analysis_results = analysis.analyze_disk_image(file_path)
+        print(f"[API] Analysis returned {len(analysis_results)} zones")
     except Exception as e:
         # Clean up file if analysis fails
         if os.path.exists(file_path):
             os.remove(file_path)
         raise HTTPException(status_code=500, detail=str(e))
+    
+    # Draw detections on image for visualization
+    result_image_url = draw_detections_on_image(file_path, analysis_results, UPLOAD_DIR)
+    print(f"[API] Visualization image saved to: {result_image_url}")
 
     # 3. Save to Database
     # Use Current User
@@ -150,7 +156,7 @@ async def analyze_image(
         microbe_id=microbe.microbe_id,
         strain_code=microbe_name,
         original_image_url=file_path,
-        result_image_url=file_path 
+        result_image_url=result_image_url if result_image_url else file_path
     )
     plate = crud.create_plate(db, plate_data, batch.batch_id)
 
@@ -159,18 +165,29 @@ async def analyze_image(
     eucast_standard = db.query(models.Standard).filter(models.Standard.standard_name == "EUCAST").first()
 
     for res in analysis_results:
-        # Find antibiotic by class_name (abbreviation or full name from YOLO)
-        ab_name = res.get('class_name', 'Unknown')
-        ab = crud.get_best_antibiotic_match(db, query=ab_name, microbe_id=microbe.microbe_id)
+        # Get medicine name from OCR detection
+        medicine_name = res.get('medicine_name', 'Unknown')
+        diameter = res.get('diameter_mm', 0.0)
+        
+        # Try to find antibiotic in database by medicine name
+        ab = crud.get_best_antibiotic_match(db, query=medicine_name, microbe_id=microbe.microbe_id)
+        
+        if ab:
+            print(f"[API] Matched OCR '{medicine_name}' -> antibiotic '{ab.name}' (abbr={ab.abbreviation}, id={ab.antibiotic_id})")
+        else:
+            print(f"[API] No match for OCR '{medicine_name}' -> auto-creating")
         
         if not ab:
-            # Auto-create antibiotic if completely unknown
-            ab = models.Antibiotic(name=ab_name, abbreviation=ab_name.upper() if len(ab_name) <= 5 else None, concentration_ug=0)
+            # Auto-create antibiotic if not found in database
+            # Use OCR medicine name as the official name
+            ab = models.Antibiotic(
+                name=medicine_name, 
+                abbreviation=medicine_name.upper() if len(medicine_name) <= 5 else None, 
+                concentration_ug=0
+            )
             db.add(ab)
             db.commit()
             db.refresh(ab)
-        
-        diameter = res.get('diameter_mm', 0.0)
         
         # Calculate CLSI Interpretation
         clsi_interp = "Unknown"
@@ -178,6 +195,9 @@ async def analyze_image(
             bp = crud.get_breakpoint(db, clsi_standard.standard_id, microbe.microbe_id, ab.antibiotic_id)
             if bp:
                 clsi_interp = calculate_interpretation(diameter, bp)
+                print(f"[API] CLSI: diameter={diameter}mm S>={bp.susceptible_min_mm} R<={bp.resistant_max_mm} -> {clsi_interp}")
+            else:
+                print(f"[API] CLSI: No breakpoint for microbe_id={microbe.microbe_id} + antibiotic_id={ab.antibiotic_id}")
 
         # Calculate EUCAST Interpretation
         eucast_interp = "Unknown"
@@ -185,6 +205,9 @@ async def analyze_image(
             bp_eu = crud.get_breakpoint(db, eucast_standard.standard_id, microbe.microbe_id, ab.antibiotic_id)
             if bp_eu:
                 eucast_interp = calculate_interpretation(diameter, bp_eu)
+                print(f"[API] EUCAST: diameter={diameter}mm S>={bp_eu.susceptible_min_mm} R<={bp_eu.resistant_max_mm} -> {eucast_interp}")
+            else:
+                print(f"[API] EUCAST: No breakpoint for microbe_id={microbe.microbe_id} + antibiotic_id={ab.antibiotic_id}")
 
         result_data = schemas.PlateResultBase(
             antibiotic_id=ab.antibiotic_id,
@@ -199,6 +222,7 @@ async def analyze_image(
 
     return {
         "plate": plate,
+        "result_image_url": result_image_url,
         "message": "Analysis successful" if analysis_results else "No Antibiotic Disk Detected"
     }
 
@@ -307,8 +331,11 @@ def update_standard(standard_id: int, body: schemas.StandardUpdate, db: Session 
 
 @app.delete("/standards/{standard_id}")
 def delete_standard(standard_id: int, db: Session = Depends(get_db)):
-    if not crud.delete_standard(db, standard_id):
-        raise HTTPException(status_code=404, detail="Standard not found")
+    try:
+        if not crud.delete_standard(db, standard_id):
+            raise HTTPException(status_code=404, detail="Standard not found")
+    except ValueError as e:
+        raise HTTPException(status_code=409, detail=str(e))
     return {"message": "Deleted"}
 
 # --- Microbes CRUD ---
@@ -328,8 +355,11 @@ def update_microbe(microbe_id: int, body: schemas.MicrobeUpdate, db: Session = D
 
 @app.delete("/microbes/{microbe_id}")
 def delete_microbe(microbe_id: int, db: Session = Depends(get_db)):
-    if not crud.delete_microbe(db, microbe_id):
-        raise HTTPException(status_code=404, detail="Microbe not found")
+    try:
+        if not crud.delete_microbe(db, microbe_id):
+            raise HTTPException(status_code=404, detail="Microbe not found")
+    except ValueError as e:
+        raise HTTPException(status_code=409, detail=str(e))
     return {"message": "Deleted"}
 
 # --- Antibiotics CRUD ---
@@ -346,8 +376,11 @@ def update_antibiotic(antibiotic_id: int, body: schemas.AntibioticUpdate, db: Se
 
 @app.delete("/antibiotics/{antibiotic_id}")
 def delete_antibiotic(antibiotic_id: int, db: Session = Depends(get_db)):
-    if not crud.delete_antibiotic(db, antibiotic_id):
-        raise HTTPException(status_code=404, detail="Antibiotic not found")
+    try:
+        if not crud.delete_antibiotic(db, antibiotic_id):
+            raise HTTPException(status_code=404, detail="Antibiotic not found")
+    except ValueError as e:
+        raise HTTPException(status_code=409, detail=str(e))
     return {"message": "Deleted"}
 
 @app.put("/results/{result_id}", response_model=schemas.PlateResult)
