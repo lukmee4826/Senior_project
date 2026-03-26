@@ -362,6 +362,7 @@ def analyze_disk_image(image_path: str):
         
         # Process each inhibition zone and pair with nearest disk
         results_with_medicine = []
+        used_disk_indices = set()
         
         for zone_idx, zone_data in enumerate(detected_zones):
             print(f"\n[DEBUG] Processing zone {zone_idx + 1}...")
@@ -399,6 +400,7 @@ def analyze_disk_image(image_path: str):
                     disk_data = detected_disks[nearest_disk_idx]
                     disk_bbox = disk_data['bbox']
                     disk_used_idx = nearest_disk_idx
+                    used_disk_indices.add(nearest_disk_idx)
                     
                     print(f"[DEBUG] Using disk {nearest_disk_idx + 1} (distance: {min_distance:.0f}px)")
                     print(f"[DEBUG] Disk bbox: [{disk_bbox[0]:.0f}, {disk_bbox[1]:.0f}, {disk_bbox[2]:.0f}, {disk_bbox[3]:.0f}]")
@@ -442,6 +444,41 @@ def analyze_disk_image(image_path: str):
                 "disk_used_idx": disk_used_idx,
                 "bbox": zone_bbox
             })
+
+        # If some disks have no paired zone, still return them with diameter 0.
+        # This ensures frontend shows detected antibiotic disks even when no inhibition zone is found.
+        for disk_idx, disk_data in enumerate(detected_disks):
+            if disk_idx in used_disk_indices:
+                continue
+
+            disk_bbox = disk_data['bbox']
+            medicine_name = f"Disk_{disk_idx + 1}"
+            ocr_confidence = 0.0
+
+            try:
+                crop_640 = crop_and_pad_640(img, disk_bbox)
+                if len(crop_640.shape) == 3:
+                    gray_crop = cv2.cvtColor(crop_640, cv2.COLOR_BGR2GRAY)
+                else:
+                    gray_crop = crop_640
+
+                processed_crop = combine_preprocessing(gray_crop, white=200)
+                medicine_name, ocr_confidence, _ = extract_medicine_ocr(processed_crop)
+                if medicine_name == "Unknown" or ocr_confidence < 0.3:
+                    medicine_name = f"Disk_{disk_idx + 1}"
+                    ocr_confidence = 0.0
+            except Exception as e:
+                print(f"[DEBUG] Disk-only OCR failed for disk {disk_idx + 1}: {e}")
+
+            results_with_medicine.append({
+                "medicine_name": medicine_name,
+                "diameter_mm": 0.0,
+                "ocr_confidence": ocr_confidence,
+                "yolo_confidence": round(disk_data['confidence'], 3),
+                "disk_used_idx": disk_idx,
+                "bbox": disk_bbox
+            })
+            print(f"[DEBUG] Added disk-only result for disk {disk_idx + 1} with diameter=0.0")
         
         print(f"\n[DEBUG] Total final results: {len(results_with_medicine)}")
         return results_with_medicine

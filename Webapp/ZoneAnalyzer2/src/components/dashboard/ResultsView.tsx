@@ -426,7 +426,7 @@ export function ResultsView({
                         )}
                       </TableCell>
                       <TableCell className={`text-center ${isDark ? "text-gray-300" : "text-gray-700"}`}>
-                        {result.antibiotic?.name ? result.antibiotic.name.substring(0, 3).toUpperCase() : "-"}
+                        {result.antibiotic?.abbreviation || (result.antibiotic?.name ? result.antibiotic.name.substring(0, 3).toUpperCase() : "-")}
                       </TableCell>
                       <TableCell className={`text-center ${isDark ? "text-gray-300" : "text-gray-700"}`}>
                         {result.antibiotic?.concentration_ug || "-"}
