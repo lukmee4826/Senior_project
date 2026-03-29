@@ -2,7 +2,7 @@ from sqlalchemy import Boolean, Column, ForeignKey, Integer, String, Float, Date
 from sqlalchemy.orm import relationship
 from database import Base
 import uuid
-from datetime import datetime
+from datetime import datetime, timezone
 
 def generate_uuid():
     return str(uuid.uuid4())
@@ -87,7 +87,7 @@ class User(Base):
     password_hash = Column(String, nullable=False)
     full_name = Column(String, nullable=False)
     institution = Column(String, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc))
 
     batches = relationship("AnalysisBatch", back_populates="user", cascade="all, delete-orphan")
 
@@ -97,7 +97,7 @@ class AnalysisBatch(Base):
     batch_id = Column(String, primary_key=True, default=generate_uuid)
     user_id = Column(String, ForeignKey("Users.user_id"), nullable=False)
     batch_name = Column(String, nullable=True)
-    created_at = Column(DateTime, default=datetime.utcnow, index=True)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), index=True)
 
     user = relationship("User", back_populates="batches")
     plates = relationship("Plate", back_populates="batch", cascade="all, delete-orphan")
@@ -107,6 +107,7 @@ class Plate(Base):
 
     plate_id = Column(String, primary_key=True, default=generate_uuid)
     batch_id = Column(String, ForeignKey("AnalysisBatch.batch_id"), nullable=False)
+    created_at = Column(DateTime, default=lambda: datetime.now(timezone.utc), index=True)
     microbe_id = Column(Integer, ForeignKey("Microbes.microbe_id"), nullable=False)
     strain_code = Column(String, nullable=True)
     original_image_url = Column(String, nullable=False)

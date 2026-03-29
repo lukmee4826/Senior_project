@@ -1,12 +1,13 @@
 from fastapi import FastAPI, Depends, UploadFile, File, HTTPException, Form, status
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.staticfiles import StaticFiles
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session, joinedload
 from sqlalchemy.exc import IntegrityError
 from typing import List
 from datetime import timedelta, datetime
 from jose import JWTError, jwt
-import crud, models, schemas, analysis, auth
+import crud, models, schemas, analysis, auth, interpretation
 from analysis import draw_detections_on_image
 from database import SessionLocal, engine
 import shutil
@@ -17,6 +18,21 @@ import uuid
 models.Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+
+# CORS configuration
+origins = [
+    "http://localhost:5173",  # Vite default
+    "http://localhost:3000",
+    "*" # Allow all for development
+]
+
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=origins,
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="login")
 
@@ -78,22 +94,7 @@ def register_user(user: schemas.UserCreate, db: Session = Depends(get_db)):
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc))
 
-# CORS configuration
-origins = [
-    "http://localhost:5173",  # Vite default
-    "http://localhost:3000",
-    "*" # Allow all for development
-]
 
-app.add_middleware(
-    CORSMiddleware,
-    allow_origins=origins,
-    allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
-)
-
-from fastapi.staticfiles import StaticFiles
 
 # Directory to save uploaded images
 UPLOAD_DIR = "uploaded_images"
@@ -111,7 +112,7 @@ def create_batch(batch: schemas.AnalysisBatchBase, db: Session = Depends(get_db)
     return crud.create_analysis_batch(db, batch, current_user.user_id)
 
 @app.post("/analyze", response_model=schemas.PlateResultResponse)
-async def analyze_image(
+def analyze_image(
     file: UploadFile = File(...), 
     microbe_name: str = Form(...), 
     batch_id: str = Form(None), # Optional batch_id
@@ -146,10 +147,10 @@ async def analyze_image(
     # Use Current User
 
     # Create Batch or Use Existing
-    if batch_id:
-        batch = crud.get_batch(db, batch_id) # Changed from get_analysis_batch to get_batch
+    if batch_id and batch_id not in ("undefined", "null", ""):
+        batch = crud.get_batch(db, batch_id) 
         if not batch:
-            raise HTTPException(status_code=404, detail="Batch not found")
+            raise HTTPException(status_code=404, detail=f"Batch not found: {batch_id}")
     else:
         # Fallback to creating a new batch per image if no batch_id provided
         new_batch_name = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
@@ -222,7 +223,7 @@ async def analyze_image(
         if clsi_standard:
             bp = crud.get_breakpoint(db, clsi_standard.standard_id, microbe.microbe_id, ab.antibiotic_id)
             if bp:
-                clsi_interp = calculate_interpretation(diameter, bp)
+                clsi_interp = interpretation.calculate_interpretation(diameter, bp)
                 print(f"[API] CLSI: diameter={diameter}mm S>={bp.susceptible_min_mm} R<={bp.resistant_max_mm} -> {clsi_interp}")
             else:
                 print(f"[API] CLSI: No breakpoint for microbe_id={microbe.microbe_id} + antibiotic_id={ab.antibiotic_id}")
@@ -232,7 +233,7 @@ async def analyze_image(
         if eucast_standard:
             bp_eu = crud.get_breakpoint(db, eucast_standard.standard_id, microbe.microbe_id, ab.antibiotic_id)
             if bp_eu:
-                eucast_interp = calculate_interpretation(diameter, bp_eu)
+                eucast_interp = interpretation.calculate_interpretation(diameter, bp_eu)
                 print(f"[API] EUCAST: diameter={diameter}mm S>={bp_eu.susceptible_min_mm} R<={bp_eu.resistant_max_mm} -> {eucast_interp}")
             else:
                 print(f"[API] EUCAST: No breakpoint for microbe_id={microbe.microbe_id} + antibiotic_id={ab.antibiotic_id}")
@@ -256,31 +257,7 @@ async def analyze_image(
         "message": "Analysis successful" if analysis_results else "No Antibiotic Disk Detected"
     }
 
-def calculate_interpretation(diameter: float, bp: models.BreakpointDiskDiffusion) -> str:
-    # Logic: R <= resistant_max, S >= susceptible_min
-    # Prioritize R, then S, then I?
-    
-    # 1. Check Resistant
-    if bp.resistant_max_mm is not None and diameter <= bp.resistant_max_mm:
-        return "R"
-    
-    # 2. Check Susceptible
-    if bp.susceptible_min_mm is not None and diameter >= bp.susceptible_min_mm:
-        return "S"
-        
-    # 3. Check Intermediate
-    # Explicit range check or exclusion?
-    # If not R and not S, and strictly between?
-    if bp.intermediate_min_mm is not None and bp.intermediate_max_mm is not None:
-         if bp.intermediate_min_mm <= diameter <= bp.intermediate_max_mm:
-             return "I"
-             
-    # Fallback for implicit Intermediate (between R and S)
-    if bp.resistant_max_mm is not None and bp.susceptible_min_mm is not None:
-        if bp.resistant_max_mm < diameter < bp.susceptible_min_mm:
-            return "I"
 
-    return "Unknown"
 
 @app.get("/")
 def read_root():
@@ -437,13 +414,13 @@ def update_result(result_id: str, result_update: schemas.PlateResultUpdate, db: 
     if clsi_standard:
         bp = crud.get_breakpoint(db, clsi_standard.standard_id, microbe_id, new_ab_id)
         if bp:
-            clsi_interp = calculate_interpretation(new_diameter, bp)
+            clsi_interp = interpretation.calculate_interpretation(new_diameter, bp)
     
     eucast_interp = "Unknown"
     if eucast_standard:
         bp_eu = crud.get_breakpoint(db, eucast_standard.standard_id, microbe_id, new_ab_id)
         if bp_eu:
-            eucast_interp = calculate_interpretation(new_diameter, bp_eu)
+            eucast_interp = interpretation.calculate_interpretation(new_diameter, bp_eu)
     
     # 4. Save
     updated_result = crud.update_plate_result(

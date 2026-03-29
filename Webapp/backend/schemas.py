@@ -179,3 +179,4 @@ class AnalysisResponse(BaseModel):
 class PlateResultResponse(BaseModel):
     plate: Plate
     message: str
+    result_image_url: Optional[str] = None

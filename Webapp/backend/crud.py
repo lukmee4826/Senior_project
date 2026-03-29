@@ -221,8 +221,7 @@ def update_plate_result(db: Session, result_id: str, antibiotic_id: int, diamete
         db.refresh(result)
     return result
 
-def get_batch(db: Session, batch_id: str):
-    return db.query(models.AnalysisBatch).filter(models.AnalysisBatch.batch_id == batch_id).first()
+
 
 # --- Microbe CRUD ---
 def create_microbe(db: Session, strain_name: str):
@@ -329,17 +328,14 @@ def delete_standard(db: Session, standard_id: int):
 
 # --- Breakpoint DiskDiffusion CRUD ---
 def get_all_breakpoints(db, skip=0, limit=200):
-    import models
     return db.query(models.BreakpointDiskDiffusion).offset(skip).limit(limit).all()
 
 def get_breakpoints_count(db):
-    import models
     return db.query(models.BreakpointDiskDiffusion).count()
 
 def create_breakpoint(db, standard_id, microbe_id, antibiotic_id,
                       susceptible_min_mm=None, intermediate_min_mm=None,
                       intermediate_max_mm=None, resistant_max_mm=None):
-    import models
     bp = models.BreakpointDiskDiffusion(
         standard_id=standard_id, microbe_id=microbe_id, antibiotic_id=antibiotic_id,
         susceptible_min_mm=susceptible_min_mm,
@@ -352,7 +348,6 @@ def create_breakpoint(db, standard_id, microbe_id, antibiotic_id,
 
 def update_breakpoint(db, breakpoint_id, susceptible_min_mm=None,
                       intermediate_min_mm=None, intermediate_max_mm=None, resistant_max_mm=None):
-    import models
     bp = db.query(models.BreakpointDiskDiffusion).filter(
         models.BreakpointDiskDiffusion.breakpoint_id == breakpoint_id).first()
     if bp:
@@ -364,7 +359,6 @@ def update_breakpoint(db, breakpoint_id, susceptible_min_mm=None,
     return bp
 
 def delete_breakpoint(db, breakpoint_id):
-    import models
     bp = db.query(models.BreakpointDiskDiffusion).filter(
         models.BreakpointDiskDiffusion.breakpoint_id == breakpoint_id).first()
     if bp:

@@ -8,6 +8,8 @@ from skimage import filters
 import uuid
 from datetime import datetime
 
+PIXELS_PER_MM = float(os.getenv("PIXELS_PER_MM", "10.0"))
+
 # Load the YOLO model for zone detection
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 MODEL_PATH = os.path.join(BASE_DIR, "models", "yolo_best.pt")
@@ -368,7 +370,7 @@ def analyze_disk_image(image_path: str):
             print(f"\n[DEBUG] Processing zone {zone_idx + 1}...")
             
             zone_bbox = zone_data['bbox']
-            diameter_mm = calculate_diameter_mm(zone_bbox, image_width, pixels_per_mm=10)
+            diameter_mm = calculate_diameter_mm(zone_bbox, image_width, pixels_per_mm=PIXELS_PER_MM)
             print(f"[DEBUG] Zone diameter: {diameter_mm}mm")
             
             # Find nearest disk for this zone
