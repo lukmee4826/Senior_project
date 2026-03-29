@@ -29,18 +29,27 @@ export function HistoryPage() {
       if (response.ok) {
         const data = await response.json();
         // Map API data to component structure
-        const mappedHistory = data.map((batch: any) => ({
-          id: batch.batch_id,
-          batchName: batch.batch_name || "Untitled Batch",
-          date: new Date(batch.created_at).toLocaleDateString("th-TH", {
-            day: "numeric", month: "short", year: "numeric"
-          }),
-          time: new Date(batch.created_at).toLocaleTimeString("th-TH", {
-            hour: '2-digit', minute: '2-digit'
-          }),
-          resultCount: batch.plates ? batch.plates.length : 0,
-          daysUntilExpiry: 30, // Mock expiry for now
-        }));
+        const mappedHistory = data.map((batch: any) => {
+          // Calculate actual expiry (30 days from creation)
+          const createdDate = new Date(batch.created_at);
+          const now = new Date();
+          const msPerDay = 1000 * 60 * 60 * 24;
+          const daysPassed = Math.floor((now.getTime() - createdDate.getTime()) / msPerDay);
+          const daysLeft = Math.max(0, 30 - daysPassed);
+
+          return {
+            id: batch.batch_id,
+            batchName: batch.batch_name || "Untitled Batch",
+            date: createdDate.toLocaleDateString("th-TH", {
+              day: "numeric", month: "short", year: "numeric"
+            }),
+            time: createdDate.toLocaleTimeString("th-TH", {
+              hour: '2-digit', minute: '2-digit'
+            }),
+            resultCount: batch.plates ? batch.plates.length : 0,
+            daysUntilExpiry: daysLeft,
+          };
+        });
         setHistory(mappedHistory);
       }
     } catch (error) {

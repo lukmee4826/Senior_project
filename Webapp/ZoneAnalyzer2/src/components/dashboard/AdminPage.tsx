@@ -204,9 +204,9 @@ export function AdminPage() {
 
             {/* Tabs */}
             <div className="flex flex-wrap gap-2 mb-6">
-                {(["microbes", "antibiotics", "standards", "breakpoints"] as const).map((t) => (
-                    <button key={t} onClick={() => setTab(t)} className={`px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${tab === t ? tabActiveStyle : tabStyle}`}>
-                        {{ microbes: "🦠 เชื้อ", antibiotics: "💊 ยา", standards: "📋 Standard", breakpoints: "📐 Breakpoints (SIR)" }[t]}
+                {(["microbes", "antibiotics", "breakpoints"] as const).map((t) => (
+                    <button key={t} onClick={() => setTab(t as "microbes" | "antibiotics" | "breakpoints" | "standards")} className={`px-4 py-2 rounded-lg border text-sm font-medium transition-colors ${tab === t ? tabActiveStyle : tabStyle}`}>
+                        {{ microbes: "🦠 เชื้อ", antibiotics: "💊 ยา", breakpoints: "📐 Breakpoints (SIR)" }[t]}
                     </button>
                 ))}
             </div>

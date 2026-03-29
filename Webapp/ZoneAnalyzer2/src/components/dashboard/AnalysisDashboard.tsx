@@ -450,11 +450,15 @@ export function AnalysisDashboard() {
                   <Checkbox
                     checked={selectedFiles.includes(idx)}
                     onCheckedChange={() => handleCheckboxChange(idx)}
-                    className="flex-shrink-0"
+                    className="flex-shrink-0 mt-1 self-start"
                   />
-                  <FileImage
-                    className={`w-5 h-5 flex-shrink-0 ${isDark ? "text-gray-400" : "text-gray-600"}`}
-                  />
+                  <div className={`w-14 h-14 flex-shrink-0 rounded overflow-hidden ${isDark ? "bg-gray-800" : "bg-gray-200"}`}>
+                    <img 
+                      src={URL.createObjectURL(file)} 
+                      alt={`Thumbnail ${idx}`} 
+                      className="w-full h-full object-cover"
+                    />
+                  </div>
                   <div className="flex-1 min-w-0">
                     <p
                       className={`text-sm truncate ${isDark ? "text-gray-300" : "text-gray-700"}`}

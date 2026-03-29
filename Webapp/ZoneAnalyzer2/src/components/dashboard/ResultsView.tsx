@@ -277,8 +277,7 @@ export function ResultsView({
                 : isDark ? "border-gray-700 hover:border-gray-600" : "border-gray-300 hover:border-gray-400"
                 }`}
             >
-              <div className={`w-full h-full flex flex-col items-center justify-center p-2 ${isDark ? "bg-gray-800" : "bg-gray-50"}`}>
-                <div className={`w-16 h-16 mb-2 rounded-md overflow-hidden bg-gray-200`}>
+              <div className={`relative w-full h-full flex flex-col ${isDark ? "bg-gray-800" : "bg-gray-50"}`}>
                   {localResults[idx]?.plate?.result_image_url ? (
                     <img
                       src={`http://127.0.0.1:8000/uploaded_images/${localResults[idx].plate.result_image_url.split('\\').pop().split('/').pop()}`}
@@ -288,10 +287,13 @@ export function ResultsView({
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">No Image</div>
                   )}
+                
+                {/* Overlay Text at bottom */}
+                <div className={`absolute bottom-0 inset-x-0 p-2 text-center bg-black/60 backdrop-blur-sm`}>
+                  <p className={`text-xs font-medium truncate max-w-full text-white`}>
+                   รูปภาพที่ {idx + 1}
+                  </p>
                 </div>
-                <p className={`text-xs truncate max-w-full px-1 ${isDark ? "text-gray-400" : "text-gray-600"}`}>
-                  รูปภาพที่ {idx + 1}
-                </p>
               </div>
             </button>
           ))}
@@ -303,21 +305,17 @@ export function ResultsView({
         <h3 className={`text-lg mb-3 ${isDark ? "text-gray-200" : "text-gray-800"}`}>
           ภาพผลลัพธ์
         </h3>
-        <div className={`aspect-square max-w-2xl mx-auto rounded-lg overflow-hidden border shadow-lg ${isDark ? "bg-gray-800 border-gray-700" : "bg-gray-50 border-gray-200"}`}>
-          <div className="w-full h-full flex items-center justify-center p-8">
-            <div className="relative w-full max-w-sm aspect-square">
-              {/* Display Image from Backend */}
-              {currentPlate?.result_image_url ? (
-                <img
-                  src={`http://127.0.0.1:8000/uploaded_images/${currentPlate.result_image_url.split('\\').pop().split('/').pop()}`}
-                  alt="Analyzed Plate"
-                  className="w-full h-full object-contain rounded-lg shadow-md"
-                />
-              ) : (
-                <div className="flex items-center justify-center h-full text-gray-500">No Image Available</div>
-              )}
-            </div>
-          </div>
+        <div className={`relative aspect-square max-w-2xl mx-auto rounded-lg overflow-hidden border shadow-lg ${isDark ? "bg-gray-900 border-gray-700" : "bg-gray-100 border-gray-200"}`}>
+          {/* Display Image from Backend */}
+          {currentPlate?.result_image_url ? (
+            <img
+              src={`http://127.0.0.1:8000/uploaded_images/${currentPlate.result_image_url.split('\\').pop().split('/').pop()}`}
+              alt="Analyzed Plate"
+              className="w-full h-full object-contain"
+            />
+          ) : (
+            <div className="flex items-center justify-center h-full text-gray-500">No Image Available</div>
+          )}
         </div>
       </div>
 
@@ -436,7 +434,7 @@ export function ResultsView({
                           <Input
                             type="number"
                             className="w-20 h-8 mx-auto text-center"
-                            defaultValue={result.diameter_mm.toFixed(1)}
+                            defaultValue={result.diameter_mm.toFixed(2)}
                             onBlur={(e) => {
                               const val = parseFloat(e.target.value);
                               if (!isNaN(val) && val !== result.diameter_mm) {
@@ -445,7 +443,7 @@ export function ResultsView({
                             }}
                           />
                         ) : (
-                          result.diameter_mm.toFixed(1)
+                          result.diameter_mm.toFixed(2)
                         )}
                       </TableCell>
                       <TableCell className={`text-center text-xs ${isDark ? "text-gray-400" : "text-gray-600"}`}>
