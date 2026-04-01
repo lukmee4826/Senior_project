@@ -8,7 +8,7 @@ import { Logo } from '../Logo';
 import { ThemeToggle } from '../ThemeToggle';
 import { useTheme } from '../ThemeContext';
 import { Eye, EyeOff } from 'lucide-react';
-import { setAuthToken } from '../../utils/api';
+import { fetchWithAuth, setAuthToken } from '../../utils/api';
 import { toast } from 'sonner';
 
 interface LoginPageProps {
@@ -34,7 +34,7 @@ export function LoginPage({ onLogin, onNavigate }: LoginPageProps) {
       formData.append('username', email); // OAuth2PasswordRequestForm expects 'username'
       formData.append('password', password);
 
-      const response = await fetch('http://127.0.0.1:8000/login', {
+      const response = await fetchWithAuth('/login', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/x-www-form-urlencoded',

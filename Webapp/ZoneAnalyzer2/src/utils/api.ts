@@ -1,4 +1,6 @@
-const API_BASE_URL = 'http://127.0.0.1:8000';
+// Default to same-origin so the app can be deployed behind a single host:port.
+// Override with VITE_API_BASE_URL when developing against a different backend.
+const API_BASE_URL = (import.meta as any).env?.VITE_API_BASE_URL ?? '';
 
 export const getAuthToken = () => {
     return localStorage.getItem('token');

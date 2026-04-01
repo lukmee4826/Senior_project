@@ -11,3 +11,5 @@ files/~$v_15.0_Breakpoint_Tables.xlsx
 /Webapp/backend/uploaded_images
 /Webapp/backend/models
 /Webapp/backend/.venv
+webapp.tar.gz
+webapp.zip

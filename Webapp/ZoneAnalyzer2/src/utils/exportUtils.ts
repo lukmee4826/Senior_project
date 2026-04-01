@@ -75,7 +75,7 @@ export const exportToXLSX = async (data: any[], filename: string) => {
             if (plate.result_image_url) {
                 try {
                     // Fetch image as buffer
-                    const imageUrl = `http://127.0.0.1:8000/uploaded_images/${plate.result_image_url.split('\\').pop().split('/').pop()}`;
+                    const imageUrl = `/uploaded_images/${plate.result_image_url.split('\\').pop().split('/').pop()}`;
                     const response = await fetch(imageUrl);
                     const buffer = await response.arrayBuffer();
 

@@ -280,7 +280,7 @@ export function ResultsView({
               <div className={`relative w-full h-full flex flex-col ${isDark ? "bg-gray-800" : "bg-gray-50"}`}>
                   {localResults[idx]?.plate?.result_image_url ? (
                     <img
-                      src={`http://127.0.0.1:8000/uploaded_images/${localResults[idx].plate.result_image_url.split('\\').pop().split('/').pop()}`}
+                      src={`/uploaded_images/${localResults[idx].plate.result_image_url.split('\\').pop().split('/').pop()}`}
                       alt={`Plate ${idx + 1}`}
                       className="w-full h-full object-cover"
                     />
@@ -309,7 +309,7 @@ export function ResultsView({
           {/* Display Image from Backend */}
           {currentPlate?.result_image_url ? (
             <img
-              src={`http://127.0.0.1:8000/uploaded_images/${currentPlate.result_image_url.split('\\').pop().split('/').pop()}`}
+              src={`/uploaded_images/${currentPlate.result_image_url.split('\\').pop().split('/').pop()}`}
               alt="Analyzed Plate"
               className="w-full h-full object-contain"
             />

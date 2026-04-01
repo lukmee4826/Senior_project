@@ -1,4 +1,5 @@
 from fastapi import FastAPI, Depends, UploadFile, File, HTTPException, Form, status
+from fastapi.responses import FileResponse
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
@@ -23,6 +24,8 @@ app = FastAPI()
 origins = [
     "http://localhost:5173",  # Vite default
     "http://localhost:3000",
+    "http://localhost:6015",  # Production port
+    "http://100.127.9.127:6015",  # Server IP
     "*" # Allow all for development
 ]
 
@@ -101,6 +104,19 @@ UPLOAD_DIR = "uploaded_images"
 os.makedirs(UPLOAD_DIR, exist_ok=True)
 
 app.mount("/uploaded_images", StaticFiles(directory=UPLOAD_DIR), name="uploaded_images")
+
+# If frontend build exists, serve it from the same FastAPI app (single-port deploy).
+FRONTEND_BUILD_DIR = os.path.join(os.path.dirname(__file__), "..", "ZoneAnalyzer2", "build")
+FRONTEND_BUILD_DIR = os.path.abspath(FRONTEND_BUILD_DIR)
+if os.path.isdir(FRONTEND_BUILD_DIR):
+    app.mount("/assets", StaticFiles(directory=os.path.join(FRONTEND_BUILD_DIR, "assets")), name="frontend-assets")
+
+    @app.get("/{full_path:path}", include_in_schema=False)
+    def serve_spa(full_path: str):
+        index_path = os.path.join(FRONTEND_BUILD_DIR, "index.html")
+        if os.path.exists(index_path):
+            return FileResponse(index_path)
+        raise HTTPException(status_code=404, detail="Frontend build not found")
 
 @app.get("/microbes", response_model=List[schemas.Microbe])
 def read_microbes(skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):

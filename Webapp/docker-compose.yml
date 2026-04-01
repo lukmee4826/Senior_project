@@ -1,0 +1,23 @@
+version: '3.8'
+
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend/uploaded_images:/app/uploaded_images
+      - ./backend/senior_project.db:/app/senior_project.db
+    environment:
+      - DATABASE_URL=sqlite:///./senior_project.db
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "6015:80"
+    depends_on:
+      - backend
