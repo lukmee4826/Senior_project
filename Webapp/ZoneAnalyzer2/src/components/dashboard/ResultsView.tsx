@@ -80,13 +80,10 @@ export function ResultsView({
   }, [analysisResults]);
 
   useEffect(() => {
-    // Fetch antibiotics - filtered by current plate's microbe if editing
-    const fetchAntibiotics = async (microbeName?: string) => {
+    // Fetch antibiotics (unfiltered) so users can pick any drug for testing.
+    const fetchAntibiotics = async () => {
       try {
-        const url = microbeName
-          ? `/antibiotics?microbe_name=${encodeURIComponent(microbeName)}`
-          : '/antibiotics?limit=500';
-        const response = await fetchWithAuth(url);
+        const response = await fetchWithAuth('/antibiotics?limit=500');
         if (response.ok) {
           const data = await response.json();
           setAntibiotics(data);
@@ -96,9 +93,7 @@ export function ResultsView({
       }
     };
 
-    // Get microbe name from current plate
-    const currentMicrobeName = localResults[selectedImage]?.plate?.strain_code;
-    fetchAntibiotics(currentMicrobeName || undefined);
+    fetchAntibiotics();
 
     const fetchMicrobes = async () => {
       try {
@@ -195,7 +190,9 @@ export function ResultsView({
       });
 
       if (response.ok) {
-        const updatedResult = await response.json();
+        const payload = await response.json();
+        const updatedResult = payload?.result ?? payload;
+        const newResultImageUrl = payload?.result_image_url;
 
         // Update local state
         setLocalResults(prev => {
@@ -233,6 +230,9 @@ export function ResultsView({
               }
 
               newResults[i].plate.results[resultIdx] = completeResult;
+              if (newResultImageUrl) {
+                newResults[i].plate.result_image_url = newResultImageUrl;
+              }
               break;
             }
           }
@@ -402,7 +402,7 @@ export function ResultsView({
                                     {antibiotics.map((ab) => (
                                       <CommandItem
                                         key={ab.antibiotic_id}
-                                        value={ab.name}
+                                        value={`${ab.name ?? ""} ${ab.abbreviation ?? ""} ${ab.concentration_ug ?? ""}`.trim()}
                                         onSelect={() => {
                                           handleUpdateResult(result.result_id, "antibiotic_id", ab.antibiotic_id);
                                           setOpenPopovers(prev => ({ ...prev, [result.result_id]: false }));
@@ -411,7 +411,13 @@ export function ResultsView({
                                         <Check
                                           className={`mr-2 h-4 w-4 ${result.antibiotic?.antibiotic_id === ab.antibiotic_id ? "opacity-100" : "opacity-0"}`}
                                         />
-                                        {ab.name}
+                                        <span className="truncate">{ab.name}</span>
+                                        {(ab.abbreviation || ab.concentration_ug != null) && (
+                                          <span className="ml-2 text-xs opacity-60">
+                                            {ab.abbreviation ? ab.abbreviation : ""}
+                                            {ab.concentration_ug != null ? ` ${ab.concentration_ug}µg` : ""}
+                                          </span>
+                                        )}
                                       </CommandItem>
                                     ))}
                                   </CommandGroup>

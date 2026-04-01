@@ -108,6 +108,11 @@ class PlateResultBase(BaseModel):
     diameter_mm: float
     clsi_interpretation: Optional[str] = None
     eucast_interpretation: Optional[str] = None
+    bbox_x1: Optional[float] = None
+    bbox_y1: Optional[float] = None
+    bbox_x2: Optional[float] = None
+    bbox_y2: Optional[float] = None
+    disk_used_idx: Optional[int] = None
 
 class PlateResult(PlateResultBase):
     result_id: str
@@ -118,6 +123,10 @@ class PlateResult(PlateResultBase):
 class PlateResultUpdate(BaseModel):
     antibiotic_id: Optional[int] = None
     diameter_mm: Optional[float] = None
+
+class PlateResultUpdateResponse(BaseModel):
+    result: PlateResult
+    result_image_url: Optional[str] = None
 
 class PlateBase(BaseModel):
     microbe_id: int

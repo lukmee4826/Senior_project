@@ -126,6 +126,12 @@ class PlateResult(Base):
     diameter_mm = Column(Float, nullable=False)
     clsi_interpretation = Column(String, nullable=True)
     eucast_interpretation = Column(String, nullable=True)
+    # Saved from YOLO detection for redraw after history edits (nullable for legacy rows).
+    bbox_x1 = Column(Float, nullable=True)
+    bbox_y1 = Column(Float, nullable=True)
+    bbox_x2 = Column(Float, nullable=True)
+    bbox_y2 = Column(Float, nullable=True)
+    disk_used_idx = Column(Integer, nullable=True)
 
     plate = relationship("Plate", back_populates="results")
     antibiotic = relationship("Antibiotic", back_populates="plate_results")

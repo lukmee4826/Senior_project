@@ -180,6 +180,8 @@ def analyze_image(
         # Get medicine name from OCR detection
         medicine_name = res.get('medicine_name', 'Unknown')
         diameter = res.get('diameter_mm', 0.0)
+        bbox = res.get('bbox', None)
+        disk_used_idx = res.get('disk_used_idx', None)
         
         # Try to find antibiotic in database by medicine name
         ab = crud.get_best_antibiotic_match(db, query=medicine_name, microbe_id=microbe.microbe_id)
@@ -242,7 +244,12 @@ def analyze_image(
             antibiotic_id=ab.antibiotic_id,
             diameter_mm=diameter,
             clsi_interpretation=clsi_interp,
-            eucast_interpretation=eucast_interp
+            eucast_interpretation=eucast_interp,
+            bbox_x1=float(bbox[0]) if bbox and len(bbox) >= 4 else None,
+            bbox_y1=float(bbox[1]) if bbox and len(bbox) >= 4 else None,
+            bbox_x2=float(bbox[2]) if bbox and len(bbox) >= 4 else None,
+            bbox_y2=float(bbox[3]) if bbox and len(bbox) >= 4 else None,
+            disk_used_idx=int(disk_used_idx) if disk_used_idx is not None else None,
         )
         crud.create_plate_result(db, result_data, plate.plate_id)
     
@@ -390,7 +397,7 @@ def delete_antibiotic(antibiotic_id: int, db: Session = Depends(get_db)):
         raise HTTPException(status_code=409, detail=str(e))
     return {"message": "Deleted"}
 
-@app.put("/results/{result_id}", response_model=schemas.PlateResult)
+@app.put("/results/{result_id}", response_model=schemas.PlateResultUpdateResponse)
 def update_result(result_id: str, result_update: schemas.PlateResultUpdate, db: Session = Depends(get_db)):
     # 1. Get existing result
     result = crud.get_plate_result(db, result_id)
@@ -423,7 +430,7 @@ def update_result(result_id: str, result_update: schemas.PlateResultUpdate, db: 
             eucast_interp = interpretation.calculate_interpretation(new_diameter, bp_eu)
     
     # 4. Save
-    updated_result = crud.update_plate_result(
+    crud.update_plate_result(
         db, 
         result_id, 
         antibiotic_id=new_ab_id, 
@@ -431,7 +438,43 @@ def update_result(result_id: str, result_update: schemas.PlateResultUpdate, db: 
         clsi=clsi_interp, 
         eucast=eucast_interp
     )
-    return updated_result
+
+    # Reload updated result with antibiotic relationship for frontend display
+    updated_result = db.query(models.PlateResult).options(
+        joinedload(models.PlateResult.antibiotic),
+        joinedload(models.PlateResult.plate),
+    ).filter(models.PlateResult.result_id == result_id).first()
+
+    # Redraw result image from original image using current plate results (if bbox exists)
+    plate = updated_result.plate if updated_result else None
+    new_result_image_url = None
+    if plate and plate.original_image_url:
+        plate_with_results = db.query(models.Plate).options(
+            joinedload(models.Plate.results).joinedload(models.PlateResult.antibiotic)
+        ).filter(models.Plate.plate_id == plate.plate_id).first()
+
+        detected_zones = []
+        if plate_with_results:
+            for r in plate_with_results.results:
+                if r.bbox_x1 is None or r.bbox_y1 is None or r.bbox_x2 is None or r.bbox_y2 is None:
+                    continue
+                detected_zones.append({
+                    "bbox": [float(r.bbox_x1), float(r.bbox_y1), float(r.bbox_x2), float(r.bbox_y2)],
+                    "medicine_name": (r.antibiotic.name if r.antibiotic else "Unknown"),
+                    "diameter_mm": float(r.diameter_mm or 0.0),
+                    "disk_used_idx": r.disk_used_idx if r.disk_used_idx is not None else -1,
+                    "ocr_confidence": 0.0,
+                    "yolo_confidence": 0.0,
+                })
+
+        if detected_zones:
+            new_result_image_url = draw_detections_on_image(plate.original_image_url, detected_zones, UPLOAD_DIR)
+            if new_result_image_url:
+                plate.result_image_url = new_result_image_url
+                db.commit()
+                db.refresh(plate)
+
+    return {"result": updated_result, "result_image_url": new_result_image_url}
 
 @app.delete("/batches/{batch_id}")
 def delete_batch(batch_id: str, db: Session = Depends(get_db)):

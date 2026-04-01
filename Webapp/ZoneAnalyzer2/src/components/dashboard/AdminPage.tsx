@@ -192,10 +192,19 @@ export function AdminPage() {
         <input type="number" value={val ?? ""} onChange={(e) => onChange(e.target.value === "" ? null : parseInt(e.target.value))} className={`${inputCls} w-16 text-center`} />
     );
 
-    const pagedMicrobes = microbes.slice(microbePage * MB_PAGE_SIZE, (microbePage + 1) * MB_PAGE_SIZE);
-    const totalMicrobePages = Math.max(1, Math.ceil(microbes.length / MB_PAGE_SIZE));
-    const pagedAntibiotics = antibiotics.slice(abPage * AB_PAGE_SIZE, (abPage + 1) * AB_PAGE_SIZE);
-    const totalAbPages = Math.max(1, Math.ceil(antibiotics.length / AB_PAGE_SIZE));
+    const [mbSearch, setMbSearch] = useState("");
+    const [abTableSearch, setAbTableSearch] = useState("");
+
+    const filteredMicrobes = microbes.filter(m => m.strain_name.toLowerCase().includes(mbSearch.toLowerCase()));
+    const pagedMicrobes = filteredMicrobes.slice(microbePage * MB_PAGE_SIZE, (microbePage + 1) * MB_PAGE_SIZE);
+    const totalMicrobePages = Math.max(1, Math.ceil(filteredMicrobes.length / MB_PAGE_SIZE));
+
+    const filteredAntibiotics = antibiotics.filter(a => 
+        a.name.toLowerCase().includes(abTableSearch.toLowerCase()) || 
+        (a.abbreviation && a.abbreviation.toLowerCase().includes(abTableSearch.toLowerCase()))
+    );
+    const pagedAntibiotics = filteredAntibiotics.slice(abPage * AB_PAGE_SIZE, (abPage + 1) * AB_PAGE_SIZE);
+    const totalAbPages = Math.max(1, Math.ceil(filteredAntibiotics.length / AB_PAGE_SIZE));
     const totalBpPages = Math.max(1, Math.ceil(bpCount / BP_PAGE_SIZE));
 
     return (
@@ -214,10 +223,15 @@ export function AdminPage() {
             {/* ========== MICROBES ========== */}
             {tab === "microbes" && (
                 <Card className={cardCls}>
-                    <h2 className={`text-xl mb-4 ${isDark ? "text-gray-100" : "text-gray-900"}`}>รายการเชื้อ ({microbes.length})</h2>
-                    <div className="flex gap-2 mb-4">
-                        <Input placeholder="ชื่อเชื้อใหม่..." value={newMicrobeName} onChange={(e) => setNewMicrobeName(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addMicrobe()} className={isDark ? "bg-gray-800 border-gray-600 text-gray-100" : ""} />
-                        <Button onClick={addMicrobe} className="bg-blue-600 hover:bg-blue-700 text-white shrink-0"><Plus className="w-4 h-4 mr-1" /> เพิ่ม</Button>
+                    <h2 className={`text-xl mb-4 ${isDark ? "text-gray-100" : "text-gray-900"}`}>รายการเชื้อ ({filteredMicrobes.length})</h2>
+                    <div className="flex flex-col sm:flex-row gap-4 mb-4 justify-between border-b pb-4 border-gray-200 dark:border-gray-800">
+                        <div className="flex gap-2 w-full sm:max-w-xs">
+                            <Input placeholder="🔍 ค้นหาเชื้อ..." value={mbSearch} onChange={(e) => { setMbSearch(e.target.value); setMicrobePage(0); }} className={isDark ? "bg-gray-800 border-gray-600 text-gray-100" : ""} />
+                        </div>
+                        <div className="flex gap-2 w-full sm:max-w-md">
+                            <Input placeholder="ชื่อเชื้อใหม่..." value={newMicrobeName} onChange={(e) => setNewMicrobeName(e.target.value)} onKeyDown={(e) => e.key === "Enter" && addMicrobe()} className={isDark ? "bg-gray-800 border-gray-600 text-gray-100" : ""} />
+                            <Button onClick={addMicrobe} className="bg-blue-600 hover:bg-blue-700 text-white shrink-0"><Plus className="w-4 h-4 mr-1" /> เพิ่ม</Button>
+                        </div>
                     </div>
                     {microbeError && <p className="text-red-400 text-sm mb-3">{microbeError}</p>}
                     <div className={tableWrap}>
@@ -256,7 +270,7 @@ export function AdminPage() {
                     </div>
                     <div className="flex items-center gap-3 mt-3">
                         <Button size="sm" variant="outline" onClick={() => setMicrobePage(p => Math.max(0, p - 1))} disabled={microbePage === 0}>← ก่อนหน้า</Button>
-                        <span className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>หน้า {microbePage + 1} / {totalMicrobePages} ({microbes.length} รายการ)</span>
+                        <span className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>หน้า {microbePage + 1} / {totalMicrobePages} ({filteredMicrobes.length} รายการ)</span>
                         <Button size="sm" variant="outline" onClick={() => setMicrobePage(p => p + 1)} disabled={microbePage + 1 >= totalMicrobePages}>ถัดไป →</Button>
                     </div>
                 </Card>
@@ -265,12 +279,17 @@ export function AdminPage() {
             {/* ========== ANTIBIOTICS ========== */}
             {tab === "antibiotics" && (
                 <Card className={cardCls}>
-                    <h2 className={`text-xl mb-4 ${isDark ? "text-gray-100" : "text-gray-900"}`}>รายการยา ({antibiotics.length})</h2>
-                    <div className="flex flex-wrap gap-2 mb-4">
-                        <Input placeholder="ชื่อยา..." value={newAb.name} onChange={(e) => setNewAb({ ...newAb, name: e.target.value })} className={`flex-1 min-w-[180px] ${isDark ? "bg-gray-800 border-gray-600 text-gray-100" : ""}`} />
-                        <Input placeholder="ชื่อย่อ" value={newAb.abbreviation} onChange={(e) => setNewAb({ ...newAb, abbreviation: e.target.value })} className={`w-28 ${isDark ? "bg-gray-800 border-gray-600 text-gray-100" : ""}`} />
-                        <Input type="number" placeholder="µg" value={newAb.concentration_ug} onChange={(e) => setNewAb({ ...newAb, concentration_ug: e.target.value })} className={`w-20 ${isDark ? "bg-gray-800 border-gray-600 text-gray-100" : ""}`} />
-                        <Button onClick={addAntibiotic} className="bg-blue-600 hover:bg-blue-700 text-white shrink-0"><Plus className="w-4 h-4 mr-1" /> เพิ่ม</Button>
+                    <h2 className={`text-xl mb-4 ${isDark ? "text-gray-100" : "text-gray-900"}`}>รายการยา ({filteredAntibiotics.length})</h2>
+                    <div className="flex flex-col gap-4 mb-4 border-b pb-4 border-gray-200 dark:border-gray-800">
+                        <div className="flex gap-2 w-full sm:max-w-xs">
+                            <Input placeholder="🔍 ค้นหายา (ชื่อ/ตัวย่อ)..." value={abTableSearch} onChange={(e) => { setAbTableSearch(e.target.value); setAbPage(0); }} className={isDark ? "bg-gray-800 border-gray-600 text-gray-100" : ""} />
+                        </div>
+                        <div className="flex flex-wrap gap-2">
+                            <Input placeholder="ชื่อยา..." value={newAb.name} onChange={(e) => setNewAb({ ...newAb, name: e.target.value })} className={`flex-1 min-w-[180px] ${isDark ? "bg-gray-800 border-gray-600 text-gray-100" : ""}`} />
+                            <Input placeholder="ชื่อย่อ" value={newAb.abbreviation} onChange={(e) => setNewAb({ ...newAb, abbreviation: e.target.value })} className={`w-28 ${isDark ? "bg-gray-800 border-gray-600 text-gray-100" : ""}`} />
+                            <Input type="number" placeholder="µg" value={newAb.concentration_ug} onChange={(e) => setNewAb({ ...newAb, concentration_ug: e.target.value })} className={`w-20 ${isDark ? "bg-gray-800 border-gray-600 text-gray-100" : ""}`} />
+                            <Button onClick={addAntibiotic} className="bg-blue-600 hover:bg-blue-700 text-white shrink-0"><Plus className="w-4 h-4 mr-1" /> เพิ่ม</Button>
+                        </div>
                     </div>
                     <div className={tableWrap}>
                         <div className={tableScroll}>
@@ -306,7 +325,7 @@ export function AdminPage() {
                     </div>
                     <div className="flex items-center gap-3 mt-3">
                         <Button size="sm" variant="outline" onClick={() => setAbPage(p => Math.max(0, p - 1))} disabled={abPage === 0}>← ก่อนหน้า</Button>
-                        <span className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>หน้า {abPage + 1} / {totalAbPages} ({antibiotics.length} รายการ)</span>
+                        <span className={`text-sm ${isDark ? "text-gray-400" : "text-gray-600"}`}>หน้า {abPage + 1} / {totalAbPages} ({filteredAntibiotics.length} รายการ)</span>
                         <Button size="sm" variant="outline" onClick={() => setAbPage(p => p + 1)} disabled={abPage + 1 >= totalAbPages}>ถัดไป →</Button>
                     </div>
                 </Card>

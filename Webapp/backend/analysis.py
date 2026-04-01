@@ -52,30 +52,44 @@ def adaptive_threshold_clahe(img):
     enhanced = clahe.apply(img)
     return enhanced
 
-def combine_preprocessing(img, white=200):
-    """Combine histogram equalization and thresholding."""
-    img1 = histogram_equalization(img)
-    img2 = global_threshold(img1, white)
-    return img2
+def sharpening(img):
+    kernel = np.array([[-0.5,-0.5,-0.5], 
+                       [-0.5,5,-0.5],
+                       [-0.5,-0.5,-0.5]])
+    sharpen = cv2.filter2D(img, -1, kernel)
+    sharpen = np.clip(sharpen, 0, 255).astype(np.uint8)
 
-def combine_preprocessing_improved(img):
-    """IMPROVED: Better preprocessing that preserves text while enhancing contrast.
-    Uses CLAHE instead of aggressive white balance thresholding."""
-    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY) if len(img.shape) == 3 else img
-    
-    # Apply CLAHE for gentle contrast enhancement
+    return sharpen
+
+def denoise_otsu(gray):
+    # 1. CLAHE normalize
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
-    enhanced = clahe.apply(gray)
-    
-    # Use Otsu's automatic thresholding instead of hard white=200 threshold
-    _, thresh = cv2.threshold(enhanced, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-    
-    # Apply small morphological operations to clean noise without destroying text
+    gray_clahe = clahe.apply(gray)
+
+    # 2. Sharpen
+    sharpened = sharpening(gray_clahe)
+
+    # 3. Blur
+    blurred = cv2.GaussianBlur(sharpened, (3, 3), 0)
+
+    # 4. Otsu
+    _, processed = cv2.threshold(blurred, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
+
+    # 5. Measure stroke width -> dilate/erode
+    inverted = cv2.bitwise_not(processed)
+    text_pixel_ratio = np.sum(inverted == 255) / inverted.size
+
     kernel = cv2.getStructuringElement(cv2.MORPH_RECT, (2, 2))
-    cleaned = cv2.morphologyEx(thresh, cv2.MORPH_CLOSE, kernel, iterations=1)
-    
-    print(f"[DEBUG PREPROCESS] Applied CLAHE + Otsu thresholding + morphology")
-    return cleaned
+
+    if text_pixel_ratio < 0.15:
+        processed_fix = cv2.dilate(inverted, kernel, iterations=1)
+    elif text_pixel_ratio > 0.35:
+        processed_fix = cv2.erode(inverted, kernel, iterations=1)
+    else:
+        processed_fix = inverted
+
+    result = cv2.bitwise_not(processed_fix)
+    return result
 
 def crop_and_pad_640(img, box, target=640):
     """Crop ROI from image and pad to target size (640x640)."""
@@ -157,10 +171,10 @@ def adjust_confidence_with_regex(text, conf, penalty=0.15):
     
     return 0.0  # No valid text
 
-def extract_medicine_ocr(crop_640):
+def extract_medicine_ocr(image_gray):
     """
     Extract medicine name from cropped disk image using OCR with rotation.
-    Uses improved preprocessing and multiple detection strategies.
+    Expects image_gray to already be preprocessed (e.g., with denoise_otsu).
     Returns (medicine_name, confidence, angle_used)
     """
     if ocr_reader is None:
@@ -171,71 +185,31 @@ def extract_medicine_ocr(crop_640):
     best_conf = 0.0
     best_angle = 0
     
-    # Try different angles
-    angles = list(range(-90, 91, 15))
-    print(f"[DEBUG OCR] Starting OCR with {len(angles)} angles (improved multi-strategy)")
+    angles = list(range(-180, 180, 15))
+    print(f"[DEBUG OCR] Starting OCR with {len(angles)} angles (Optimized Pipeline)")
     
     for angle in angles:
-        rotated = rotate_image(crop_640, angle)
+        rotated = rotate_image(image_gray, angle)
         
         try:
-            # Strategy 1: Raw image OCR (may catch subtle text)
-            result = ocr_reader.readtext(rotated, detail=1, workers=1)
+            result = ocr_reader.readtext(
+                rotated,
+                allowlist='ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789.',
+                detail=1
+            )
             
-            texts = []
-            confs = []
-            for bbox, text, conf in result:
-                cleaned_text = text.strip()
-                if cleaned_text and len(cleaned_text) > 0:
-                    texts.append(cleaned_text)
-                    confs.append(conf)
+            texts = [t for _, t, _ in result]
+            confs = [c for _, _, c in result]
             
-            display_text_raw = " ".join(texts) if texts else ""
-            conf_raw = np.mean(confs) if confs else 0.0
-            
-            # Strategy 2: Try with improved preprocessing (CLAHE + Otsu)
-            gray_rot = cv2.cvtColor(rotated, cv2.COLOR_BGR2GRAY) if len(rotated.shape) == 3 else rotated
-            
-            # Apply CLAHE directly on grayscale
-            clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
-            enhanced = clahe.apply(gray_rot)
-            _, preprocessed = cv2.threshold(enhanced, 0, 255, cv2.THRESH_BINARY + cv2.THRESH_OTSU)
-            
-            result_prep = ocr_reader.readtext(preprocessed, detail=1, workers=1)
-            
-            texts_prep = []
-            confs_prep = []
-            for bbox, text, conf in result_prep:
-                cleaned_text = text.strip()
-                if cleaned_text and len(cleaned_text) > 0:
-                    texts_prep.append(cleaned_text)
-                    confs_prep.append(conf)
-            
-            display_text_prep = " ".join(texts_prep) if texts_prep else ""
-            conf_prep = np.mean(confs_prep) if confs_prep else 0.0
-            
-            # Choose best between raw and preprocessed
-            if conf_prep > conf_raw and display_text_prep:
-                display_text = display_text_prep
-                avg_conf = conf_prep
-                strategy = "preprocessed"
-            elif display_text_raw:
-                display_text = display_text_raw
-                avg_conf = conf_raw
-                strategy = "raw"
-            else:
-                display_text = ""
-                avg_conf = 0.0
-                strategy = "empty"
+            display_text = " ".join(texts) if texts else ""
+            avg_conf = np.mean(confs) if confs else 0.0
             
             # Adjust confidence based on pattern matching
             adj_conf = adjust_confidence_with_regex(display_text, avg_conf, penalty=0.10)
             
             if display_text:
-                print(f"[DEBUG OCR] Angle {angle}°: text='{display_text}' conf={avg_conf:.3f} "
-                      f"adj_conf={adj_conf:.3f} strategy={strategy}")
+                print(f"[DEBUG OCR] Angle {angle}°: text='{display_text}' conf={avg_conf:.3f} adj_conf={adj_conf:.3f}")
             
-            # Keep the best result
             if adj_conf > best_conf:
                 best_conf = adj_conf
                 best_text = display_text
@@ -245,11 +219,10 @@ def extract_medicine_ocr(crop_640):
             print(f"[DEBUG OCR] Error at angle {angle}: {e}")
             continue
     
-    # IMPROVED: Reduced threshold and accept weaker but valid text
+    # Fallback checking
     if best_conf < 0.10 and best_text.strip() != "Unknown":
-        # Even weak text is better than Unknown if it looks valid
-        pass
-    elif best_conf < 0.10 or best_text.strip() == "Unknown":
+        pass # accept weak but valid
+    elif best_conf < 0.10 or best_text.strip() == "":
         best_text = "Unknown"
         best_conf = 0.0
     
@@ -421,7 +394,7 @@ def analyze_disk_image(image_path: str):
                     print(f"[DEBUG] Gray crop shape: {gray_crop.shape}")
                     
                     # Apply preprocessing
-                    processed_crop = combine_preprocessing(gray_crop, white=200)
+                    processed_crop = denoise_otsu(gray_crop)
                     print(f"[DEBUG] After preprocessing - min: {processed_crop.min()}, max: {processed_crop.max()}")
                     
                     # Extract medicine name via OCR
@@ -464,7 +437,7 @@ def analyze_disk_image(image_path: str):
                 else:
                     gray_crop = crop_640
 
-                processed_crop = combine_preprocessing(gray_crop, white=200)
+                processed_crop = denoise_otsu(gray_crop)
                 medicine_name, ocr_confidence, _ = extract_medicine_ocr(processed_crop)
                 if medicine_name == "Unknown" or ocr_confidence < 0.3:
                     medicine_name = f"Disk_{disk_idx + 1}"
