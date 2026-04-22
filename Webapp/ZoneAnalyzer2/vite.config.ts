@@ -56,5 +56,30 @@
     server: {
       port: 3000,
       open: true,
+      proxy: {
+        // Proxy API calls to FastAPI backend during local dev
+        '/api': {
+          target: 'http://localhost:6014',
+          changeOrigin: true,
+          rewrite: (path) => path.replace(/^\/api/, ''),
+        },
+        // Proxy uploaded images to FastAPI backend during local dev
+        '/uploaded_images': {
+          target: 'http://localhost:6014',
+          changeOrigin: true,
+        },
+        // Proxy all other backend endpoints (login, register, microbes, etc.)
+        '/login': { target: 'http://localhost:6014', changeOrigin: true },
+        '/register': { target: 'http://localhost:6014', changeOrigin: true },
+        '/microbes': { target: 'http://localhost:6014', changeOrigin: true },
+        '/antibiotics': { target: 'http://localhost:6014', changeOrigin: true },
+        '/breakpoints': { target: 'http://localhost:6014', changeOrigin: true },
+        '/standards': { target: 'http://localhost:6014', changeOrigin: true },
+        '/batches': { target: 'http://localhost:6014', changeOrigin: true },
+        '/analyze': { target: 'http://localhost:6014', changeOrigin: true },
+        '/results': { target: 'http://localhost:6014', changeOrigin: true },
+        '/plates': { target: 'http://localhost:6014', changeOrigin: true },
+        '/users': { target: 'http://localhost:6014', changeOrigin: true },
+      },
     },
   });
