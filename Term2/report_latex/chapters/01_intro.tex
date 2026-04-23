@@ -1,0 +1,227 @@
+% ── Chapter 1: Introduction ───────────────────────────────────
+\chapter{Introduction}
+
+\section{Background and Problem Statement}
+
+Antimicrobial resistance (AMR) has emerged as one of the most pressing and complex threats to global
+public health in the twenty-first century. When bacteria, viruses, fungi, or parasites evolve mechanisms
+to withstand the drugs designed to eliminate them, standard treatments fail and infections persist,
+spread, and increasingly result in death. The World Health Organization (WHO) has classified AMR as a
+critical global priority, estimating that drug-resistant infections directly caused approximately
+1.27 million deaths in 2019 alone, with indirect contributions to nearly 5 million additional
+fatalities worldwide \cite{who_amr2022}. Without coordinated action, it has been projected that
+AMR could claim up to 10 million lives per year by 2050, surpassing cancer as a leading cause of
+mortality globally. Beyond the human toll, AMR imposes staggering economic costs through extended
+hospital stays, more expensive second- and third-line therapies, and reduced workforce productivity.
+
+At the core of combating AMR lies the practice of Antimicrobial Susceptibility Testing (AST).
+Before initiating antibiotic therapy, clinicians must determine which drugs remain effective against
+the specific bacterial pathogen infecting a patient. Prescribing an antibiotic to which the organism
+is already resistant not only fails the patient but also selects for further resistance in the
+population, perpetuating the crisis. Accurate and timely AST is therefore not merely a diagnostic
+procedure---it is a public health intervention. Delays in receiving susceptibility results, which
+can stretch from 24 to 72 hours using culture-based methods, force clinicians to begin empirical
+broad-spectrum therapy, a practice that itself accelerates resistance development.
+
+The Kirby-Bauer disk diffusion method, first systematically described and validated in the 1960s,
+remains the most widely adopted technique for AST in clinical and reference microbiology laboratories
+worldwide \cite{asm2009kirby,clsi2025}. Its enduring popularity stems from its simplicity, low cost, and
+reliability when performed correctly. In this method, a Mueller-Hinton agar plate is inoculated with
+a standardized suspension of the target bacterium (typically adjusted to a 0.5 McFarland turbidity
+standard). Commercially manufactured paper disks, each impregnated with a precise mass of a specific
+antibiotic, are placed on the inoculated agar surface at defined inter-disk distances to prevent
+zone overlap. After an overnight incubation period at 35--37$^\circ$C, the antibiotic diffuses
+radially outward from each disk, establishing a concentration gradient in the agar. Where the local
+antibiotic concentration exceeds the minimum inhibitory concentration (MIC) of the bacterium,
+bacterial growth is suppressed, resulting in a visible circular clearing called the zone of
+inhibition (ZOI). Where the concentration falls below the MIC, bacterial colonies grow normally.
+
+\begin{figure}[H]
+  \centering
+  \safeimg[width=0.85\textwidth]{figures/kirby_bauer_example.png}{Example of Kirby-Bauer disk diffusion plate showing zones of inhibition}
+  \caption{Representative Kirby-Bauer disk diffusion plate illustrating zones of inhibition (ZOI)
+    around antibiotic-impregnated disks. The diameter of each clearing zone is measured to
+    determine antibiotic susceptibility.}
+  \label{fig:kirby_bauer}
+\end{figure}
+
+The diameter of each ZOI is then measured and compared against published interpretive breakpoints
+to classify the tested organism as Susceptible (S), Intermediate (I), or Resistant (R). These
+breakpoints are rigorously maintained and updated by two major international bodies: the
+Clinical and Laboratory Standards Institute (CLSI) in the United States, and the European Committee
+on Antimicrobial Susceptibility Testing (EUCAST) in Europe \cite{eucast2023}. CLSI publishes
+the M02 standard governing disk diffusion testing procedures, while EUCAST publishes annually
+revised breakpoint tables derived from pharmacokinetic/pharmacodynamic (PK/PD) modeling,
+epidemiological cutoff values (ECOFFs), and clinical outcome data \cite{giske2022}. Both
+organizations provide species- and drug-specific diameter thresholds that must be applied
+correctly to yield clinically meaningful results.
+
+Despite the apparent simplicity of measuring a circle diameter, manual ZOI measurement is
+considerably error-prone in practice. Laboratory technicians use rulers, Vernier calipers, or
+specialized template devices to measure each zone, and inter-observer variability is a recognized
+and persistent challenge in the field \cite{humphries2018}. Factors such as partially overlapping
+zones between adjacent disks, heterogeneous or ``swarming'' growth within the zone boundary,
+uneven agar surface, irregular plate inoculation, sub-optimal incubation, and inconsistent
+photographic or visual angle all contribute to measurement variability. Even a single-millimeter
+discrepancy can be clinically decisive: for example, CLSI 2025 defines a ZOI diameter of
+18\,mm or above for \textit{Staphylococcus epidermidis} tested against oxacillin (1\,$\mu$g) as
+Susceptible, while 17\,mm or below is classified as Resistant. With no intermediate category
+for this drug-organism combination, every millimeter matters. Furthermore, laboratories processing
+high case volumes require technicians to measure dozens of zones per shift, introducing fatigue
+as a compounding source of error.
+
+Existing automated AST platforms, such as the bioM\'{e}rieux VITEK 2, the BD Phoenix, and the
+Microscan WalkAway systems, resolve these measurement challenges through dedicated hardware and
+proprietary software. These systems offer rapid, reproducible results and are widely used in
+large hospital laboratories. However, they require substantial capital investment---often tens
+of thousands of US dollars per unit---and ongoing reagent and maintenance costs that are
+prohibitive for smaller clinics, district hospitals, and laboratories in low- and middle-income
+countries (LMICs). These resource-constrained settings are often those most severely burdened
+by AMR, creating a stark disparity between the laboratories that most need accurate AST and
+those that can afford automated solutions.
+
+There is therefore a compelling case for developing low-cost, AI-driven software tools capable
+of analyzing standard photographs of Kirby-Bauer AST plates. Recent research has demonstrated
+that machine learning and artificial intelligence can play a significant role in predicting and
+combating antimicrobial resistance \cite{bilal2025}, and advancements in AI-driven drug
+sensitivity testing are rapidly expanding the practical scope of automated AST \cite{liao2025}.
+Such tools could be deployed on commodity hardware---a laptop or even a smartphone---and would
+require no specialized instruments beyond the agar plate itself, potentially extending the reach
+of accurate AST to settings currently dependent on manual reading, including those guided by
+national laboratory standards such as those maintained by the Department of Medical Sciences,
+NIH Thailand \cite{dmsc_nih}. The present project addresses this need by developing, evaluating,
+and deploying an AI-based system for automated ZOI detection and measurement.
+
+\section{Motivation}
+
+Recent advances in deep learning and computer vision have produced models that rival or exceed
+human performance on a wide range of image recognition and object detection tasks. Of particular
+relevance to AST image analysis is the progress in detecting and localizing circular or
+elliptical structures in complex, cluttered image backgrounds. Unlike natural-image datasets where
+objects vary enormously in shape, AST plates present a constrained visual domain: circular zones
+on a textured agar background, with known-size reference objects (antibiotic disks) present in
+every image. This domain structure is exploited by the present project's design choices.
+
+The motivation for this project arises from two parallel observations. First, deep learning-based
+object detection models---specifically two-stage detectors such as Faster R-CNN and one-stage
+detectors such as YOLOv11---have demonstrated the capability to learn to identify zones of
+inhibition from labeled training data, even when zones partially overlap or display atypical
+morphology. Second, a comprehensive software solution for AST reading must not only detect zones
+but also correctly associate each zone with its corresponding antibiotic disk. Without knowing
+which antibiotic produced which zone, the diameter measurements are clinically meaningless.
+This association problem requires reading the alphanumeric label printed on each antibiotic disk---a
+task that falls within the domain of optical character recognition (OCR).
+
+The combination of an object detection backbone for ZOI localization, an OCR engine for antibiotic
+label reading, and a structured breakpoint database for clinical classification forms the conceptual
+foundation of the system developed here. Each component presents its own technical challenges.
+Object detection must cope with image noise, variable lighting, and zone overlap. OCR must read
+small, low-contrast text on curved disk surfaces, potentially photographed at arbitrary orientations.
+The calibration subsystem must convert pixel-scale measurements to physical millimeters using
+the known physical dimensions of the antibiotic disk as an internal reference.
+
+A further motivation is the opportunity for direct, rigorous comparison between classical
+image-processing approaches and modern deep learning methods on the same dataset and evaluation
+protocol. The Hough Circle Transform, a well-established technique for circular structure detection,
+provides a principled baseline against which the deep learning models can be assessed. Such a
+comparison provides empirical evidence regarding the practical utility of deep learning for this
+specific task, beyond what is available from general-purpose benchmarks.
+
+\section{Objectives}
+
+This project has four primary objectives:
+\begin{enumerate}
+  \item To study and implement the interpretation of Kirby-Bauer disk diffusion results
+        according to CLSI 2025 \cite{clsi2025} and EUCAST 2023 \cite{eucast2023} standards,
+        ensuring that the system's susceptibility classifications are clinically grounded.
+  \item To develop and train AI models---specifically Faster R-CNN and YOLOv11n---capable of
+        detecting zones of inhibition and measuring their diameters from AST plate photographs
+        with mean absolute error (MAE) at or below the clinically acceptable threshold of 3\,mm
+        \cite{humphries2018}.
+  \item To rigorously compare the accuracy, speed, and robustness of three detection approaches:
+        Faster R-CNN (two-stage deep learning), YOLOv11n (one-stage deep learning), and Hough
+        Circle Transform (classical image processing baseline), providing a quantitative basis
+        for selecting the best-performing model for deployment.
+  \item To deploy the system as a functional, user-facing web application suitable for practical
+        use in clinical laboratory settings, integrating the detection model with the OCR pipeline
+        and breakpoint classification database into a coherent, accessible tool.
+\end{enumerate}
+
+\section{Project Scope}
+
+The scope of this project is defined and bounded as follows:
+
+\begin{itemize}
+  \item \textbf{Input data:} The system accepts photographic images of Mueller-Hinton agar plates
+        used in standard Kirby-Bauer AST experiments. Images are expected to be captured from a
+        top-down perspective, with consistent lighting and a fixed camera-to-plate distance to
+        maintain scale consistency. Images may originate from laboratory cameras, clinical
+        microscopy cameras, or standard smartphone cameras.
+
+  \item \textbf{Detection models:} The system trains, evaluates, and compares three detection
+        approaches: Faster R-CNN with a ResNet-50 feature extraction backbone, YOLOv11n
+        (Ultralytics nano variant), and Hough Circle Transform implemented via OpenCV. Each
+        model is evaluated on the same held-out test set under identical conditions.
+
+  \item \textbf{Evaluation criteria:} The primary accuracy metric is mean absolute error (MAE)
+        in millimeters between system-predicted ZOI diameters and ground-truth diameters measured
+        by a trained microbiologist. Secondary metrics include inference speed (frames per second)
+        and detection recall. The clinically accepted MAE target is below 3\,mm.
+
+  \item \textbf{Calibration:} Pixel-to-millimeter conversion is performed using the antibiotic
+        disk itself as an in-image reference, since the physical diameter of a standard antibiotic
+        disk is precisely defined as 6\,mm by CLSI specifications. No external calibration target
+        or ruler is required in the field of view.
+
+  \item \textbf{Web application:} The final web application allows users to upload an image from
+        file or capture one in real time via a connected camera. The system returns a dashboard
+        displaying detected zones, assigned antibiotic labels (from OCR), measured diameters, and
+        the final S/I/R classification for each antibiotic-disk pair based on the selected
+        CLSI or EUCAST standard. Historical results are stored for audit and review.
+
+  \item \textbf{Out of scope:} The system does not perform bacterial identification or speciation;
+        the user must specify the organism being tested (e.g., \textit{Staphylococcus aureus},
+        \textit{Escherichia coli}) for the correct breakpoint to be applied. The system does not
+        support broth microdilution, E-test, or other AST formats. Results from this software
+        tool are intended to assist, not replace, a qualified microbiologist's judgment.
+\end{itemize}
+
+\section{Expected Outcomes}
+
+The expected tangible outputs of this project are as follows:
+
+\begin{enumerate}
+  \item \textbf{AI detection pipeline:} An end-to-end automated pipeline capable of detecting and
+        measuring ZOI diameters from AST plate images. The best-performing model is expected to
+        achieve an MAE below 3\,mm on the held-out test set, consistent with the clinical
+        acceptability criterion established by Humphries et al.\ \cite{humphries2018}.
+
+  \item \textbf{Comparative model analysis:} A rigorous, quantitative comparison of Faster R-CNN,
+        YOLOv11n, and Hough Circle Transform on the same dataset, documenting the trade-offs
+        between detection accuracy, inference speed, and implementation complexity for the AST
+        domain. This analysis is intended to inform future practitioners selecting detection
+        approaches for similar medical image analysis tasks.
+
+  \item \textbf{Deployed web application:} A fully operational web application integrating the
+        best-performing detection model, the EasyOCR-based antibiotic label recognition pipeline,
+        and the CLSI 2025/EUCAST 2023 breakpoint classification database, providing an end-to-end
+        workflow from image upload to susceptibility report.
+
+  \item \textbf{Annotated dataset:} A curated, annotated dataset of 287 real AST plate images,
+        expanded to 543 through augmentation and supplemented with 2,000 synthetic images,
+        providing a reusable resource for future research in AI-assisted AST.
+\end{enumerate}
+
+\section{Report Structure}
+
+The remainder of this report is organized as follows. Chapter~2 provides background theory and a
+review of related work, covering the Kirby-Bauer AST method and its clinical standards, the
+architecture and principles of the object detection models employed (Faster R-CNN, YOLOv11n, and
+Hough Circle Transform), the OCR engine used for antibiotic label recognition, key image
+preprocessing techniques, and a review of prior published work on automated AST image analysis.
+Chapter~3 details the methodology, encompassing the full dataset collection and preparation
+workflow, annotation procedures, model training protocols, calibration approach, OCR pipeline
+design, susceptibility classification logic, and overall system architecture. Chapter~4 presents
+experimental results including detection accuracy metrics, speed benchmarks, OCR performance, and
+an analysis of error sources and calibration refinement. Chapter~5 concludes the report with a
+summary of findings, limitations, and directions for future work.

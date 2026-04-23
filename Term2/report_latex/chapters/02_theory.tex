@@ -1,0 +1,376 @@
+% ── Chapter 2: Related Work and Background Theory ─────────────
+\chapter{Related Work and Background Theory}
+
+\section{Antibiotic Susceptibility Testing}
+
+The Kirby-Bauer disk diffusion assay was first systematically described and standardized by
+Bauer, Kirby, Sherris, and Turck in 1966 and has since become the most widely adopted technique
+for antimicrobial susceptibility testing in clinical microbiology laboratories worldwide
+\cite{asm2009kirby,clsi2025}. Its longevity is attributable to its low equipment cost, procedural simplicity,
+and adaptability to virtually any aerobically growing bacterial pathogen. The method depends on
+the principle of antibiotic diffusion through semi-solid agar: when an antibiotic-impregnated
+paper disk is placed on the surface of an inoculated agar plate, the drug molecules diffuse
+radially outward from the disk, establishing an exponentially decreasing concentration gradient
+as a function of distance. Where the local antibiotic concentration exceeds the minimum
+inhibitory concentration (MIC) of the test organism, bacterial proliferation is suppressed,
+producing a circular clearing zone on an otherwise confluent lawn of bacterial growth.
+
+The diameter of this zone of inhibition (ZOI) is inversely related to the MIC: organisms with
+high susceptibility (low MIC) exhibit large zones, while intrinsically or acquired-resistant
+organisms exhibit small or absent zones. This relationship between ZOI diameter and MIC is not
+linear but follows a mathematical relationship dependent on agar depth, disk potency, diffusion
+coefficient, and incubation duration---all of which are carefully controlled by standardized
+protocols. For clinical use, the continuous ZOI diameter measurement is converted to a categorical
+susceptibility interpretation (Susceptible, Intermediate, or Resistant) by applying published
+interpretive breakpoints that are themselves derived from clinical and microbiological data.
+This method has been applied to a broad range of clinically relevant bacteria, including
+\textit{Bacillus cereus} \cite{fitwi2020} and \textit{Bacillus subtilis} \cite{jiang2023},
+among many other aerobic pathogens encountered in routine laboratory practice.
+
+\subsection{Clinical Standards: CLSI and EUCAST}
+
+Interpretive breakpoints---the threshold diameters used to classify organisms as Susceptible (S),
+Intermediate (I), or Resistant (R)---are published and regularly updated by two principal
+international standard-setting organizations: the Clinical and Laboratory Standards Institute
+(CLSI) in the United States and the European Committee on Antimicrobial Susceptibility Testing
+(EUCAST) in Europe \cite{eucast2023}. Although both organizations pursue the same clinical goal,
+their methodological approaches to breakpoint derivation differ in important ways, and their
+published thresholds for the same drug-organism combination can differ by several millimeters.
+
+CLSI publishes its disk diffusion standards in the M02 document, currently in its fourteenth
+edition \cite{clsi2025}, while susceptibility testing performance standards are also defined
+in the M100 35th edition \cite{clsi_m100_2025}. Breakpoints are established by a
+multidisciplinary working group that integrates MIC distribution data from large collections
+of clinical isolates, PK/PD modeling of drug exposure at standard therapeutic doses, and
+clinical outcome data from randomized controlled trials. The Intermediate (I) category in
+the CLSI system traditionally indicated a buffer zone where technical uncertainty might lead
+to misclassification, but more recent editions have increasingly aligned with EUCAST's concept
+of the ``Susceptible, Increased Exposure'' (I) category, which indicates susceptibility when
+drug exposure is maximized through dosing optimization.
+
+EUCAST, which publishes its breakpoint tables annually with version numbers (the current version
+referenced in this project is 13.1 \cite{eucast2023}), derives its breakpoints from
+pharmacokinetic/pharmacodynamic (PK/PD) targets, epidemiological cutoff values (ECOFFs), and
+clinical outcome data \cite{giske2022}. ECOFFs represent the upper end of the MIC distribution
+for wild-type bacterial populations without acquired resistance mechanisms; any organism with an
+MIC above the ECOFF is defined as non-wild-type (NWT) and presumed to harbor resistance
+determinants. EUCAST breakpoints are frequently more aggressive in separating susceptible from
+resistant populations, reflecting a European pharmacological framework that differs from the
+United States standard \cite{kahlmeter2019}. Both sets of breakpoints are implemented in the
+database of the present system, allowing laboratories to select the applicable standard
+according to their regulatory and clinical context.
+
+\subsection{Clinical Significance of Measurement Precision}
+
+The clinical consequence of measurement error in disk diffusion is direct and potentially severe.
+Because breakpoints are expressed as integer millimeter thresholds, a single millimeter of
+measurement error can shift a classification from Susceptible to Resistant or vice versa. This
+misclassification has two dangerous modes: false susceptibility (classifying a resistant organism
+as susceptible) leads to treatment failure and potentially fatal outcome; false resistance
+(classifying a susceptible organism as resistant) leads to unnecessary escalation to
+second-line or third-line agents, contributing to resistance selection pressure and higher
+costs. Humphries et al.\ \cite{humphries2018} defined a mean absolute error of less than
+3\,mm as the boundary of clinical acceptability for automated AST measurement tools, and this
+threshold serves as the primary performance target for the present project.
+
+\section{Deep Learning for Object Detection}
+
+Object detection in computer vision is the task of simultaneously localizing and classifying
+one or more objects within a single image. Machine learning, broadly defined, encompasses
+supervised, unsupervised, and reinforcement learning paradigms \cite{alam2023ml,murphy2025rl},
+of which supervised deep learning has proven most effective for visual recognition tasks.
+Convolutional Neural Networks (CNNs) form the backbone of most modern object detectors
+\cite{purwono2023cnn}, and systematic reviews of medical deep learning applications have
+confirmed their suitability for a wide range of clinical image analysis tasks \cite{egger2022}.
+A detector must output, for each detected object, both a bounding box specifying the object's
+spatial extent and a class label identifying its category. This is fundamentally more complex
+than image classification, which assigns a single label to an entire image, because the number
+and location of objects are unknown a priori and must be inferred from the image content.
+Deep learning approaches have dominated object detection benchmarks since the publication of
+the Region-based CNN (R-CNN) family and YOLO models, progressively improving both accuracy
+and inference speed.
+
+Modern deep learning object detectors are generally categorized into two architectural families:
+two-stage detectors, which first generate region proposals and then classify each proposal; and
+one-stage (single-shot) detectors, which predict bounding boxes and class probabilities directly
+in a single forward pass over the full image. Each family offers distinct trade-offs between
+detection accuracy, computational cost, and inference latency.
+
+\subsection{Faster R-CNN}
+
+Faster R-CNN (Region-based Convolutional Neural Network) was introduced by Ren et al.\ in 2015
+as a landmark advance that unified region proposal generation with the detection head into a
+single end-to-end trainable network \cite{ren2015faster}. Prior to Faster R-CNN, the R-CNN
+and Fast R-CNN pipelines required a separate, computationally expensive selective search step
+to generate region proposals, which bottlenecked inference speed. Faster R-CNN replaced this
+with a Region Proposal Network (RPN) that shares the convolutional backbone with the detection
+head, enabling near real-time proposal generation.
+
+\begin{figure}[H]
+  \centering
+  \safeimg[width=0.82\textwidth]{figures/faster_rcnn_architecture.png}{Faster R-CNN two-stage detection architecture}
+  \caption{Architecture of Faster R-CNN, showing the shared convolutional backbone, the Region
+    Proposal Network (RPN) producing candidate object regions, and the detection head that
+    classifies and refines each proposal.}
+  \label{fig:faster_rcnn}
+\end{figure}
+
+The Faster R-CNN architecture operates in two stages. In the first stage, the backbone
+convolutional network (in this project, ResNet-50 \cite{he2016deep}) extracts a rich
+spatial feature map from the full input image. The RPN then slides a small network over
+this feature map and, at each spatial location, predicts objectness scores and bounding
+box regression offsets for a set of predefined anchor boxes of multiple scales and aspect
+ratios. Anchor boxes that score above an objectness threshold are retained as region proposals
+(typically 256--512 per image after non-maximum suppression). In the second stage, the
+RoI Pooling (or RoI Align) operation extracts a fixed-size feature vector for each proposal
+from the shared backbone feature map, and a fully connected classification head assigns a
+class label and a refined bounding box to each region.
+
+The use of ResNet-50 as the feature extraction backbone is particularly well-suited to this
+project. He et al.\ demonstrated that residual connections---shortcut connections that bypass
+one or more convolutional layers---enable training of significantly deeper networks without
+the gradient degradation problems that had previously limited depth \cite{he2016deep}. ResNet-50
+comprises 50 layers organized into residual blocks, and its ImageNet pretraining provides a
+rich initialization of low-level edge, texture, and mid-level shape features that transfer
+effectively to the AST domain even with a relatively small number of labeled AST images.
+The ResNet-50 backbone in this project is initialized with ImageNet-pretrained weights and
+fine-tuned end-to-end on the AST dataset.
+
+Faster R-CNN is recognized for its high detection accuracy, particularly in complex scenes
+containing overlapping or densely packed objects---a characteristic directly relevant to AST
+plates where zones from adjacent disks may partially overlap. Its two-stage architecture
+allows the classification head to operate on high-quality, spatially refined proposals rather
+than on a dense grid, reducing false positive rates. The primary limitation of Faster R-CNN
+is inference speed: the two-stage pipeline introduces latency that is acceptable for offline
+analysis but may limit real-time processing throughput.
+
+\subsection{YOLOv11}
+
+YOLO (You Only Look Once) models are single-stage detectors that reformulate object detection
+as a unified regression problem. Rather than generating region proposals and classifying them
+separately, YOLO models predict bounding box coordinates and class probabilities directly from
+the full image in a single forward pass of the network \cite{wang2024yolov11,khanam2024yolov11}.
+This design eliminates the region proposal stage entirely, enabling dramatically faster inference
+at the cost of some accuracy on small or densely overlapping objects in early versions.
+Comparative studies have confirmed YOLOv11's competitive performance relative to prior YOLO
+generations and Faster R-CNN across multiple detection tasks \cite{sharma2024yolo_comparison}.
+
+\begin{figure}[H]
+  \centering
+  \safeimg[width=0.82\textwidth]{figures/yolov11_architecture.png}{YOLOv11 single-stage detection architecture}
+  \caption{Schematic architecture of YOLOv11, illustrating the backbone feature extraction
+    network, the feature pyramid neck for multi-scale detection, and the decoupled detection
+    heads for bounding box regression and class prediction.}
+  \label{fig:yolov11}
+\end{figure}
+
+YOLOv11, the latest version in the YOLO family at the time of this project and developed by
+Ultralytics, incorporates several architectural advances over its predecessors \cite{wang2024yolov11}.
+The backbone employs enhanced C3k2 blocks (a reparameterized convolutional design) for improved
+feature extraction efficiency. The neck uses a Path Aggregation Feature Pyramid Network
+(PA-FPN) to fuse features from multiple backbone scales, enabling detection of objects across
+a wide range of sizes---from small antibiotic disks to large inhibition zones that may span
+a significant fraction of the plate. The detection head is decoupled, with separate branches
+predicting bounding box regression and class probabilities independently, which has been shown
+to improve convergence and accuracy in one-stage detectors.
+
+YOLOv11 is offered in five size variants (n, s, m, l, x) that provide a continuous trade-off
+between model capacity and inference speed. In this project, the nano (n) variant, YOLOv11n,
+was selected to prioritize inference speed and suitability for eventual deployment on
+resource-constrained hardware, such as laboratory workstations without dedicated GPUs or
+on-device edge hardware. Despite being the smallest variant, YOLOv11n achieves competitive
+detection accuracy on the AST dataset, benefiting from pretraining on the large-scale COCO
+benchmark and fine-tuning on the project's annotated AST images. The model detects two
+object classes: \texttt{antibiotic} (the drug-impregnated disk, used as an OCR target and
+calibration reference) and \texttt{disk-zone} (the surrounding inhibition zone, from which
+the diameter measurement is extracted).
+
+\subsection{Hough Circle Transform}
+
+The Hough Circle Transform is a classical computer vision technique for detecting circular
+structures in images without requiring any learned model or labeled training data. It operates
+by transforming the image from the spatial domain to a parameter space defined by three
+dimensions: the $x$ and $y$ coordinates of the circle center and the circle radius $r$.
+For each edge point detected in the image (typically via Canny edge detection), the algorithm
+votes for all circles in parameter space that could have produced that edge point. Circles that
+accumulate votes above a threshold in the parameter-space accumulator correspond to genuine
+circles in the image. Alternative circle detection approaches based on learning automata
+\cite{cuevas2014}, deep learning \cite{ercan2020}, and gradient-based variants \cite{shehata2015hough}
+have been proposed to address the sensitivity limitations of the classical transform under real-world imaging conditions.
+
+\begin{figure}[H]
+  \centering
+  \safeimg[width=0.75\textwidth]{figures/hough_circle_diagram.png}{Hough Circle Transform parameter space voting diagram}
+  \caption{Illustration of the Hough Circle Transform. Each edge point votes for a cone of
+    candidate circles in the $(x_c, y_c, r)$ parameter space; genuine circles produce
+    prominent peaks in the accumulator.}
+  \label{fig:hough}
+\end{figure}
+
+The Hough Circle Transform is computationally efficient and produces no false positives for
+clearly circular zones under controlled imaging conditions. However, it is sensitive to several
+sources of degradation common in real AST images. Uneven agar surface reflectance or non-uniform
+lighting creates spurious edge responses that generate noise in the accumulator. Zones that
+are not perfectly circular---due to zone overlap, agar surface irregularities, or atypical
+bacterial growth patterns---do not accumulate votes cleanly, leading to missed detections or
+inaccurate radius estimates. Furthermore, the transform requires careful hand-tuning of multiple
+parameters (the inverse resolution ratio \texttt{dp}, the minimum inter-center distance
+\texttt{minDist}, and the Canny edge thresholds \texttt{param1} and \texttt{param2}) that
+interact in complex ways and whose optimal values vary across images with different scales,
+lighting conditions, and bacterial species. In this project, Hough Circle Transform parameters
+were tuned via grid search on the full dataset, representing a best-case scenario for this
+method. It serves as a principled classical baseline against which the learned models are evaluated.
+
+\section{Optical Character Recognition for Antibiotic Disk Labeling}
+
+Antibiotic disks carry short alphanumeric codes printed on their surfaces, indicating the
+antibiotic name and its concentration (for example, ``OX 1'' for oxacillin 1\,$\mu$g, or
+``AMX 25'' for amoxicillin 25\,$\mu$g). Optical Character Recognition (OCR), whose development
+history spans several decades of engineering progress \cite{wang2023ocr_history}, provides the
+computational means to read these labels automatically from photographic images. Correctly
+reading these labels is essential for associating each detected ZOI with the correct antibiotic,
+which in turn enables the correct breakpoint to be retrieved from the CLSI/EUCAST database.
+This is a challenging OCR task for several reasons: the printed text is small (typically 2--4 mm
+in height), the contrast between ink and disk surface is variable across disk brands, the disk
+surface is slightly curved, images may be taken at sub-optimal angles, and multiple disks may
+be partially occluded.
+
+\subsection{EasyOCR and the CRAFT Architecture}
+
+EasyOCR \cite{jaidedai2024easyocr} is an open-source, deep learning-based OCR engine
+supporting over 80 languages and scripts. Its text detection stage is based on the CRAFT
+(Character Region Awareness for Text Detection) model introduced by Baek et al.\
+\cite{baek2019craft}. CRAFT detects individual character regions and the affinity between
+adjacent characters rather than treating word-level bounding boxes as the atomic detection
+unit. This character-level detection approach is particularly well-suited to the antibiotic
+labeling context, where short strings of alphanumeric characters must be localized precisely
+on small, textured disk surfaces.
+
+The CRAFT network produces two output maps: a region score map (indicating the probability
+that each pixel belongs to the center of a character) and an affinity score map (indicating
+the probability that two adjacent characters belong to the same word). These two maps are
+combined to segment individual characters and group them into word-level text instances.
+The detected character regions are then passed to a sequence recognition network---a
+Convolutional Recurrent Neural Network (CRNN)---that transcribes the character sequence
+into text using a connectionist temporal classification (CTC) decoder.
+
+EasyOCR \cite{jaidedai2024easyocr} was compared against TyphoonOCR \cite{typhoonocr2025},
+a Thai-focused OCR model developed by OpenTyphoon.ai, for the antibiotic label reading task.
+Although TyphoonOCR offers strong performance on Thai-script text, its performance on Latin
+alphanumeric strings under the challenging conditions of disk photography was inferior to
+EasyOCR \cite{baek2019craft,jaidedai2024easyocr}. EasyOCR was therefore selected as the
+OCR engine for the final pipeline.
+
+\section{Image Preprocessing Techniques}
+
+Image preprocessing is a critical enabler of both the object detection models and the OCR
+pipeline, directly affecting the signal-to-noise ratio of the features extracted by downstream
+algorithms \cite{qi2021image_enhancement}. Image segmentation techniques \cite{jasim2021segmentation,dhanachandra2015}
+and document binarization methods \cite{yang2024binarization} inform the preprocessing choices
+made in this project to address the specific visual degradations typical of laboratory AST photography.
+
+\begin{itemize}
+  \item \textbf{Global thresholding (Otsu's method):} Otsu's method automatically determines
+        an optimal intensity threshold for converting a grayscale image to a binary (black and
+        white) representation by minimizing intra-class variance between the foreground (text)
+        and background pixel populations. This is applied to disk crops prior to OCR to separate
+        ink characters from the disk surface background, improving character segmentation quality.
+
+  \item \textbf{Contrast Limited Adaptive Histogram Equalization (CLAHE):} Unlike global
+        histogram equalization, which computes a single mapping function for the entire image,
+        CLAHE applies histogram equalization independently to small tiles of the image (with a
+        configurable tile size and contrast limit) and interpolates smoothly between them.
+        This normalizes local contrast across regions of the image that differ substantially
+        in mean illumination---a common occurrence in laboratory photographs where the agar plate
+        center is brighter than the periphery due to overhead lighting geometry. CLAHE is applied
+        to disk crops as a preprocessing step before OCR, improving the visibility of low-contrast
+        text.
+
+  \item \textbf{Gaussian Blur:} A Gaussian low-pass filter is applied to the full plate image
+        before edge detection (for the Hough Transform) and before thresholding, attenuating
+        high-frequency sensor noise that would otherwise produce spurious edge responses.
+        The blur kernel size is selected to preserve the relevant scale of zone boundaries
+        while suppressing noise.
+
+  \item \textbf{Morphological operations (dilation and erosion):} Morphological dilation
+        expands foreground (text) regions, while erosion shrinks them. Applied in sequence
+        (as opening or closing operations), they can fill small gaps in characters or remove
+        small noise patches from the binary image. In the OCR preprocessing pipeline,
+        the choice and extent of morphological operations are applied adaptively based on the
+        estimated text pixel ratio in the binarized crop: images with very sparse text pixels
+        (thin characters) are dilated to restore stroke connectivity, while images with
+        excessively dense pixels (thick strokes or merged characters) are eroded.
+
+  \item \textbf{Image rotation correction:} The orientation of antibiotic disks on the plate
+        is not controlled during laboratory setup---disks may be placed at any angle. As a
+        result, the printed label on a disk may appear rotated at an arbitrary angle relative
+        to the image frame. To handle this, the OCR pipeline applies EasyOCR at four canonical
+        orientations (0$^\circ$, 90$^\circ$, 180$^\circ$, and 270$^\circ$) and selects the
+        highest-confidence recognition result across all four orientations.
+\end{itemize}
+
+\section{Related Work in Automated AST Analysis}
+
+\subsection{Deep Learning Approaches for AST Image Analysis}
+
+The application of deep learning and computer vision to AST image analysis has been an active
+area of research in the past decade, driven by the same combination of clinical need and
+algorithmic progress that motivates this project. The broader role of AI and machine learning
+in predicting and combating antimicrobial resistance has been comprehensively reviewed by
+Bilal et al.\ \cite{bilal2025}, while Liao et al.\ \cite{liao2025} have surveyed advancements
+specifically in AI-driven drug sensitivity testing research.
+Pascucci et al.\ \cite{pascucci2021,pascucci2020preprint} developed the first AI-based mobile
+application for automated antibiotic resistance testing, demonstrating that smartphone cameras
+combined with deep learning could produce clinically acceptable ZOI measurements in
+resource-limited settings.
+Rajasekar et al.\ \cite{rajasekar2022} introduced Ab.ai, a specialized AI tool for reporting
+antibiograms automatically, achieving high accuracy on disk diffusion plates in standardized
+laboratory conditions.
+Yu et al.\ \cite{yu2025} demonstrated an AI-driven hue-contrast method for inhibition zone
+identification, providing an alternative to bounding-box regression.
+Callebaut et al.\ \cite{callebaut2024} evaluated the Radian\textregistered{} in-line carousel
+system for automated disk diffusion testing, establishing performance benchmarks
+against expert manual reading that this project adopts as comparison targets.
+
+Rajasekar et al.\ \cite{rajasekar2023} conducted a comprehensive
+systematic review of published AI-based image analysis methods for AST and found that deep
+learning models consistently and substantially outperform classical image processing approaches---
+including Hough Transform, active contours, and template matching---particularly in the
+scenarios most relevant to clinical practice: plates with dense disk arrays, overlapping zones,
+and heterogeneous bacterial growth. The review surveyed methods ranging
+from traditional convolutional neural networks applied to cropped disk regions to full end-to-end
+detection pipelines similar to the one developed in this project.
+
+Among the key findings of Rajasekar et al.\ were that the greatest performance gains from deep
+learning occur specifically in the handling of overlapping zones---a scenario that fundamentally
+breaks the assumption of isolated circular shapes underlying the Hough Transform approach---and
+in robustness to photographic variation such as non-uniform illumination, perspective distortion,
+and image compression artifacts \cite{rajasekar2023}. These findings validate the architectural
+choices of the present project: using deep learning object detection as the primary approach
+and relegating Hough Transform to the role of a classical baseline rather than a primary system
+component. The review also noted that the relatively small scale of most published AST datasets
+(typically below 500 images) has been a limiting factor for deep learning performance, motivating
+the present project's investment in synthetic data generation to reach a training set of over
+2,000 images.
+
+\subsection{Evaluation Standards for Automated AST Methods}
+
+Humphries et al.\ \cite{humphries2018} addressed the methodological question of how to properly
+evaluate an automated AST measurement system relative to the gold standard of manual reading by
+a trained microbiologist. Their best-practices document, published by the CLSI Methods
+Development and Standardization Working Group, defined several important evaluation criteria
+that the present project adopts. Most critically for this work, they established that a mean
+absolute error (MAE) of less than 3\,mm between automated and manual ZOI diameter measurements
+represents the threshold of clinical acceptability---that is, below this error level, the
+systematic measurement differences are unlikely to produce a different S/I/R classification
+for the majority of drug-organism breakpoint combinations currently in use.
+
+Humphries et al.\ also emphasized the importance of evaluating automated methods across a
+diverse collection of bacterial species, antibiotic classes, and plate configurations, since
+errors that are insignificant for one drug-organism combination may be clinically decisive
+for another \cite{humphries2018}. This guidance informs the evaluation design of the present
+project, which reports MAE across the full held-out test set of 235 images drawn from the
+real plate collection. Additionally, Humphries et al.\ noted that systematic (directional)
+bias is as important to characterize as random error, since a consistent over- or under-estimation
+of zone diameter can be corrected by a post-processing bias correction step---which is precisely
+what the calibration refinement stage of the present system implements.

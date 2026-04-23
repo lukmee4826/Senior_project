@@ -343,8 +343,9 @@ def analyze_disk_image(image_path: str):
             print(f"\n[DEBUG] Processing zone {zone_idx + 1}...")
             
             zone_bbox = zone_data['bbox']
-            diameter_mm = calculate_diameter_mm(zone_bbox, image_width, pixels_per_mm=PIXELS_PER_MM)
-            print(f"[DEBUG] Zone diameter: {diameter_mm}mm")
+            
+            # Default pixels_per_mm
+            current_pixels_per_mm = PIXELS_PER_MM
             
             # Find nearest disk for this zone
             medicine_name = "Unknown"
@@ -370,12 +371,20 @@ def analyze_disk_image(image_path: str):
                         min_distance = distance
                         nearest_disk_idx = disk_idx
                 
-                # Use nearest disk for OCR
+                # Use nearest disk for OCR and Calibration
                 if nearest_disk_idx >= 0:
                     disk_data = detected_disks[nearest_disk_idx]
                     disk_bbox = disk_data['bbox']
                     disk_used_idx = nearest_disk_idx
                     used_disk_indices.add(nearest_disk_idx)
+                    
+                    # DYNAMIC CALIBRATION: Standard antibiotic disk is 6.0 mm
+                    disk_w = disk_bbox[2] - disk_bbox[0]
+                    disk_h = disk_bbox[3] - disk_bbox[1]
+                    disk_avg_px = (disk_w + disk_h) / 2
+                    if disk_avg_px > 0:
+                        current_pixels_per_mm = disk_avg_px / 6.0
+                        print(f"[DEBUG] Dynamic Calibration: disk size={disk_avg_px:.1f}px -> {current_pixels_per_mm:.2f} px/mm (used as reference)")
                     
                     print(f"[DEBUG] Using disk {nearest_disk_idx + 1} (distance: {min_distance:.0f}px)")
                     print(f"[DEBUG] Disk bbox: [{disk_bbox[0]:.0f}, {disk_bbox[1]:.0f}, {disk_bbox[2]:.0f}, {disk_bbox[3]:.0f}]")
@@ -411,6 +420,10 @@ def analyze_disk_image(image_path: str):
                 print("[DEBUG] No disks detected for OCR")
                 medicine_name = "Unknown_Disk"  # No disk found fallback
             
+            # Calculate final diameter using calibrated pixels_per_mm
+            diameter_mm = calculate_diameter_mm(zone_bbox, image_width, pixels_per_mm=current_pixels_per_mm)
+            print(f"[DEBUG] Zone diameter: {diameter_mm:.2f}mm (using {current_pixels_per_mm:.2f} px/mm)")
+
             results_with_medicine.append({
                 "medicine_name": medicine_name,  # Name from OCR or fallback class name
                 "diameter_mm": round(diameter_mm, 2),  # Measured zone size

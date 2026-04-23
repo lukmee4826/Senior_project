@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Image Preview - Extract from Word</title>
+    <style>
+        body { font-family: sans-serif; }
+        .gallery { display: flex; flex-wrap: wrap; gap: 20px; }
+        .item { border: 1px solid #ccc; padding: 10px; text-align: center; }
+        img { max-width: 300px; max-height: 200px; display: block; margin-bottom: 5px; }
+        .name { font-weight: bold; }
+        .size { color: #666; font-size: 0.8em; }
+    </style>
+</head>
+<body>
+    <h1>ช่วยเลือกรูปสำหรับ LaTeX หน่อยครับ</h1>
+    <p>รบกวนดูรูปด้านล่างแล้วบอกผมว่า image ไหน ควรเป็นชื่ออะไรใน LaTeX ครับ</p>
+    <div class="gallery" id="gallery">
+        <!-- Images will be inserted here -->
+    </div>
+
+    <script>
+        const imagePath = "C:/Users/Lukme/.gemini/tmp/lukme/extracted_proposal/word/media/";
+        const gallery = document.getElementById('gallery');
+        const images = [
+            "image1.png", "image2.png", "image3.png", "image7.png", "image11.png", 
+            "image13.png", "image14.png", "image22.jpeg", "image35.jpeg", "image39.jpeg", 
+            "image42.jpeg", "image44.png", "image45.png", "image46.png", "image47.png", "image48.png"
+        ];
+        
+        images.forEach(img => {
+            const div = document.createElement('div');
+            div.className = 'item';
+            div.innerHTML = `
+                <img src="${imagePath}${img}">
+                <div class="name">${img}</div>
+            `;
+            gallery.appendChild(div);
+        });
+    </script>
+</body>
+</html>

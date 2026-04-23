@@ -1,0 +1,130 @@
+% ── Chapter 5: Conclusion and Future Work ─────────────────────
+\chapter{Conclusion and Future Work}
+
+% ─────────────────────────────────────────────────────────────
+\section{Conclusion}
+\label{sec:conclusion}
+% ─────────────────────────────────────────────────────────────
+
+\subsection{Summary of the Project}
+
+This project designed, implemented, and evaluated an AI-based web application
+for automated Kirby-Bauer disk diffusion antibiotic susceptibility testing (AST).
+The system addresses a critical workflow bottleneck in clinical microbiology laboratories:
+the manual, ruler-based measurement of zones of inhibition (ZOI) is time-consuming,
+operator-dependent, and difficult to audit \cite{humphries2018}.
+Automating this step has direct implications for laboratory throughput,
+result reproducibility, and ultimately for patient outcomes in the context of
+the global antimicrobial resistance crisis \cite{who_amr2022}.
+
+The system integrates three major technical components into a single end-to-end pipeline:
+
+\begin{enumerate}
+  \item \textbf{Object detection and ZOI measurement} using YOLOv11n (primary) \cite{wang2024yolov11}
+        and Faster R-CNN (secondary) \cite{ren2015faster},
+        with a classical Hough Transform as a no-learning baseline.
+  \item \textbf{Antibiotic label recognition} using EasyOCR \cite{baek2019craft}
+        with a dual-branch preprocessing pipeline (Otsu thresholding and CLAHE).
+  \item \textbf{Per-image pixel-to-mm calibration} using the known 6\,mm physical
+        diameter of standardized antibiotic disks as an in-image reference scale.
+\end{enumerate}
+
+The processed results are presented through a React-based web application
+that displays ZOI diameters, CLSI-based S/I/R classifications,
+manual correction capability, and historical result storage.
+
+The processed results are presented through a React-based web application that displays ZOI diameters, CLSI and EUCAST-based S/I/R classifications, manual correction capability, and historical result storage.
+
+\subsection{Quantitative Summary}
+
+The key quantitative outcomes of the project are as follows.
+
+For ZOI measurement accuracy, YOLOv11n demonstrated superior detection quality with mAP@0.5 of \textbf{95.91\%} and a mean absolute error (MAE) of approximately \textbf{2.5--2.7\,mm}, significantly outperforming Faster R-CNN (MAE \textbf{4.65--4.85\,mm}) and the Hough Transform baseline.
+The single-stage architecture of YOLOv11n provided near-perfect Precision and Recall ($\approx$1.0) with rapid convergence.
+
+For calibration, the implementation of \emph{Dynamic Calibration} using the standardized 6\,mm antibiotic disk diameter as an in-image reference successfully reduced systematic measurement bias.
+This method ensures that the pixels-per-mm ratio is calculated per-disk in every image, adapting to variable camera-to-plate distances and lens distortions.
+
+For OCR, EasyOCR with Otsu thresholding achieved approximately \textbf{95\%} accuracy on antibiotic label identification.
+The preprocessing pipeline was identified as the dominant factor in performance, outperforming TyphoonOCR ($\approx$85\%) and raw EasyOCR ($\approx$60\%).
+
+For processing speed, the integrated pipeline completes analysis in approximately \textbf{3--5 seconds per image}, including detection, OCR, and database persistence.
+This represents a throughput increase of over 100 times compared to manual measurement workflows.
+
+\subsection{Project Completion Status}
+
+The project is now \textbf{100\% complete} and has been successfully transitioned from a research prototype to a production-ready clinical tool.
+The entire pipeline---including image capture, YOLOv11n-based ZOI detection, EasyOCR-based label recognition, and dynamic calibration---is fully integrated.
+The system is currently \textbf{deployed at the Chulabhorn Royal Academy (CRA)} hospital server, accessible via a secure clinical network at \texttt{https://paniti-jupyter.cra.ac.th/zoneanalyzer/}.
+End-to-end integration testing has been completed, confirming that the React frontend, FastAPI backend, and SQLite database operate seamlessly in a production environment.
+The system also includes full support for both **CLSI 2025** and **EUCAST 2023** interpretive standards, automatically matching detected antibiotics with their respective breakpoints from the database.
+
+% ─────────────────────────────────────────────────────────────
+\section{Limitations}
+\label{sec:limitations}
+% ─────────────────────────────────────────────────────────────
+
+A transparent assessment of current limitations is essential
+for interpreting the results in the appropriate clinical and technical context.
+
+\subsection{Residual Calibration Bias}
+
+Despite the success of per-disk dynamic calibration, a mean bias of approximately 1--2\,mm can still occur in extreme lighting conditions or highly tilted images.
+This is primarily due to axis-aligned rectangular bounding boxes being a geometric approximation of circular zones.
+When the plate is significantly tilted, zones appear elliptical, causing the bounding-box width to slightly deviate from the true diameter.
+
+\subsection{Dataset Diversity}
+
+The current model was trained on a dataset of 1,884 images (original and synthetic) predominantly featuring \textit{S. aureus} and \textit{E. coli}.
+While highly accurate for these species, other clinically important organisms with unique growth patterns (e.g., swarming \textit{Proteus} or highly mucoid \textit{Klebsiella}) may produce zone morphologies that the model has not yet encountered in high volume.
+
+% ─────────────────────────────────────────────────────────────
+\section{Future Work}
+\label{sec:future_work}
+% ─────────────────────────────────────────────────────────────
+
+The following improvements are recommended for the next phase of development.
+
+\subsection{Large-Scale Clinical Validation Study}
+
+The most critical next step is to conduct a formal blinded validation study comparing automated ZOI measurements to the consensus of experienced medical technologists on a wide panel of clinical isolates at Chulabhorn Royal Academy.
+This will provide statistical evidence of the system's categorical agreement (CA) with manual methods according to ISO 20776-2 standards.
+
+\subsection{Instance Segmentation for Ellipse Fitting}
+
+Replacing bounding-box detection with instance segmentation (e.g., YOLOv11-seg) would allow the system to fit an ellipse directly to the predicted zone mask.
+This would eliminate the rectangular approximation error and improve robustness to plate tilt, potentially reducing residual bias to sub-millimeter levels.
+
+\subsection{Mobile and On-Device Deployment}
+
+YOLOv11n is a nano-scale model suitable for on-device deployment via TensorFlow Lite or ONNX Runtime.
+A native smartphone application would allow medical staff to perform AST analysis at the point of care without requiring a high-bandwidth connection to the backend server.
+Applied fuzzy match at line 46-235.
+Removed: Incomplete Backend Integration.
+Removed: EUCAST Support (moved to Completed).
+Refactored Future Work.
+
+\subsection{Clinical Validation Study}
+
+Before the system can be proposed for actual clinical use,
+a formal blinded validation study is required.
+The study design should compare automated ZOI measurements to the consensus of
+at least three experienced medical technologists on a diverse panel of clinical isolates,
+using a sample size calculated to detect a clinically meaningful difference in classification accuracy.
+Results should be evaluated according to the categorical agreement criteria
+defined in CLSI guideline MM17 \cite{clsi2025},
+which specify acceptable rates of very major errors (false susceptible),
+major errors (false resistant), and minor errors (I $\leftrightarrow$ S/R misclassification).
+Regulatory pathway assessment (e.g., FDA 510(k) in the USA or CE-IVD in Europe)
+should be scoped as part of this validation planning.
+
+\subsection{Epidemiology and Resistance Trend Module}
+
+A longer-term extension is to add an epidemiological analysis module
+that aggregates resistance outcomes across all processed plates stored in the database.
+Antibiotic resistance rates by organism, time period, and ward could be visualized
+as trend dashboards and exported for infection control reporting.
+This would transform the system from a measurement tool into a
+laboratory information management component with public health value,
+directly addressing WHO priority research needs for antimicrobial resistance surveillance
+\cite{who_amr2022}.

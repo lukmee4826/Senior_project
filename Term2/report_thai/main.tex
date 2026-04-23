@@ -1,0 +1,151 @@
+% !TeX program = xelatex
+% ============================================================
+%  KMUTT Senior Project Final Report — XeLaTeX
+%  TH Sarabun New loaded from fonts/ folder
+%  Compile: xelatex → bibtex → xelatex → xelatex
+% ============================================================
+\documentclass[12pt,a4paper,oneside]{report}
+
+% ── Fonts & Language ────────────────────────────────────────
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setdefaultlanguage{english}
+\setotherlanguage{thai}
+
+\setmainfont{THSarabunNew}[
+  Path           = fonts/,
+  Extension      = .ttf,
+  UprightFont    = *-Regular,
+  BoldFont       = *-Bold,
+  ItalicFont     = *-Italic,
+  BoldItalicFont = *-BoldItalic,
+  Scale          = 1.3
+]
+\setmonofont{FreeMono}
+
+% ── Page Layout ─────────────────────────────────────────────
+\usepackage[
+  a4paper,
+  top=2.54cm, bottom=2.54cm,
+  left=3.81cm, right=2.54cm,
+  headheight=15pt
+]{geometry}
+
+% ── Packages ────────────────────────────────────────────────
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{amsmath, amssymb}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{titlesec}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{tikz}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=black, citecolor=black, urlcolor=blue}
+
+% ── Helpers ──────────────────────────────────────────────────
+\newcommand{\safeimg}[3][width=\textwidth]{%
+  \IfFileExists{#2}{\includegraphics[#1]{#2}}%
+  {\fbox{\parbox{10cm}{\centering\small [Figure placeholder: #3]\\\texttt{#2}}}}}
+
+% ── Spacing & Indent ─────────────────────────────────────────
+\setstretch{1.5}
+\setlength{\parindent}{1.5cm}
+\setlength{\parskip}{0pt}
+
+% ── Chapter/Section Formatting ───────────────────────────────
+\titleformat{\chapter}[block]
+  {\centering\large\bfseries}{CHAPTER \thechapter:}{0.5em}{\MakeUppercase}
+\titlespacing{\chapter}{0pt}{0pt}{24pt}
+\titleformat{\section}{\bfseries\normalsize}{\thesection}{1em}{}
+\titleformat{\subsection}{\bfseries\normalsize}{\thesubsection}{1em}{}
+
+% ── Header/Footer ────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% ── Captions ─────────────────────────────────────────────────
+\captionsetup{font=small, labelfont=bf}
+
+% ── Code Style ───────────────────────────────────────────────
+\lstset{basicstyle=\small\ttfamily, breaklines=true, frame=single,
+        numbers=left, numberstyle=\tiny}
+
+% ============================================================
+\begin{document}
+
+% ── Title Page ───────────────────────────────────────────────
+\begin{titlepage}
+  \centering
+  \IfFileExists{figures/kmutt_logo.png}{%
+    \includegraphics[width=3cm]{figures/kmutt_logo.png}\\[0.5cm]}%
+  {\\[1cm]}
+  {\large\bfseries
+  KING MONGKUT'S UNIVERSITY OF TECHNOLOGY THONBURI\\
+  Faculty of Engineering\\
+  Department of Computer Engineering}\\[1.5cm]
+
+  {\Large\bfseries FINAL PROJECT REPORT}\\[0.5cm]
+  {\large\bfseries
+  An Exploration of Artificial Intelligence for Detection of\\
+  Inhibition Zones in Antibiotic Susceptibility Testing}\\[2cm]
+
+  {\normalsize
+  Submitted by\\[0.3cm]
+  Peeraphat Siripathanakun \quad Student ID: 65070505214\\
+  Phattaradon Thanaprasitpattana \quad Student ID: 65070505223}\\[1.5cm]
+
+  {\normalsize
+  Advisors\\[0.3cm]
+  Assoc.\ Prof.\ Dr.\ Nontapon Leeraj\\
+  Assoc.\ Prof.\ Dr.\ Panit Ajchararit\\
+  Dr.\ Kritsana Jaengsamsi}\\[2cm]
+
+  {\normalsize Academic Year 2025}
+\end{titlepage}
+
+% ── Front Matter ─────────────────────────────────────────────
+\pagenumbering{roman}
+\setcounter{page}{1}
+\input{chapters/00_abstract}
+\tableofcontents
+\newpage
+\listoffigures
+\newpage
+\listoftables
+\newpage
+
+% ── Main Chapters ────────────────────────────────────────────
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\input{chapters/01_intro}
+\input{chapters/02_theory}
+\input{chapters/03_methodology}
+\input{chapters/04_results}
+\input{chapters/05_conclusion}
+
+% ── References ───────────────────────────────────────────────
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+% ── Appendix ─────────────────────────────────────────────────
+\appendix
+\input{chapters/appendix}
+
+\end{document}

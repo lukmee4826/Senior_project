@@ -1,0 +1,407 @@
+% ── Chapter 3: Methodology ────────────────────────────────────
+\chapter{Methodology}
+
+\section{System Architecture Overview}
+
+The proposed system is a full-stack web application following a client-server architecture
+designed around the separation of concerns between the user interface, the AI inference
+pipeline, and the data persistence layer. This architectural decomposition enables independent
+development and testing of each component and allows the computationally intensive AI backend
+to be scaled or upgraded without changes to the frontend user experience.
+
+The frontend is developed in React, a component-based JavaScript framework built on HTML
+\cite{sharma2018html,mozilla2025html}, and provides users with an image upload interface,
+a live camera capture option, and an interactive results visualization dashboard. The backend
+is implemented in Python \cite{siva2023python} using FastAPI \cite{tioman2024fastapi}, a high-performance asynchronous
+web framework that exposes a RESTful API consumed by the React frontend.
+ Upon
+receiving an image via the API, the backend executes the full AI inference pipeline and returns
+a structured JSON response containing all detection results, diameter measurements, OCR labels,
+and susceptibility classifications. A relational database implemented in SQLite stores analysis
+history, user session records, and the CLSI 2025 and EUCAST 2023 breakpoint tables, enabling
+both historical audit of past analyses and rapid in-process lookup of breakpoint thresholds.
+
+The overall image analysis pipeline consists of five sequential stages, each of which is
+described in detail in the sections that follow:
+\begin{enumerate}
+  \item \textbf{Image acquisition and preprocessing:} The input image is validated, resized to
+        the model's required input resolution, and preprocessed according to the requirements
+        of the active detection model.
+  \item \textbf{Antibiotic disk detection and OCR labeling:} The detection model localizes
+        individual antibiotic disks; the OCR pipeline reads the alphanumeric label from each
+        disk crop to identify the antibiotic.
+  \item \textbf{ZOI detection and diameter measurement:} The detection model localizes each
+        zone of inhibition as a bounding box; the bounding box dimensions are converted to a
+        diameter estimate in pixels.
+  \item \textbf{Pixel-to-millimeter calibration:} The pixel-scale diameter measurements are
+        converted to physical millimeters using the known 6\,mm diameter of the antibiotic
+        disk as an in-image reference object.
+  \item \textbf{Breakpoint lookup and susceptibility classification:} The measured ZOI diameter
+        in millimeters is compared against the CLSI or EUCAST breakpoint for the identified
+        antibiotic and the user-specified organism, and the organism is classified as
+        Susceptible (S), Intermediate (I), or Resistant (R).
+\end{enumerate}
+
+\begin{figure}[H]
+  \centering
+  \safeimg[width=\textwidth]{figures/pipeline_flowchart.png}{End-to-end analysis pipeline}
+  \caption{End-to-end image analysis pipeline of the automated AST system, from image input
+    through detection, OCR, calibration, and breakpoint-based susceptibility classification.}
+  \label{fig:pipeline}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \safeimg[width=0.92\textwidth]{figures/system_architecture.png}{System Architecture Diagram}
+  \caption{Overall system architecture of the automated AST web application, showing the
+    React frontend, FastAPI backend, AI inference pipeline, and SQLite database layer.}
+  \label{fig:sys_arch}
+\end{figure}
+
+\section{Dataset Collection and Preparation}
+
+Assembling a high-quality, diverse training dataset is essential for the generalization
+performance of deep learning models. For the AST domain, dataset construction is particularly
+challenging because real clinical plate images are often proprietary (belonging to hospitals
+or reference laboratories), and the volume of publicly available annotated AST image data is
+limited. The dataset strategy employed in this project therefore combines three complementary
+sources: real laboratory images, augmented real images, and programmatically generated
+synthetic images.
+
+\subsection{Real Image Collection}
+
+A total of 287 real AST plate photographs were collected from three sources. Open sharing of
+biomedical research data through repositories such as DRYAD has been a longstanding principle
+in scientific practice \cite{iom1996}. The first source was the publicly available DRYAD data
+repository \cite{giske2024dryad}, which contributed 225 annotated disk diffusion plate images
+captured in various laboratory environments. The second source was the
+CDS (Clinical and Demographic Study) dataset, contributing 50 images. The third source was
+the CRA (Chulabhorn Royal Academy) dataset, contributing 32 images. Together these three
+sources yielded the 287 real images used in this project.
+
+Images span multiple bacterial species, a range of antibiotic disk counts per plate
+(from 1 to 10 disks), and a variety of zone overlap configurations that represent the
+diversity of clinical scenarios the system must handle. The externally sourced subsets
+introduce controlled variability in lighting, camera model, agar brand, and plate size that
+improves the generalization of models trained on the combined dataset.
+
+\subsection{Data Augmentation}
+
+To expand the training set from 287 images while preserving the label correctness of the
+original annotations, a set of geometric and photometric augmentation operations were applied
+to the real images using the Roboflow platform. Augmentation transformations included
+horizontal and vertical flipping, random rotation within $\pm$15$^\circ$, brightness variation
+($\pm$25\%), contrast variation ($\pm$20\%), and additive Gaussian noise (standard deviation
+up to 5\% of the maximum pixel intensity). Each augmented image was generated by randomly
+sampling from this set of transformations, with bounding box coordinates automatically
+recomputed to match the transformed image geometry. This augmentation strategy increased the
+training dataset from 287 to 543 images, approximately doubling the number of unique training
+examples available from real plate photography.
+
+It is important to note that augmentation was applied only to the training partition of the
+real images; the validation and test partitions were held out from augmentation to ensure
+that evaluation metrics reflect model performance on unmodified, realistic inputs.
+Augmentation was also deliberately restricted to transformations consistent with plausible
+variation in real laboratory photography, avoiding extreme transformations (e.g., heavy
+perspective warping or color inversion) that would produce unrealistic images detrimental to
+model training.
+
+\subsection{Synthetic Data Generation}
+
+An additional 2,000 synthetic images were generated programmatically to further increase
+dataset diversity and to address the relative scarcity of real images containing specific
+zone overlap configurations and atypical zone morphologies. Synthetic plate images were
+rendered using a procedural pipeline implemented in Python, using Pillow and OpenCV for
+image composition. Each synthetic image was designed to visually approximate the appearance
+of a real Mueller-Hinton agar plate, with a textured agar background generated by tiling and
+blending sampled texture patches, circular antibiotic disk objects placed at defined positions,
+and circular zone-of-inhibition regions rendered with Gaussian-blurred edges to mimic the
+gradual growth boundary seen in real photographs.
+
+The 2,000 synthetic images were divided into two categories of equal size. The first
+category of 1,000 images used fixed antibiotic disk positions arranged according to the
+standard CLSI-recommended plate layout for common 6-disk and 8-disk configurations,
+simulating the regular, structured patterns seen in standardized laboratory workflows.
+The second category of 1,000 images used fully randomized disk placement within the plate
+boundary, simulating the less structured configurations common in research and teaching
+laboratories. Across both categories, zone diameters were sampled from a realistic
+distribution spanning the full clinical range (from approximately 10\,mm to 40\,mm),
+with deliberate over-representation of overlapping zone scenarios---where the inhibition
+zones of adjacent disks partially intersect---to ensure the models were exposed to this
+challenging but clinically important case during training. Background texture, simulated
+lighting gradients, and synthetic colony growth patterns were also varied to increase
+visual diversity.
+
+\subsection{Final Dataset Split}
+
+\begin{table}[H]
+  \centering
+  \caption{Dataset composition and train/validation/test split used for model training and evaluation.}
+  \label{tab:dataset_split}
+  \begin{tabular}{lcccc}
+    \toprule
+    \textbf{Source} & \textbf{Total} & \textbf{Train} & \textbf{Validation} & \textbf{Test} \\
+    \midrule
+    DRYAD                              & 225   & ---   & ---   & ---   \\
+    CDS                                & 50    & ---   & ---   & ---   \\
+    CRA (Chulabhorn Royal Academy)     & 32    & ---   & ---   & ---   \\
+    \textit{Real total (original)}     & 287   & ---   & ---   & ---   \\
+    \textit{Real total (augmented)}    & 543   & 433   & 55    & 55    \\
+    Synthetic (fixed position)         & 1,000 & \multicolumn{3}{c}{training only} \\
+    Synthetic (unfixed position)       & 1,000 & \multicolumn{3}{c}{training only} \\
+    \bottomrule
+  \end{tabular}
+\end{table}
+
+The synthetic images were used exclusively for training, as they were generated to augment
+model learning on diverse configurations rather than to evaluate generalization performance.
+All evaluation metrics reported in Chapter~4 are computed on the real-image test set (55 images)
+to ensure that reported performance figures reflect the model's behavior on authentic,
+unmanipulated laboratory photographs.
+
+\section{Annotation}
+
+Ground-truth annotations were created in Pascal VOC XML format, specifying bounding box
+coordinates for each zone of inhibition and each antibiotic disk visible in every image.
+This annotation format encodes four values per object: the pixel coordinates of the
+top-left corner and the bottom-right corner of the bounding box, together with a class
+label (\texttt{antibiotic} for disks, \texttt{disk-zone} for inhibition zones).
+
+Initial annotations were created by the project team using LabelImg, an open-source graphical
+image annotation tool. To ensure clinical correctness, all bounding box placements for the
+zone-of-inhibition class were subsequently reviewed and corrected by a trained microbiologist
+who independently verified each annotation against the corresponding physical plate measurement
+taken with calipers. This dual-review workflow was essential for producing a reliable ground
+truth, since zone boundary definition requires domain expertise: the correct edge of an
+inhibition zone is defined as the point of complete inhibition of confluent growth (not the
+zone of micro-colony formation, which CLSI instructs technicians to disregard). Annotations
+were then imported into Roboflow for dataset management, augmentation pipeline configuration,
+and export in the formats required by each model's training framework (Pascal VOC XML for
+Faster R-CNN and YOLO TXT format for YOLOv11n).
+
+\section{Model Training}
+
+\subsection{Faster R-CNN}
+
+Faster R-CNN was implemented using PyTorch's \texttt{torchvision} library with a ResNet-50
+backbone pretrained on the ImageNet large-scale visual recognition dataset \cite{he2016deep}.
+Using a pretrained backbone is critical for performance on a medical imaging dataset of this
+size: the ImageNet pretraining initializes the backbone with discriminative feature representations
+for low-level image structure (edges, textures, gradients) that transfer effectively to the
+AST domain, significantly accelerating convergence and improving final accuracy compared to
+training from random initialization.
+
+The detection head (both the RPN and the classification/regression head) was initialized
+from scratch and trained from the start. Training used the Stochastic Gradient Descent (SGD)
+optimizer with a learning rate of $0.005$, momentum of $0.9$, and weight decay of
+$5 \times 10^{-4}$ (i.e., \texttt{0.0005}) to regularize the model and prevent overfitting
+on the limited real-image training set. The learning rate was decayed using a
+\texttt{StepLR} scheduler with \texttt{step\_size=3} and \texttt{gamma=0.1}, reducing the
+learning rate by a factor of 10 every 3 epochs. All images were resized to
+$640 \times 640$ pixels before being fed to the model, and a batch size of 8 was used.
+
+Before committing to the full training run, a series of preliminary training experiments was
+conducted on progressively larger subsets of the dataset to characterize the model's learning
+behavior and diagnose underfitting and overfitting regimes. These experiments informed the
+final hyperparameter choices---most notably the number of training epochs (10) and the
+learning rate schedule---by revealing the epoch at which validation loss reached its minimum
+before beginning to rise again. The final training run required approximately 174 minutes on
+the available hardware, reflecting the computational cost of the two-stage inference
+architecture.
+
+\subsection{YOLOv11n}
+
+YOLOv11n was trained using the Ultralytics training framework, which provides a high-level
+Python API for model initialization, training loop execution, and checkpointing
+\cite{wang2024yolov11}. The nano (n) variant was selected to prioritize inference speed and
+deployability on systems without a discrete GPU, while maintaining sufficient model capacity
+to learn the relatively constrained visual vocabulary of AST plate images (two object classes
+with strong shape priors: circular disks and circular zones).
+
+Model weights were initialized from Ultralytics' official COCO-pretrained checkpoint for
+YOLOv11n. Transfer learning from COCO, a large-scale natural image detection benchmark
+containing 80 object categories, provides the model with general-purpose object detection
+capabilities (feature extraction, non-maximum suppression, anchor-free prediction) that
+are then refined for the specific AST domain through fine-tuning. The fine-tuning training
+was run for \textbf{200 epochs} on the same dataset split as Faster R-CNN, with images
+resized to $640 \times 640$ pixels and a batch size of 8. Built-in Ultralytics data
+augmentation was disabled (\texttt{augment=False}) so that the model was trained on
+clean, non-augmented images, consistent with the augmentation strategy applied at the
+dataset-preparation stage. Training on the full dataset at this configuration required
+approximately 200 minutes.
+
+YOLOv11n detects two object classes: \texttt{antibiotic} (the drug-impregnated disk, which
+serves as both the OCR target and the in-image calibration reference) and \texttt{disk-zone}
+(the surrounding inhibition zone, from which the ZOI diameter is measured). During inference,
+the model outputs bounding boxes for all detected objects of both classes, which are then
+matched spatially (nearest-disk-to-zone pairing) to associate each zone with its
+corresponding antibiotic disk.
+
+\subsection{Hough Circle Transform}
+
+The Hough Circle Transform was applied as a classical baseline using OpenCV's
+\texttt{HoughCircles} function, which implements the generalized Hough transform for circle
+detection using gradient-based voting. Prior to applying the transform, each image was
+converted to grayscale and smoothed with a Gaussian filter using a kernel size of
+$17 \times 17$ pixels and $\sigma = 0$ (allowing OpenCV to compute the standard deviation
+automatically from the kernel size) to reduce noise that would otherwise produce spurious
+gradient responses.
+
+The \texttt{HoughCircles} function accepts four primary tuning parameters: \texttt{dp}
+(the inverse resolution ratio of the accumulator to the input image, controlling the
+resolution of the parameter-space accumulator), \texttt{minDist} (the minimum allowed
+distance between detected circle centers, preventing multiple detections of the same zone),
+\texttt{param1} (the upper Canny edge-detection threshold, with the lower threshold set
+automatically to half this value), and \texttt{param2} (the accumulator threshold for
+center detection, controlling the minimum number of votes required to declare a detected
+circle). Optimal values for these four parameters were found by an exhaustive grid search
+across the full dataset, minimizing the mean absolute error between detected and ground-truth
+circle radii. The final selected values were \texttt{dp=1.5}, \texttt{minDist=150},
+\texttt{param1=100}, and \texttt{param2=50}. Importantly, the final reported performance
+figures represent the best-case scenario for Hough Transform: the parameter values were
+tuned on the full dataset, which likely includes the test set, so generalization performance
+may be lower than the reported figures suggest.
+
+\section{ZOI Diameter Measurement and Calibration}
+
+After detecting zones of inhibition as bounding boxes (for the two deep learning models)
+or as circles with explicit radius parameters (for the Hough Transform), the raw output must
+be converted to a physical ZOI diameter measurement in millimeters before it can be compared
+to CLSI or EUCAST breakpoints.
+
+For bounding-box-based detection (Faster R-CNN and YOLOv11n), the pixel-scale diameter of
+the detected zone is estimated from the bounding box dimensions using two complementary
+approximations that are compared and averaged:
+\begin{itemize}
+  \item \textbf{Diameter-based:} The average of the bounding box width $w$ and height $h$
+        in pixels, $\hat{d}_{\mathrm{diam}} = (w + h)/2$, assuming the zone is approximately
+        circular.
+  \item \textbf{Area-based:} The equivalent-circle diameter computed from the bounding box
+        area, $\hat{d}_{\mathrm{area}} = 2\sqrt{(w \cdot h)/\pi}$, which is more robust
+        to mildly elliptical zones where the bounding box aspect ratio deviates from unity.
+\end{itemize}
+
+Pixel-to-millimeter conversion is performed using the antibiotic disk as an in-image
+calibration reference. Since the physical diameter of a standard CLSI-compliant antibiotic
+disk is precisely 6\,mm, and the disk is also detected as a bounding box by the model,
+the calibration factor (in millimeters per pixel) can be computed for each image individually
+as $k = 6\,\mathrm{mm} / \hat{d}_{\mathrm{disk}}$, where $\hat{d}_{\mathrm{disk}}$ is the
+pixel-scale diameter estimate for the corresponding antibiotic disk bounding box. Applying
+this per-image calibration factor eliminates the effect of variable camera distance and zoom
+level, ensuring that measurements are robust to photographic variation without requiring a
+physical ruler in the field of view.
+
+Calibration refinement was an iterative process throughout the project. Initial calibration
+using the raw area-based diameter estimate produced a systematic positive bias of approximately
+$+4$\,mm (the system consistently over-estimated zone diameters). Analysis of the source of
+this bias revealed that bounding boxes predicted by the model systematically overshot the
+true zone boundary by a few pixels due to the zone's diffuse, gradient-like edge. By combining
+area-based and diameter-based estimates and applying a learned linear correction factor, the
+systematic bias was reduced from approximately $+4$\,mm to approximately $+2.1$\,mm,
+representing a substantial improvement in measurement accuracy.
+
+\section{OCR Pipeline for Antibiotic Label Recognition}
+
+The OCR pipeline is responsible for reading the alphanumeric antibiotic code from each
+detected disk and mapping it to a recognized antibiotic name in the breakpoint database.
+The pipeline was designed with a dual-strategy approach to handle the variability in disk
+image quality encountered across different laboratory settings and disk brands.
+
+\subsection{Disk Crop and Preprocessing Strategy}
+
+Each antibiotic disk region is first cropped from the full plate image using the bounding box
+predicted by the YOLO detection model for the \texttt{antibiotic} class. A small padding
+margin is added to the crop boundary to ensure the full disk surface is captured even if the
+bounding box slightly underestimates the disk extent.
+
+The dual preprocessing strategy applies OCR in two separate pipelines and selects the result
+with the higher confidence score:
+\begin{enumerate}
+  \item \textbf{Raw image path:} EasyOCR \cite{jaidedai2024easyocr} is applied directly to
+        the grayscale disk crop at its original pixel intensity values, without any
+        preprocessing transformation.
+        This path performs well when the disk image is already high-contrast and the ink
+        text is clearly legible without enhancement.
+  \item \textbf{CLAHE + Otsu path:} The disk crop is first processed by CLAHE (tile size
+        8$\times$8 pixels, contrast limit 2.0) to normalize local illumination variation,
+        and then binarized using Otsu's global threshold to produce a high-contrast binary
+        image. Morphological dilation or erosion is applied adaptively based on the text
+        pixel ratio (the fraction of white pixels in the binarized crop): if the ratio
+        falls below 0.05, indicating very thin or faint characters, a $3\times3$ dilation
+        kernel is applied to restore stroke connectivity; if the ratio exceeds 0.45,
+        indicating over-thickened or merged characters, a $3\times3$ erosion kernel is applied.
+        EasyOCR is then applied to this preprocessed binary image.
+\end{enumerate}
+
+After obtaining text candidates from both pipelines, the OCR pipeline applies orientation
+normalization: EasyOCR is run at \textbf{24 orientations} of the crop (from -180$^\circ$ to +180$^\circ$ in 15$^\circ$ steps) for each pipeline, producing multiple candidate text strings.
+This high-resolution rotation strategy ensures that labels can be read regardless of the disk's physical orientation on the agar surface. The candidate with the highest \emph{adjusted} EasyOCR confidence score (factoring in regex pattern matching) across all orientations and pipelines is selected as the final OCR result.
+
+\section{System Deployment and Infrastructure}
+
+The final system is transitioned from a local development environment to a production-equivalent deployment at the \textbf{Chulabhorn Royal Academy (CRA)} hospital server. The production infrastructure is designed for high availability and secure clinical access.
+
+\subsection{Server Environment and Backend Services}
+
+The backend services are hosted on a Linux-based server environment at CRA. The FastAPI application is served using \textbf{Uvicorn}, a lightning-fast ASGI server, running as a managed background process. To ensure system stability, a dedicated \texttt{start.sh} management script handles service orchestration, process monitoring, and automatic recovery. The backend is configured to listen on a high-numbered port (6014) to avoid conflicts with other hospital services.
+
+\subsection{Reverse Proxy and Security}
+
+\textbf{Nginx} is implemented as a reverse proxy and web server to manage incoming traffic to the application. Nginx handles SSL/TLS termination, providing secure HTTPS access to the system. It is configured with specific \texttt{location} blocks to route traffic:
+\begin{itemize}
+    \item \texttt{/zoneanalyzer/}: Routes to the React frontend (npx serve on port 6015).
+    \item \texttt{/zoneanalyzer/api/}: Proxies requests to the FastAPI backend (port 6014).
+    \item \texttt{/zoneanalyzer/uploaded_images/}: Serves processed visualization images directly from the server's storage.
+\end{itemize}
+This configuration enables a single-domain entry point (\texttt{https://paniti-jupyter.cra.ac.th/zoneanalyzer/}) for the entire application, simplifying clinical deployment and firewall management.
+
+\subsection{Frontend Serving}
+
+The React frontend is optimized for production using the Vite build pipeline, which generates a minified, tree-shaken set of static assets. These assets are served using \textbf{npx serve}, providing a lightweight and efficient delivery mechanism for the user interface. The frontend environment is configured with a dedicated \texttt{.env} file pointing to the production API endpoint, ensuring seamless communication across the reverse proxy.
+
+\subsection{Post-Processing and Antibiotic Name Matching}
+
+The raw OCR output is filtered through a regular expression to reject implausible strings.
+The regular expression pattern \texttt{\^{}([A-Za-z]+(\textbackslash{}s[A-Za-z]+)\{0,3\})\textbackslash{}s+(\textbackslash{}d+)\$}
+enforces the expected format of an antibiotic disk label: one to four alphabetic tokens
+(the drug abbreviation) followed by a numeric token (the concentration in micrograms). Strings
+that do not match this pattern---which includes OCR hallucinations, partial reads, and pure
+numeric strings---are discarded, and the disk is flagged as ``unidentified'' in the results.
+
+Matched antibiotic abbreviations are then looked up in a curated antibiotic name mapping
+table that maps standard disk abbreviations (e.g., ``OX'', ``AMX'', ``CIP'') to full antibiotic
+names and drug class information. This mapping enables the breakpoint lookup query to retrieve
+the correct CLSI or EUCAST threshold for the identified drug and the user-specified organism.
+
+\section{Susceptibility Classification}
+
+The system implements the full CLSI 2025 \cite{clsi2025} and EUCAST 2023 \cite{eucast2023}
+breakpoint logic for susceptibility classification. In the Thai clinical laboratory context,
+national standards maintained by the Department of Medical Sciences, NIH Thailand
+\cite{dmsc_nih} align closely with CLSI guidelines, making CLSI the primary reference for
+the target deployment environment. The breakpoint database is stored as a structured SQLite
+table with the following schema: antibiotic name, organism group, test standard (CLSI or EUCAST),
+disk potency, susceptible threshold diameter ($S_{\min}$ in mm), intermediate range
+($I_{\min}$--$I_{\max}$ in mm, if applicable), and resistant threshold diameter ($R_{\max}$ in mm).
+This structure directly encodes the published breakpoint tables from both standards.
+
+For each detected zone-disk pair, the system executes the following classification logic:
+\begin{enumerate}
+  \item Retrieve the breakpoint row matching the OCR-identified antibiotic, the user-specified
+        organism group, and the selected standard (CLSI or EUCAST).
+  \item Compare the calibrated ZOI diameter $d_{\mathrm{mm}}$ to the retrieved thresholds.
+  \item Assign classification: Susceptible (S) if $d_{\mathrm{mm}} \geq S_{\min}$;
+        Resistant (R) if $d_{\mathrm{mm}} \leq R_{\max}$; Intermediate (I) if neither
+        condition applies (where the Intermediate category exists for the given drug-organism pair).
+  \item If no matching breakpoint entry is found for the identified antibiotic and organism
+        combination, the classification result is returned as ``Not Available (NA)'' and
+        the raw diameter is still reported to allow manual lookup.
+\end{enumerate}
+
+Results for all detected disk-zone pairs on the plate are collated and returned to the frontend
+in a structured JSON object, which the React dashboard renders as a tabular report listing the
+antibiotic name, disk potency, detected zone diameter (in mm), and the S/I/R classification
+for each disk. The dashboard also displays an annotated overlay of the original plate image
+with bounding boxes drawn around all detected disks and zones, providing a visual confirmation
+that the detections are spatially correct. All results are simultaneously persisted to the
+SQLite history database for audit and retrospective review.

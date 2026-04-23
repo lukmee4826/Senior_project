@@ -1,0 +1,56 @@
+% ============================================================
+%  Abstract (ภาษาอังกฤษ + ภาษาไทย)
+% ============================================================
+\chapter*{Abstract}
+\addcontentsline{toc}{chapter}{Abstract}
+
+Antibiotic resistance is a critical global health challenge that demands accurate and rapid diagnostic methods.
+The Kirby-Bauer disk diffusion method is the internationally accepted standard for Antimicrobial Susceptibility Testing (AST),
+yet manual measurement of zone of inhibition (ZOI) diameters remains time-consuming and prone to human error.
+This project develops an artificial intelligence (AI)-based web application to automate the detection
+and measurement of inhibition zones from photographs of antibiotic susceptibility testing plates.
+
+The system integrates deep learning object detection models---Faster R-CNN with a ResNet-50 backbone and
+YOLOv11n---together with classical image processing via Hough Circle Transform, to localize and measure ZOI diameters.
+An Optical Character Recognition (OCR) pipeline using EasyOCR with preprocessing (global thresholding,
+adaptive binarization, and image rotation) identifies antibiotic disk labels on the plate.
+Detected zone diameters are interpreted against CLSI 2025 and EUCAST 2023 breakpoints
+to classify bacteria as Susceptible (S), Intermediate (I), or Resistant (R).
+
+A dataset of 287 real laboratory images was augmented to 543 training images and supplemented with 2,000 synthetic images
+to improve model generalization.
+Experimental results demonstrate that both deep learning models outperform Hough Transform in ZOI detection accuracy. YOLOv11n achieved superior accuracy with a mean absolute error (MAE) of approximately \textbf{2.5--2.7\,mm} and a mAP@0.5 of 95.91\%, significantly outperforming the Faster R-CNN baseline (MAE 4.65\,mm).
+The complete system, including the React frontend, FastAPI backend, and SQLite database, is fully integrated and has been \textbf{successfully deployed for production use at the Chulabhorn Royal Academy (CRA)} hospital server.
+User evaluation by five domain experts yielded an overall usefulness score of 3.60 out of 5.00, confirming the system's readiness for real-world microbiological laboratory workflows.
+
+\noindent\textbf{Keywords:} Antimicrobial Susceptibility Testing, Zone of Inhibition, Deep Learning, Object Detection,
+Faster R-CNN, YOLOv11, Hough Transform, EasyOCR, Image Processing, CLSI, EUCAST, Web Application
+
+\newpage
+
+% ── บทคัดย่อ ─────────────────────────────────────────────────
+\chapter*{บทคัดย่อ}
+\addcontentsline{toc}{chapter}{บทคัดย่อ}
+
+ปัญหาการดื้อยาต้านจุลชีพ (Antibiotic Resistance) เป็นความท้าทายระดับโลกที่ต้องการวิธีการวินิจฉัยที่รวดเร็วและแม่นยำ 
+การทดสอบความไวของเชื้อแบคทีเรียต่อยาปฏิชีวนะด้วยวิธี Kirby-Bauer disk diffusion เป็นมาตรฐานสากลที่ได้รับการยอมรับในระดับนานาชาติ 
+อย่างไรก็ตาม การวัดขนาดเส้นผ่านศูนย์กลางของวงยับยั้ง (Zone of Inhibition: ZOI) ด้วยตนเองนั้นยังคงใช้เวลานานและเสี่ยงต่อความผิดพลาดจากตัวบุคคล (Human Error) 
+โครงงานนี้จึงมุ่งพัฒนาเว็บแอปพลิเคชันที่ใช้ปัญญาประดิษฐ์ (AI) เพื่อตรวจจับและวัดขนาดวงยับยั้งจากภาพถ่ายจานเพาะเชื้อโดยอัตโนมัติ
+
+ระบบที่พัฒนาขึ้นได้รวมโมเดลตรวจจับวัตถุแบบ Deep Learning ได้แก่ YOLOv11n (โมเดลหลัก) และ Faster R-CNN ร่วมกับการประมวลผลภาพดิจิทัล (Image Processing) 
+เพื่อระบุตำแหน่งและวัดขนาด ZOI นอกจากนี้ยังใช้ระบบ Optical Character Recognition (OCR) โดย EasyOCR ร่วมกับเทคนิค Preprocessing 
+(Global Thresholding, Adaptive Binarization และ Image Rotation) เพื่อระบุชื่อยาปฏิชีวนะจากรหัสบนแผ่นยา 
+ผลการวัดจะถูกนำไปแปลผลตามมาตรฐาน CLSI 2025 และ EUCAST 2023 เพื่อจำแนกเชื้อแบคทีเรียเป็นกลุ่ม ไวต่อยา (Susceptible: S), 
+ก้ำกึ่ง (Intermediate: I) หรือ ดื้อยา (Resistant: R) โดยอัตโนมัติ
+
+ในการทดลองได้ใช้ชุดข้อมูลภาพจริงจากห้องปฏิบัติการ 287 ภาพ และเพิ่มจำนวนเป็น 543 ภาพผ่านเทคนิค Augmentation 
+ร่วมกับภาพจำลอง (Synthetic Images) อีก 2,000 ภาพ เพื่อเพิ่มความสามารถในการเรียนรู้ของโมเดล 
+ผลการทดสอบพบว่า YOLOv11n มีประสิทธิภาพสูงสุด โดยมีค่าความคลาดเคลื่อนเฉลี่ย (Mean Absolute Error: MAE) อยู่ที่ประมาณ \textbf{2.5--2.7 มม.} 
+และมีค่า mAP@0.5 สูงถึง 95.91\% ซึ่งดีกว่าโมเดล Faster R-CNN และวิธี Hough Transform อย่างมีนัยสำคัญ 
+ปัจจุบันระบบได้รับการพัฒนาเป็นเว็บแอปพลิเคชันแบบ Full-stack และติดตั้งใช้งานจริง (Production Deployment) 
+บนเครื่องเซิร์ฟเวอร์ของ \textbf{วิทยาลัยวิทยาศาสตร์การแพทย์เจ้าฟ้าจุฬาภรณ์ (CRA)} โดยผลการประเมินจากผู้เชี่ยวชาญ 5 ท่าน 
+พบว่าระบบมีความเหมาะสมในการใช้งานจริงในระดับ 3.60 จาก 5.00 คะแนน ซึ่งยืนยันถึงความพร้อมในการสนับสนุนการทำงานในห้องปฏิบัติการจุลชีววิทยาคลินิก
+
+\noindent\textbf{คำสำคัญ:} การทดสอบความไวต่อยาต้านจุลชีพ, วงยับยั้ง, ดีพเลิร์นนิง, การตรวจจับวัตถุ, YOLOv11, การประมวลผลภาพ, มาตรฐาน CLSI, มาตรฐาน EUCAST, เว็บแอปพลิเคชัน
+
+\newpage
