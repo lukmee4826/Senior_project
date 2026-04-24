@@ -1,0 +1,120 @@
+import torch
+from PIL import Image
+import matplotlib.pyplot as plt
+import cv2
+import numpy as np
+from ultralytics import YOLO
+
+# ==========================
+# 1. โหลดโมเดล YOLO
+# ==========================
+device = 'cuda' if torch.cuda.is_available() else 'cpu'
+
+path_model = r"C:\Users\bmzaz\Documents\GitHub\SP-Detect_AST_with_Disk_Diffusion\YOLO\runs_v32_50epoch\detect\train\weights\yolo_best.pt"
+model = YOLO(path_model)
+
+# ==========================
+# 2. โหลดและ Inference ภาพ
+# ==========================
+img_path = r"C:\Users\bmzaz\Documents\GitHub\SP-Detect_AST_with_Disk_Diffusion\test2.jpg"
+image = Image.open(img_path).convert("RGB")
+
+# Inference
+results = model(img_path, conf=0.8, device=device)
+result = results[0]
+
+# ==========================
+# 3. ดึงข้อมูล Boxes, Labels, Scores
+# ==========================
+boxes     = result.boxes.xyxy.cpu().numpy()   # [x1, y1, x2, y2]
+labels    = result.boxes.cls.cpu().numpy().astype(int)
+scores    = result.boxes.conf.cpu().numpy()
+names     = model.names  # dict {0: 'disk-zone', 1: 'antibiotic', ...}
+
+width, height = image.size
+depth = 3
+
+# ==========================
+# 4. จัดรูปแบบ Output
+# ==========================
+filename = img_path.split("\\")[-1]
+
+objects = []
+for i in range(len(boxes)):
+    objects.append({
+        'name':  names[labels[i]],
+        'bbox':  boxes[i].tolist(),
+        'score': float(scores[i])
+    })
+
+output = {
+    'filename': filename,
+    'path':     img_path,
+    'width':    width,
+    'height':   height,
+    'depth':    depth,
+    'objects':  objects
+}
+print(output)
+
+# ==========================
+# 5. คำนวณ mm/pixel จาก Antibiotic (class = 'antibiotic')
+# ==========================
+real_antibiotic_diameter_mm = 6.0
+antibiotic_diameter_pixels  = 0
+
+for i, box in enumerate(boxes):
+    if names[labels[i]] == 'antibiotic':
+        x1, y1, x2, y2       = map(int, box)
+        antibiotic_diameter_pixels = min(x2 - x1, y2 - y1)
+        break  # ใช้อันแรกที่เจอ
+
+if antibiotic_diameter_pixels == 0:
+    print("⚠️  ไม่พบ antibiotic disk — ไม่สามารถคำนวณ mm/pixel ได้")
+    mm_per_pixel = None
+else:
+    mm_per_pixel = real_antibiotic_diameter_mm / antibiotic_diameter_pixels
+    print(f"Millimeters per pixel: {mm_per_pixel:.6f} mm/pixel")
+
+# ==========================
+# 6. วาดผลลัพธ์บนภาพ
+# ==========================
+img_np = np.array(image)
+
+for i, box in enumerate(boxes):
+    x1, y1, x2, y2 = map(int, box)
+    label_name      = names[labels[i]]
+    min_side        = min(x2 - x1, y2 - y1)
+    center_x        = (x1 + x2) // 2
+    center_y        = (y1 + y2) // 2
+    area            = (x2 - x1) * (y2 - y1)
+
+    diameter_mm_str = "N/A"
+    if mm_per_pixel:
+        diameter_mm     = min_side * mm_per_pixel
+        diameter_mm_str = f"{diameter_mm:.2f} mm"
+
+    if label_name == 'disk-zone':
+        color = (0, 0, 255)   # แดง (BGR)
+    else:  # antibiotic
+        color = (255, 0, 0)   # น้ำเงิน (BGR)
+
+    # วาดวงกลม
+    cv2.circle(img_np, (center_x, center_y), min_side // 2, color, 2)
+
+    # ป้ายข้อความ
+    cv2.putText(img_np, f"Type: {label_name}",          (x1, y1 - 140),
+                cv2.FONT_HERSHEY_SIMPLEX, 2, color, 2)
+    cv2.putText(img_np, f"Area: {area} px",             (x1, y1 - 70),
+                cv2.FONT_HERSHEY_SIMPLEX, 2, color, 2)
+    cv2.putText(img_np, f"Diameter: {diameter_mm_str}", (x1, y1 - 10),
+                cv2.FONT_HERSHEY_SIMPLEX, 2, color, 2)
+
+# ==========================
+# 7. แสดงภาพ
+# ==========================
+plt.figure(figsize=(10, 8))
+plt.imshow(img_np)
+plt.title(f"YOLO Predictions (conf > 0.9) — {filename}")
+plt.axis("off")
+plt.show()

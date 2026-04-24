@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.4.24)  24 APR 2026 17:21
+This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.4.24)  24 APR 2026 18:19
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1345,6 +1345,18 @@ Overfull \hbox (4.32054pt too wide) in paragraph at lines 65--82
 [][] 
  []
 
+
+Overfull \hbox (25.532pt too wide) in paragraph at lines 86--88
+[] \TU/THSarabunNew(0)/m/n/12 ปัญหา การ ดื้อยา ต้าน จุลชีพ (Antibiotic Resistan
+ce) ถือ เป็น ความ ท้าทาย ด้าน สาธารณสุข
+ []
+
+
+Overfull \hbox (3.7428pt too wide) in paragraph at lines 89--90
+\TU/THSarabunNew(0)/m/n/12 ประมวล ผล ภาพ แบบ ดั้งเดิม อย่าง Hough Circle Transf
+orm เพื่อ ระบุ ตำแหน่ง และ วัด ขนาด ZOI นอกจาก
+ []
+
 [4
 
 ] [5]) (chapters/00_acknowledgement.tex
@@ -1444,9 +1456,9 @@ Overfull \hbox (1.52498pt too wide) in paragraph at lines 27--28
  []
 
 [4]
-Overfull \hbox (3.7907pt too wide) in paragraph at lines 37--38
-\TU/THSarabunNew(0)/m/n/12 ประเมิน เดียวกัน Hough Circle Transform ซึ่ง เป็น เท
-คนิค ที่ ใช้ กัน มา อย่าง ดี สำหรับ การ ตรวจ จับ โครงสร้าง
+Overfull \hbox (3.71274pt too wide) in paragraph at lines 31--32
+\TU/THSarabunNew(0)/m/n/12 ความ ก้าวหน้า ล่าสุด ใน สาขา Deep Learning และ Compu
+ter Vision ได้ ก่อ ให้ เกิด โมเดล ที่ มี ประสิทธิภาพ
  []
 
 [5]
@@ -1465,36 +1477,7 @@ Overfull \hbox (7.37871pt too wide) in paragraph at lines 44--45
 ภาพถ่าย จาน AST ด้วย ค่า ความคลาด เคลื่อน สมบูรณ์
  []
 
-
-Overfull \hbox (0.46902pt too wide) in paragraph at lines 54--55
-\TU/THSarabunNew(0)/m/n/12 แสง ที่ สม่ำเสมอ และ ระยะ ห่าง ระหว่าง กล้อง กับ จาน
- ที่ คงที่ เพื่อ รักษา ความ สม่ำเสมอ ของ มาตราส่วน
- []
-
-
-Overfull \hbox (3.05862pt too wide) in paragraph at lines 54--55
-\TU/THSarabunNew(0)/m/n/12 ภาพ อาจ มา จาก กล้อง ใน ห้อง ปฏิบัติ การ กล้องจุลทรร
-ศน์ ทาง คลินิก หรือ กล้อง สมา ร์ท โฟน มาตรฐาน 
- []
-
-
-Overfull \hbox (2.1434pt too wide) in paragraph at lines 56--57
-[]\TU/THSarabunNew(0)/b/n/12 โมเดล การ ตรวจ จับ (Detection models): \TU/THSarab
-unNew(0)/m/n/12 โครง งาน นี้ ฝึกฝน ประเมิน และ เปรียบ เทียบ แนวทาง
- []
-
 [6]
-Overfull \hbox (14.16588pt too wide) in paragraph at lines 60--61
-\TU/THSarabunNew(0)/m/n/12 ปฏิชีวนะ เป็น ตัว อ้างอิง ภายใน ภาพ เนื่องจาก เส้น ผ
-่าน ศูนย์กลาง ทาง กายภาพ ของ แผ่น ดิสก์ ยา ปฏิชีวนะ
- []
-
-
-Overfull \hbox (1.63899pt too wide) in paragraph at lines 64--65
-[]\TU/THSarabunNew(0)/b/n/12 นอก เหนือ ขอบเขต (Out of scope): \TU/THSarabunNew(
-0)/m/n/12 ระบบ ไม่ ได้ ดำเนิน การ ระบุ สาย พันธุ์ หรือ ชนิด ของ แบคทีเรีย
- []
-
 
 LaTeX Warning: Citation `humphries2018' on page 7 undefined on input line 72.
 

@@ -247,16 +247,16 @@ export function ResultsView({
   const currentPlate = localResults[selectedImage]?.plate;
 
   return (
-    <Card className={`p - 6 shadow - xl ${isDark ? "bg-gray-900 border-gray-800" : "bg-white border-gray-200"} `}>
+    <Card className={`p-6 shadow-xl ${isDark ? "bg-gray-900 border-gray-800" : "bg-white border-gray-200"}`}>
       <div className="flex justify-between items-center mb-6">
-        <h2 className={`text - 2xl ${isDark ? "text-gray-100" : "text-gray-900"} `}>
+        <h2 className={`text-2xl ${isDark ? "text-gray-100" : "text-gray-900"}`}>
           ผลการวิเคราะห์
         </h2>
         <div className="flex gap-2">
           <Button
             variant="outline"
             onClick={() => setEditing(!editing)}
-            className={isEditing => editing
+            className={editing
               ? "bg-green-100 text-green-700 border-green-300 hover:bg-green-200"
               : ""}
           >
@@ -280,7 +280,7 @@ export function ResultsView({
               <div className={`relative w-full h-full flex flex-col ${isDark ? "bg-gray-800" : "bg-gray-50"}`}>
                   {localResults[idx]?.plate?.result_image_url ? (
                     <img
-                      src={`/uploaded_images/${localResults[idx].plate.result_image_url.split('\\').pop().split('/').pop()}`}
+                      src={`/zoneanalyzer/uploaded_images/${localResults[idx].plate.result_image_url.split('\\').pop().split('/').pop()}`}
                       alt={`Plate ${idx + 1}`}
                       className="w-full h-full object-cover"
                     />
@@ -305,16 +305,16 @@ export function ResultsView({
         <h3 className={`text-lg mb-3 ${isDark ? "text-gray-200" : "text-gray-800"}`}>
           ภาพผลลัพธ์
         </h3>
-        <div className={`relative aspect-square max-w-2xl mx-auto rounded-lg overflow-hidden border shadow-lg ${isDark ? "bg-gray-900 border-gray-700" : "bg-gray-100 border-gray-200"}`}>
+        <div className={`relative h-auto max-w-2xl mx-auto rounded-lg overflow-hidden border shadow-lg ${isDark ? "bg-gray-900 border-gray-700" : "bg-gray-100 border-gray-200"}`}>
           {/* Display Image from Backend */}
           {currentPlate?.result_image_url ? (
             <img
-              src={`/uploaded_images/${currentPlate.result_image_url.split('\\').pop().split('/').pop()}`}
+              src={`/zoneanalyzer/uploaded_images/${currentPlate.result_image_url.split('\\').pop().split('/').pop()}`}
               alt="Analyzed Plate"
-              className="w-full h-full object-contain"
+              className="w-full h-auto object-contain"
             />
           ) : (
-            <div className="flex items-center justify-center h-full text-gray-500">No Image Available</div>
+            <div className="flex items-center justify-center min-h-[400px] text-gray-500">No Image Available</div>
           )}
         </div>
       </div>
@@ -525,6 +525,6 @@ export function ResultsView({
           )}
         </div>
       </div>
-    </Card >
+    </Card>
   );
 }
