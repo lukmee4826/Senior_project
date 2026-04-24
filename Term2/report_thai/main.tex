@@ -11,6 +11,10 @@
 \setdefaultlanguage{english}
 \setotherlanguage{thai}
 
+% ── Thai Line Breaking ───────────────────────────────────────
+\XeTeXlinebreaklocale "th"
+\XeTeXlinebreakskip = 0pt plus 1pt
+
 \setmainfont{THSarabunNew}[
   Path           = fonts/,
   Extension      = .ttf,
@@ -121,8 +125,7 @@
       An Exploration of Artificial Intelligence for Detection of \\
     & Inhibition Zones in Antibiotic Susceptibility Testing \\[0.8cm]
     \textbf{สมาชิกกลุ่ม:} &
-      1.\ นายพีรพัฒน์ ศิริพัฒนคุณ \quad 65070505214
-      \quad \texttt{pheeraphat.siri@mail.kmutt.ac.th} \\[0.2cm]
+      1.\ นายพีรพัฒน์ ศิริพัฒนคุณ \quad 65070505214\\[0.2cm]
     & 2.\ นายภัทรดนย์ ธนประสิทธิ์พัฒนา \quad 65070505223 \\[0.8cm]
     \textbf{ที่ปรึกษา:}    & ผศ.\ ดร.\ นนทพรรษน์ ลีราช \\[0.3cm]
     \textbf{ที่ปรึกษาร่วม:} & ผศ.\ ดร.\ ปณิธิ อัจฉราฤทธิ์ \\[0.2cm]
@@ -198,11 +201,11 @@
 
   \begin{tabular}{@{}p{10cm}@{\quad}l@{}}
     \dotfill & Project Advisor \\[0.3cm]
-    \multicolumn{2}{c}{([TBD])} \\[1.2cm]
+    \multicolumn{2}{c}{(Asst.\ Prof.\ Dr.\ Nontapat Leeraj)} \\[1.2cm]
     \dotfill & Project Co-Advisor \\[0.3cm]
-    \multicolumn{2}{c}{([TBD])} \\[1.2cm]
+    \multicolumn{2}{c}{(Asst.\ Prof.\ Dr.\ Paniti Atchararit)} \\[1.2cm]
     \dotfill & Project Co-Advisor \\[0.3cm]
-    \multicolumn{2}{c}{([TBD])} \\[1.2cm]
+    \multicolumn{2}{c}{(Dr.\ Karittha Jangsamsi)} \\[1.2cm]
   \end{tabular}
 
   \vfill
@@ -219,18 +222,15 @@
 \input{chapters/00_abstract}
 \input{chapters/00_acknowledgement}
 
-\phantomsection
-\addcontentsline{toc}{chapter}{\contentsname}
+\clearpage
 \tableofcontents
 \newpage
 
-\phantomsection
-\addcontentsline{toc}{chapter}{\listfigurename}
+\clearpage
 \listoffigures
 \newpage
 
-\phantomsection
-\addcontentsline{toc}{chapter}{\listtablename}
+\clearpage
 \listoftables
 \newpage
 
