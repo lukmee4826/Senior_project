@@ -11,14 +11,16 @@
   Project Title   & An Exploration of Artificial Intelligence for Detection of \\
                   & Inhibition Zones in Antibiotic Susceptibility Testing \\[0.3cm]
   Credits         & 3 \\[0.2cm]
-  Member(s)       & Mr. Peeraphat Siripathanakun \\
+  Member(s)       & Mr. Peeraphat Siriphatthanakhun \\
                   & Mr. Phattaradon Thanaprasitpattana \\[0.3cm]
-  Project Advisor & Assoc.\ Prof.\ Dr.\ Nontapon Leeraj \\[0.2cm]
-  Co-advisor      & Assoc.\ Prof.\ Dr.\ Panit Ajchararit \\
-                  & Dr.\ Kritsana Jaengsamsi \\[0.3cm]
+  Project Advisor & [TBD] \\[0.2cm]
+  Co-advisor      & [TBD] \\
+                  & [TBD] \\
+                  & [TBD] \\
+                  & [TBD] \\[0.3cm]
   Program         & Bachelor of Engineering \\[0.1cm]
-  Field of Study  & Computer Engineering \\[0.1cm]
-  Department      & Computer Engineering \\[0.1cm]
+  Field of Study  & Health Data Science \\[0.1cm]
+  Department      & Health Data Science \\[0.1cm]
   Faculty         & Engineering \\[0.1cm]
   Academic Year   & 2025 \\
 \end{tabular}
@@ -46,7 +48,7 @@ Experimental results demonstrate that both deep learning models outperform Hough
 YOLOv11n achieved superior accuracy with a mean absolute error (MAE) of approximately \textbf{2.5--2.7\,mm}
 and a mAP@0.5 of 95.91\%, significantly outperforming the Faster R-CNN baseline (MAE 4.65\,mm).
 The complete system, including the React frontend, FastAPI backend, and SQLite database, is fully integrated
-and has been \textbf{successfully deployed for production use at the Chulabhorn Royal Academy (CRA)} hospital server.
+and has been \textbf{successfully deployed for production use at the Princess Srisavangavadhana School of Medicine, Chulabhorn Royal Academy} hospital server.
 User evaluation by five domain experts yielded an overall usefulness score of 3.60 out of 5.00,
 confirming the system's readiness for real-world microbiological laboratory workflows.
 
@@ -61,17 +63,19 @@ Faster R-CNN, YOLOv11, Hough Transform, EasyOCR, Image Processing, CLSI, EUCAST,
 \addcontentsline{toc}{chapter}{บทคัดย่อ}
 
 \begin{tabular}{@{}lp{10cm}@{}}
-  หัวข้อปริญญานิพนธ์  & การสำรวจปัญญาประดิษฐ์สำหรับการตรวจจับวงยับยั้ง \\
+  หัวข้อปริญญานิพนธ์  & การสำรวจปัญญาประดิษฐ์สำหรับการตรวจจับโซนการยับยั้ง \\
                       & ในการทดสอบความไวต่อยาปฏิชีวนะ \\[0.3cm]
   หน่วยกิต            & 3 \\[0.2cm]
   ผู้เขียน             & นายพีรพัฒน์ ศิริพัฒนคุณ \\
-                      & นายภัทรดนย์ ธนาประสิทธิ์ปัญญา \\[0.3cm]
-  อาจารย์ที่ปรึกษา     & รศ.\ ดร.\ นนทพร ลีราช \\[0.2cm]
-  ที่ปรึกษาร่วม        & รศ.\ ดร.\ ปณิต อัจฉรารัตน์ \\
-                      & ดร.\ กฤษณา แจงแสงสี \\[0.3cm]
-  หลักสูตร             & วิศวกรรมศาสตรบัณฑิต \\[0.1cm]
-  สาขาวิชา            & วิศวกรรมคอมพิวเตอร์ \\[0.1cm]
-  ภาควิชา             & วิศวกรรมคอมพิวเตอร์ \\[0.1cm]
+                      & นายภัทรดนย์ ธนประสิทธิ์พัฒนา \\[0.3cm]
+  อาจารย์ที่ปรึกษา     & ผศ.\ ดร.\ นนทพรรษน์ ลีราช \\[0.2cm]
+  ที่ปรึกษาร่วม        & ผศ.\ ดร.\ ปณิธิ อัจฉราฤทธิ์ \\
+                      & ดร.\ คริษฐา แจ้งสามสี \\
+                      & ดร.\ จิรพันธ์ เปรมสุริยา \\
+                      & ดร.\ จุมพล พลวิชัย \\[0.3cm]
+  หลักสูตร             & วิทยาศาสตรบัณฑิต \\[0.1cm]
+  สาขาวิชา            & วิทยาศาสตร์ข้อมูลสุขภาพ \\[0.1cm]
+  ภาควิชา             & วิทยาศาสตร์ข้อมูลสุขภาพ \\[0.1cm]
   คณะ                 & วิศวกรรมศาสตร์ \\[0.1cm]
   ปีการศึกษา          & 2568 \\
 \end{tabular}
@@ -82,15 +86,15 @@ Faster R-CNN, YOLOv11, Hough Transform, EasyOCR, Image Processing, CLSI, EUCAST,
 \hspace{\parindent}%
 ปัญหาการดื้อยาต้านจุลชีพ (Antibiotic Resistance) เป็นความท้าทายระดับโลกที่ต้องการวิธีการวินิจฉัยที่รวดเร็วและแม่นยำ
 การทดสอบความไวของเชื้อแบคทีเรียต่อยาปฏิชีวนะด้วยวิธี Kirby-Bauer disk diffusion เป็นมาตรฐานสากลที่ได้รับการยอมรับในระดับนานาชาติ
-อย่างไรก็ตาม การวัดขนาดเส้นผ่านศูนย์กลางของวงยับยั้ง (Zone of Inhibition: ZOI) ด้วยตนเองนั้นยังคงใช้เวลานานและเสี่ยงต่อความผิดพลาดจากตัวบุคคล (Human Error)
-โครงงานนี้จึงมุ่งพัฒนาเว็บแอปพลิเคชันที่ใช้ปัญญาประดิษฐ์ (AI) เพื่อตรวจจับและวัดขนาดวงยับยั้งจากภาพถ่ายจานเพาะเชื้อโดยอัตโนมัติ
+อย่างไรก็ตาม การวัดขนาดเส้นผ่านศูนย์กลางของโซนการยับยั้ง (Zone of Inhibition: ZOI) ด้วยตนเองนั้นยังคงใช้เวลานานและเสี่ยงต่อความผิดพลาดจากตัวบุคคล (Human Error)
+โครงงานนี้จึงมุ่งพัฒนาเว็บแอปพลิเคชันที่ใช้ปัญญาประดิษฐ์ (AI) เพื่อตรวจจับและวัดขนาดโซนการยับยั้งจากภาพถ่ายจานเพาะเชื้อโดยอัตโนมัติ
 
 ระบบที่พัฒนาขึ้นได้รวมโมเดลตรวจจับวัตถุแบบ Deep Learning ได้แก่ YOLOv11n (โมเดลหลัก) และ Faster R-CNN
 ร่วมกับการประมวลผลภาพดิจิทัล (Image Processing) เพื่อระบุตำแหน่งและวัดขนาด ZOI
 นอกจากนี้ยังใช้ระบบ Optical Character Recognition (OCR) โดย EasyOCR ร่วมกับเทคนิค Preprocessing
 (Global Thresholding, Adaptive Binarization และ Image Rotation) เพื่อระบุชื่อยาปฏิชีวนะจากรหัสบนแผ่นยา
 ผลการวัดจะถูกนำไปแปลผลตามมาตรฐาน CLSI 2025 และ EUCAST 2023 เพื่อจำแนกเชื้อแบคทีเรียเป็นกลุ่ม
-ไวต่อยา (Susceptible: S), ก้ำกึ่ง (Intermediate: I) หรือ ดื้อยา (Resistant: R) โดยอัตโนมัติ
+ไวต่อยา (Susceptible: S), ระดับปานกลาง (Intermediate: I) หรือ ดื้อยา (Resistant: R) โดยอัตโนมัติ
 
 ในการทดลองได้ใช้ชุดข้อมูลภาพจริงจากห้องปฏิบัติการ 287 ภาพ และเพิ่มจำนวนเป็น 543 ภาพผ่านเทคนิค Augmentation
 ร่วมกับภาพจำลอง (Synthetic Images) อีก 2,000 ภาพ เพื่อเพิ่มความสามารถในการเรียนรู้ของโมเดล
@@ -98,11 +102,11 @@ Faster R-CNN, YOLOv11, Hough Transform, EasyOCR, Image Processing, CLSI, EUCAST,
 อยู่ที่ประมาณ \textbf{2.5--2.7 มม.} และมีค่า mAP@0.5 สูงถึง 95.91\%
 ซึ่งดีกว่าโมเดล Faster R-CNN และวิธี Hough Transform อย่างมีนัยสำคัญ
 ปัจจุบันระบบได้รับการพัฒนาเป็นเว็บแอปพลิเคชันแบบ Full-stack และติดตั้งใช้งานจริง (Production Deployment)
-บนเครื่องเซิร์ฟเวอร์ของ \textbf{วิทยาลัยวิทยาศาสตร์การแพทย์เจ้าฟ้าจุฬาภรณ์ (CRA)}
+บนเครื่องเซิร์ฟเวอร์ของ \textbf{ราชวิทยาลัยจุฬาภรณ์ วิทยาลัยแพทยศาสตร์ศรีสวางควัฒน}
 โดยผลการประเมินจากผู้เชี่ยวชาญ 5 ท่าน พบว่าระบบมีความเหมาะสมในการใช้งานจริงในระดับ 3.60 จาก 5.00 คะแนน
 ซึ่งยืนยันถึงความพร้อมในการสนับสนุนการทำงานในห้องปฏิบัติการจุลชีววิทยาคลินิก
 
-\noindent\textbf{คำสำคัญ:} การทดสอบความไวต่อยาต้านจุลชีพ, วงยับยั้ง, ดีพเลิร์นนิง, การตรวจจับวัตถุ,
+\noindent\textbf{คำสำคัญ:} การทดสอบความไวต่อยาต้านจุลชีพ, โซนการยับยั้ง, Deep Learning, การตรวจจับวัตถุ,
 YOLOv11, การประมวลผลภาพ, มาตรฐาน CLSI, มาตรฐาน EUCAST, เว็บแอปพลิเคชัน
 
 \newpage

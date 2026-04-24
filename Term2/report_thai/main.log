@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.4.24)  24 APR 2026 15:12
+This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.4.24)  24 APR 2026 16:43
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1167,7 +1167,8 @@ Package uniquecounter Info: New unique counter `rerunfilecheck' on input line 2
 \Hy@SectionHShift=\skip113
 )
 Package hyperref Info: Option `colorlinks' set `true' on input line 58.
- (main.aux)
+
+No file main.aux.
 \openout1 = `main.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 105.
@@ -1255,7 +1256,6 @@ LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
 (Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 105.
 LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 (Font)                  OT1/cmtt/m/n --> TU/FreeMono(0)/b/n on input line 105.
-
 *geometry* driver: auto-detecting
 *geometry* detected driver: xetex
 *geometry* verbose mode - [ preamble ] result:
@@ -1300,9 +1300,11 @@ Package pgfplots notification 'compat/show suggested version=true': document ha
 s been generated with the most recent feature set (\pgfplotsset{compat=1.18}).
 
 Package hyperref Info: Link coloring ON on input line 105.
-(main.out) (main.out)
 \@outlinefile=\write4
 \openout4 = `main.out'.
+
+
+Package hyperref Warning: Rerun to get /PageLabels entry.
 
 LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/m/n' will be
 (Font)              scaled to size 18.72003pt on input line 115.
@@ -1314,7 +1316,6 @@ LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/m/n' will be
 (Font)              scaled to size 7.80002pt on input line 119.
 LaTeX Font Info:    Trying to load font information for U+msa on input line 119
 .
-
 (C:\Users\Lukme\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsa.fd
 File: umsa.fd 2013/01/14 v3.01 AMS symbols A
 )
@@ -1327,143 +1328,167 @@ File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/b/n' will be
 (Font)              scaled to size 15.60004pt on input line 120.
 
-c:/code/git/Senior_project/Term2/report_thai/main.tex:127: Font TU/FreeMono(0)/
+c:/code/git/Senior_project/Term2/report_thai/main.tex:125: Font TU/FreeMono(0)/
 m/n/12=FreeMono at 12.0pt not loadable: Metric (TFM) file or installed font not
  found.
 <to be read again> 
                    relax 
-l.127       \quad \texttt{lukmeepook@gmail.com}
-                                                \\[0.2cm]
+l.125 ...\texttt{pheeraphat.siri@mail.kmutt.ac.th}
+                                                   \\[0.2cm]
 I wasn't able to read the size data for this font,
 so I will ignore the font specification.
 [Wizards can fix TFM files using TFtoPL/PLtoTF.]
 You might try inserting a different font spec;
 e.g., type `I\font<same font id>=<substitute font name>'.
 
-Missing character: There is no l in font nullfont!
-Missing character: There is no u in font nullfont!
-Missing character: There is no k in font nullfont!
-Missing character: There is no m in font nullfont!
-Missing character: There is no e in font nullfont!
-Missing character: There is no e in font nullfont!
 Missing character: There is no p in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no k in font nullfont!
+Missing character: There is no h in font nullfont!
+Missing character: There is no e in font nullfont!
+Missing character: There is no e in font nullfont!
+Missing character: There is no r in font nullfont!
+Missing character: There is no a in font nullfont!
+Missing character: There is no p in font nullfont!
+Missing character: There is no h in font nullfont!
+Missing character: There is no a in font nullfont!
+Missing character: There is no t in font nullfont!
+Missing character: There is no . in font nullfont!
+Missing character: There is no s in font nullfont!
+Missing character: There is no i in font nullfont!
+Missing character: There is no r in font nullfont!
+Missing character: There is no i in font nullfont!
 Missing character: There is no @ in font nullfont!
-Missing character: There is no g in font nullfont!
 Missing character: There is no m in font nullfont!
 Missing character: There is no a in font nullfont!
 Missing character: There is no i in font nullfont!
 Missing character: There is no l in font nullfont!
 Missing character: There is no . in font nullfont!
-Missing character: There is no c in font nullfont!
-Missing character: There is no o in font nullfont!
+Missing character: There is no k in font nullfont!
 Missing character: There is no m in font nullfont!
+Missing character: There is no u in font nullfont!
+Missing character: There is no t in font nullfont!
+Missing character: There is no t in font nullfont!
+Missing character: There is no . in font nullfont!
+Missing character: There is no a in font nullfont!
+Missing character: There is no c in font nullfont!
+Missing character: There is no . in font nullfont!
+Missing character: There is no t in font nullfont!
+Missing character: There is no h in font nullfont!
 [1
 
 ]
 File: figures/kmutt_logo.png Graphic file (type bmp)
 <figures/kmutt_logo.png>
  [1] [1] (chapters/00_abstract.tex
-Overfull \hbox (6.6285pt too wide) in paragraph at lines 10--25
+Overfull \hbox (6.6285pt too wide) in paragraph at lines 10--27
 [][] 
  []
 
 [2
 
 ] [3]
-Overfull \hbox (4.32054pt too wide) in paragraph at lines 63--78
+Overfull \hbox (4.32054pt too wide) in paragraph at lines 65--82
 [][] 
  []
 
 
-Overfull \hbox (166.6811pt too wide) in paragraph at lines 82--87
+Overfull \hbox (166.6811pt too wide) in paragraph at lines 86--91
 [] \TU/THSarabunNew(0)/m/n/12 ปัญหาการดื้อยาต้านจุลชีพ (Antibiotic Resistance) 
 เป็นความท้าทายระดับโลกที่ต้องการวิธีการวินิจฉัยที่รวดเร็วและแม่นยำ
  []
 
 
-Overfull \hbox (164.95467pt too wide) in paragraph at lines 82--87
+Overfull \hbox (164.95467pt too wide) in paragraph at lines 86--91
 \TU/THSarabunNew(0)/m/n/12 การทดสอบความไวของเชื้อแบคทีเรียต่อยาปฏิชีวนะด้วยวิธี
  Kirby-Bauer disk diffusion เป็นมาตรฐานสากลที่ได้รับการยอมรับในระดับนานาชาติ
  []
 
 
-Overfull \hbox (211.73805pt too wide) in paragraph at lines 82--87
-\TU/THSarabunNew(0)/m/n/12 อย่างไรก็ตาม การวัดขนาดเส้นผ่านศูนย์กลางของวงยับยั้ง
- (Zone of Inhibition: ZOI) ด้วยตนเองนั้นยังคงใช้เวลานานและเสี่ยงต่อความผิดพลาดจ
-ากตัวบุคคล
+Overfull \hbox (233.6717pt too wide) in paragraph at lines 86--91
+\TU/THSarabunNew(0)/m/n/12 อย่างไรก็ตาม การวัดขนาดเส้นผ่านศูนย์กลางของโซนการยับ
+ยั้ง (Zone of Inhibition: ZOI) ด้วยตนเองนั้นยังคงใช้เวลานานและเสี่ยงต่อความผิดพ
+ลาดจากตัวบุคคล
  []
 
 
-Overfull \hbox (195.85722pt too wide) in paragraph at lines 82--87
+Overfull \hbox (217.79088pt too wide) in paragraph at lines 86--91
 \TU/THSarabunNew(0)/m/n/12 (Human Error) โครงงานนี้จึงมุ่งพัฒนาเว็บแอปพลิเคชันท
-ี่ใช้ปัญญาประดิษฐ์ (AI) เพื่อตรวจจับและวัดขนาดวงยับยั้งจากภาพถ่ายจานเพาะเชื้อโด
-ยอัตโนมัติ 
+ี่ใช้ปัญญาประดิษฐ์ (AI) เพื่อตรวจจับและวัดขนาดโซนการยับยั้งจากภาพถ่ายจานเพาะเชื
+้อโดยอัตโนมัติ 
  []
 
 
-Overfull \hbox (13.99052pt too wide) in paragraph at lines 88--94
+Overfull \hbox (13.99052pt too wide) in paragraph at lines 92--98
 []\TU/THSarabunNew(0)/m/n/12 ระบบที่พัฒนาขึ้นได้รวมโมเดลตรวจจับวัตถุแบบ Deep Le
 arning ได้แก่ YOLOv11n (โมเดลหลัก)
  []
 
 
-Overfull \hbox (8.78159pt too wide) in paragraph at lines 88--94
+Overfull \hbox (8.78159pt too wide) in paragraph at lines 92--98
 \TU/THSarabunNew(0)/m/n/12 และ Faster R-CNN ร่วมกับการประมวลผลภาพดิจิทัล (Image
  Processing) เพื่อระบุตำแหน่งและวัดขนาด
  []
 
 
-Overfull \hbox (98.8168pt too wide) in paragraph at lines 88--94
+Overfull \hbox (98.8168pt too wide) in paragraph at lines 92--98
 \TU/THSarabunNew(0)/m/n/12 processing (Global Thresholding, Adaptive Binarizati
 on และ Image Rotation) เพื่อระบุชื่อยาปฏิชีวนะจากรหัสบนแผ่นยา
  []
 
 
-Overfull \hbox (20.30891pt too wide) in paragraph at lines 88--94
+Overfull \hbox (20.30891pt too wide) in paragraph at lines 92--98
 \TU/THSarabunNew(0)/m/n/12 ผลการวัดจะถูกนำไปแปลผลตามมาตรฐาน CLSI 2025 และ EUCAS
 T 2023 เพื่อจำแนกเชื้อแบคทีเรียเป็นกลุ่ม
  []
 
 
-Overfull \hbox (125.08102pt too wide) in paragraph at lines 95--104
+Overfull \hbox (125.08102pt too wide) in paragraph at lines 99--108
 \TU/THSarabunNew(0)/m/n/12 ภาพผ่านเทคนิค Augmentation ร่วมกับภาพจำลอง (Syntheti
 c Images) อีก 2,000 ภาพ เพื่อเพิ่มความสามารถในการเรียนรู้ของโมเดล
  []
 
 
-Overfull \hbox (47.4697pt too wide) in paragraph at lines 95--104
+Overfull \hbox (47.4697pt too wide) in paragraph at lines 99--108
 \TU/THSarabunNew(0)/m/n/12 Faster R-CNN และวิธี Hough Transform อย่างมีนัยสำคัญ
  ปัจจุบันระบบได้รับการพัฒนาเป็นเว็บแอปพลิเคชันแบบ
  []
 
 
-Overfull \hbox (129.01219pt too wide) in paragraph at lines 95--104
+Overfull \hbox (22.61995pt too wide) in paragraph at lines 99--108
 \TU/THSarabunNew(0)/m/n/12 Full-stack และติดตั้งใช้งานจริง (Production Deployme
-nt) บนเครื่องเซิร์ฟเวอร์ของ \TU/THSarabunNew(0)/b/n/12 วิทยาลัยวิทยาศาสตร์การแพ
-ทย์เจ้าฟ้าจุฬาภรณ์
+nt) บนเครื่องเซิร์ฟเวอร์ของ \TU/THSarabunNew(0)/b/n/12 ราชวิทยาลัยจุฬาภรณ์
  []
 
 
-Overfull \hbox (19.1723pt too wide) in paragraph at lines 95--104
+Overfull \hbox (123.20895pt too wide) in paragraph at lines 99--108
+\TU/THSarabunNew(0)/b/n/12 วิทยาลัยแพทยศาสตร์ศรีสวางควัฒน \TU/THSarabunNew(0)/m
+/n/12 โดยผลการประเมินจากผู้เชี่ยวชาญ 5 ท่าน พบว่าระบบมีความเหมาะสมในการใช้งานจร
+ิงในระดับ
+ []
+
+
+Overfull \hbox (19.1723pt too wide) in paragraph at lines 99--108
 \TU/THSarabunNew(0)/m/n/12 3.60 จาก 5.00 คะแนน ซึ่งยืนยันถึงความพร้อมในการสนับส
 นุนการทำงานในห้องปฏิบัติการจุลชีววิทยาคลินิก 
  []
 
 [4
 
-] [5]) (chapters/00_acknowledgement.tex
+]
+Overfull \hbox (25.76491pt too wide) in paragraph at lines 109--111
+\TU/THSarabunNew(0)/b/n/12 คำสำคัญ: \TU/THSarabunNew(0)/m/n/12 การทดสอบความไวต่
+อยาต้านจุลชีพ, โซนการยับยั้ง, Deep Learning, การตรวจจับวัตถุ, YOLOv11,
+ []
+
+[5]) (chapters/00_acknowledgement.tex
 Overfull \hbox (58.80681pt too wide) in paragraph at lines 10--15
 [] \TU/THSarabunNew(0)/m/n/12 การจัดทำโครงงานนี้สำเร็จลงได้ด้วยความกรุณาและความ
 ช่วยเหลืออย่างดียิ่งจากบุคคลหลายท่าน
  []
 
 
-Overfull \hbox (35.28717pt too wide) in paragraph at lines 10--15
-\TU/THSarabunNew(0)/m/n/12 คณะผู้จัดทำขอกราบขอบพระคุณ รศ. ดร. นนทพร ลีราช อาจาร
-ย์ที่ปรึกษาโครงงาน ที่กรุณาสละเวลาให้คำแนะนำ
+Overfull \hbox (54.61563pt too wide) in paragraph at lines 10--15
+\TU/THSarabunNew(0)/m/n/12 คณะผู้จัดทำขอกราบขอบพระคุณ ผศ. ดร. นนทพรรษน์ ลีราช อ
+าจารย์ที่ปรึกษาโครงงาน ที่กรุณาสละเวลาให้คำแนะนำ
  []
 
 
@@ -1473,38 +1498,37 @@ Overfull \hbox (109.76172pt too wide) in paragraph at lines 10--15
  []
 
 
-Overfull \hbox (104.41089pt too wide) in paragraph at lines 16--19
-\TU/THSarabunNew(0)/m/n/12 ที่กรุณาสละเวลาให้คำปรึกษา ตรวจสอบความถูกต้องของเนื้
-อหาทางคลินิก และให้ข้อเสนอแนะที่มีคุณค่าในทุกขั้นตอนของการวิจัย 
+Overfull \hbox (27.31555pt too wide) in paragraph at lines 16--20
+\TU/THSarabunNew(0)/m/n/12 จุมพล พลวิชัย อาจารย์ที่ปรึกษาร่วม ที่กรุณาสละเวลาให
+้คำปรึกษา ตรวจสอบความถูกต้องของเนื้อหาทางคลินิก
  []
 
 
-Overfull \hbox (45.26859pt too wide) in paragraph at lines 20--25
-[]\TU/THSarabunNew(0)/m/n/12 ขอขอบคุณทีมบุคลากรทางการแพทย์และห้องปฏิบัติการ วิท
-ยาลัยวิทยาศาสตร์การแพทย์เจ้าฟ้าจุฬาภรณ์
+Overfull \hbox (91.8503pt too wide) in paragraph at lines 21--26
+[]\TU/THSarabunNew(0)/m/n/12 ขอขอบคุณทีมบุคลากรทางการแพทย์และห้องปฏิบัติการ ราช
+วิทยาลัยจุฬาภรณ์ วิทยาลัยแพทยศาสตร์ศรีสวางควัฒน
  []
 
 
-Overfull \hbox (200.98961pt too wide) in paragraph at lines 20--25
-\TU/THSarabunNew(0)/m/n/12 (CRA) ที่อนุเคราะห์ภาพถ่ายจานเพาะเชื้อจากการปฏิบัติง
-านจริง และให้ความร่วมมือในการทดสอบระบบในสภาพแวดล้อมห้องปฏิบัติการจุลชีววิทยาคลิ
-นิก
+Overfull \hbox (174.33025pt too wide) in paragraph at lines 21--26
+\TU/THSarabunNew(0)/m/n/12 ที่อนุเคราะห์ภาพถ่ายจานเพาะเชื้อจากการปฏิบัติงานจริง
+ และให้ความร่วมมือในการทดสอบระบบในสภาพแวดล้อมห้องปฏิบัติการจุลชีววิทยาคลินิก
  []
 
 
-Overfull \hbox (59.4646pt too wide) in paragraph at lines 26--30
+Overfull \hbox (59.4646pt too wide) in paragraph at lines 27--31
 []\TU/THSarabunNew(0)/m/n/12 ขอขอบคุณภาควิชาวิศวกรรมคอมพิวเตอร์ คณะวิศวกรรมศาสต
 ร์ มหาวิทยาลัยเทคโนโลยีพระจอมเกล้าธนบุรี
  []
 
 
-Overfull \hbox (42.71274pt too wide) in paragraph at lines 26--30
+Overfull \hbox (42.71274pt too wide) in paragraph at lines 27--31
 \TU/THSarabunNew(0)/m/n/12 ที่ให้การสนับสนุนทรัพยากรการเรียนรู้และสภาพแวดล้อมกา
 รวิจัยที่เอื้ออำนวย ตลอดระยะเวลาการดำเนินโครงงาน 
  []
 
 
-Overfull \hbox (4.44328pt too wide) in paragraph at lines 31--33
+Overfull \hbox (4.44328pt too wide) in paragraph at lines 32--34
 []\TU/THSarabunNew(0)/m/n/12 ท้ายที่สุดนี้ โครงงานนี้จะไม่สามารถสำเร็จได้หากขาด
 กำลังใจและการสนับสนุน จากบิดา มารดา
  []
@@ -1516,342 +1540,22 @@ LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/m/n' will be
 (Font)              scaled to size 32.34407pt on input line 224.
 LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/b/n' will be
 (Font)              scaled to size 32.34407pt on input line 224.
- (main.toc
-Overfull \hbox (13.11273pt too wide) in paragraph at lines 16--16
- [][] [][][]\TU/THSarabunNew(0)/b/n/12 งานวิจัยที่เกี่ยวข้องและทฤษฎีพื้นฐาน (Re
-lated Work and Background 
- []
 
-[7]
-Overfull \hbox (4.07149pt too wide) in paragraph at lines 44--44
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 กลยุทธ์การครอบตัดแผ่นยาและการประมวลผลเบื
-้องต้น (Disk Crop 
- []
-
-
-Overfull \hbox (1.29475pt too wide) in paragraph at lines 45--45
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 การติดตั้งระบบและโครงสร้างพื้นฐาน (Syste
-m Deployment and Infrastruc- 
- []
-
-[8]
-Overfull \hbox (44.03877pt too wide) in paragraph at lines 49--49
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 การประมวลผลหลังการทำงานและการจับคู่ชื่อย
-าปฏิชีวนะ (Post-Processing 
- []
-
-
-Overfull \hbox (0.28069pt too wide) in paragraph at lines 53--53
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 การวิเคราะห์ค่าความคลาดเคลื่อนรายยาปฏิชี
-วนะ (Per-Antibiotic 
- []
-
-[9]
-Overfull \hbox (1.13867pt too wide) in paragraph at lines 90--90
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 ความคลาดเคลื่อนเชิงระบบที่เหลืออยู่ของกา
-รสอบเทียบ (Residual 
- []
-
-
-Overfull \hbox (0.48347pt too wide) in paragraph at lines 93--93
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 การศึกษาความถูกต้องทางคลินิกขนาดใหญ่ (La
-rge-Scale Clinical 
- []
-
-
-Overfull \hbox (2.23073pt too wide) in paragraph at lines 95--95
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 การติดตั้งใช้งานบนอุปกรณ์เคลื่อนที่ (Mob
-ile and On-Device De- 
- []
-
-
-Overfull \hbox (1.40388pt too wide) in paragraph at lines 97--97
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 โมดูลระบาดวิทยาและแนวโน้มการดื้อยา (Epid
-emiology and Re- 
- []
-
-)
+No file main.toc.
 \tf@toc=\write5
 \openout5 = `main.toc'.
 
- [10] (main.lof
-Overfull \hbox (69.44086pt too wide) in paragraph at lines 2--2
- \TU/THSarabunNew(0)/m/n/12 of Inhibition, ZOI) รอบๆ แผ่นดิสก์ยาปฏิชีวนะ เส้นผ่
-านศูนย์กลางของวงใสแต่ละวงจะถูกวัดเพื่อ 
- []
-
-LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/m/it' will be
-(Font)              scaled to size 15.60004pt on input line 4.
-
-Overfull \hbox (6.19315pt too wide) in paragraph at lines 4--4
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 ตัวอย่างตารางเกณฑ์การแปลผลเส้นผ่านศูนย์ก
-ลางโซน (Zone diameter break- 
- []
-
-
-Overfull \hbox (9.70207pt too wide) in paragraph at lines 5--5
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 สถาปัตยกรรมของ Faster R-CNN แสดง Convolu
-tional backbone ที่ใช้ร่วมกัน, 
- []
-
-
-Overfull \hbox (24.78732pt too wide) in paragraph at lines 5--5
- \TU/THSarabunNew(0)/m/n/12 Region Proposal Network (RPN) ที่สร้างบริเวณวัตถุที
-่เป็นไปได้ และหัวการตรวจจับ 
- []
-
-
-Overfull \hbox (10.98239pt too wide) in paragraph at lines 6--6
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 สถาปัตยกรรมของ YOLOv11 แสดงเครือข่าย Bac
-kbone สำหรับสกัดคุณลักษณะ, 
- []
-
-
-Overfull \hbox (0.65518pt too wide) in paragraph at lines 6--6
- \TU/THSarabunNew(0)/m/n/12 และหัวการตรวจจับแยกส่วน (Decoupled heads) สำหรับการ
-ถดถอย Bound- 
- []
-
-
-Overfull \hbox (28.82883pt too wide) in paragraph at lines 7--7
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 ภาพประกอบ Hough Circle Transform จุดขอบแ
-ต่ละจุดจะลงคะแนนให้กับกรวยของ 
- []
-
-
-Overfull \hbox (90.89154pt too wide) in paragraph at lines 7--7
- \TU/THSarabunNew(0)/m/n/12 วงกลมที่เป็นไปได้ในพื้นที่พารามิเตอร์ $\OT1/cmr/m/n
-/12 (\OML/cmm/m/it/12 x[]; y[]; r\OT1/cmr/m/n/12 )$ \TU/THSarabunNew(0)/m/n/12 
-โดยวงกลมจริงจะสร้างยอดที่โดดเด่นในตัวสะสมคะแนน[][] []  
- []
-
-
-Overfull \hbox (6.81606pt too wide) in paragraph at lines 8--8
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 ตัวอย่างระบบวิเคราะห์ AST อัตโนมัติเชิงพ
-าณิชย์ที่มีอยู่แล้ว แสดงผลการตรวจจับ 
- []
-
-
-Overfull \hbox (5.24043pt too wide) in paragraph at lines 8--8
- \TU/THSarabunNew(0)/m/n/12 วงยับยั้งพร้อมตารางผลการจำแนก S/I/R ที่ใช้เป็นเกณฑ์
-มาตรฐานในการเปรียบเทียบ[][] []  
- []
-
-
-Overfull \hbox (133.41039pt too wide) in paragraph at lines 10--10
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 Pipeline การวิเคราะห์รูปภาพแบบ End-to-en
-d ของระบบ AST อัตโนมัติ ตั้งแต่การนำเข้าภาพผ่านการตรวจจับ, 
- []
-
-
-Overfull \hbox (6.73805pt too wide) in paragraph at lines 11--11
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 สถาปัตยกรรมระบบโดยรวมของเว็บแอปพลิเคชัน 
-AST อัตโนมัติ แสดงให้เห็นส่วน 
- []
-
-
-Overfull \hbox (4.36266pt too wide) in paragraph at lines 11--11
- \TU/THSarabunNew(0)/m/n/12 React frontend, FastAPI backend, AI inference pipel
-ine และชั้นฐานข้อมูล 
- []
-
-
-Overfull \hbox (71.43251pt too wide) in paragraph at lines 13--13
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 ตัวอย่างภาพ Synthetic ที่สร้างขึ้นด้วยโป
-รแกรม แสดงจานเพาะเชื้อจำลองพร้อมแผ่นยาปฏิชีวนะ 
- []
-
-
-Overfull \hbox (52.58765pt too wide) in paragraph at lines 13--13
- \TU/THSarabunNew(0)/m/n/12 และวงยับยั้งที่มีขนาดหลากหลาย ใช้สำหรับเพิ่มปริมาณแ
-ละความหลากหลายของชุดข้อมูลฝึกฝน[][] []  
- []
-
-[11]
-Missing character: There is no a in font nullfont!
-Missing character: There is no n in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no b in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no t in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no c in font nullfont!
-Missing character: There is no d in font nullfont!
-Missing character: There is no i in font nullfont!
-Missing character: There is no s in font nullfont!
-Missing character: There is no k in font nullfont!
-Missing character: There is no - in font nullfont!
-Missing character: There is no z in font nullfont!
-Missing character: There is no o in font nullfont!
-Missing character: There is no n in font nullfont!
-Missing character: There is no e in font nullfont!
-
-Overfull \hbox (19.39081pt too wide) in paragraph at lines 14--14
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 หน้าจอการระบุป้ายกำกับ (Annotation) บนแพ
-ลตฟอร์ม Roboflow แสดง Bound- 
- []
-
-
-Overfull \hbox (56.34619pt too wide) in paragraph at lines 15--15
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 แผนภาพ Entity-Relationship (ER) ของฐานข้
-อมูล SQLite แสดงความสัมพันธ์ระหว่างตาราง 
- []
-
-
-Overfull \hbox (11.6532pt too wide) in paragraph at lines 18--18
- \TU/THSarabunNew(0)/m/n/12 ที่พยากรณ์ได้ (สีเขียว) วางทับบนภาพจานวุ้น ป้ายชื่อ
-ยาปฏิชีวนะที่ระบุได้โดย OCR 
- []
-
-
-Overfull \hbox (65.14464pt too wide) in paragraph at lines 18--18
- \TU/THSarabunNew(0)/m/n/12 จะแสดงอยู่เหนือแต่ละ Bounding box และขนาดเส้นผ่านศู
-นย์กลาง ZOI ที่พยากรณ์ได้ในหน่วย 
- []
-
-
-Overfull \hbox (0.74767pt too wide) in paragraph at lines 19--19
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 การเปรียบเทียบค่า Mean Absolute Error (M
-AE) ระหว่างวิธีการตรวจจับต่างๆ 
- []
-
-
-Overfull \hbox (47.9389pt too wide) in paragraph at lines 20--20
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 ผลการตรวจจับของ Hough Circle Transform บ
-นจานเพาะเชื้อสี่เหลี่ยม แสดงวงกลมสีแดง 
- []
-
-
-Overfull \hbox (105.67462pt too wide) in paragraph at lines 20--20
- \TU/THSarabunNew(0)/m/n/12 (แผ่นยา) และสีเขียว (วงยับยั้ง) ที่ตรวจพบ สังเกตการ
-ตรวจจับที่ไม่แม่นยำเนื่องจากมุมของจานและโซนซ้อนทับ[][] []  
- []
-
-
-Overfull \hbox (34.98973pt too wide) in paragraph at lines 22--22
- \TU/THSarabunNew(0)/m/n/12 ภาพตัด RGB ดิบที่มีแสงสะท้อน (Specular highlight) (
-b) หลังจากผ่านการปรับปรุงด้วย 
- []
-
-
-Overfull \hbox (10.18675pt too wide) in paragraph at lines 23--23
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 คะแนนความพึงพอใจของผู้ใช้งานเฉลี่ยในแต่ล
-ะเกณฑ์ความสะดวกในการใช้งาน (n=5)[][] []  
- []
-
-
-Overfull \hbox (57.51622pt too wide) in paragraph at lines 24--24
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 ภาพหน้าจอ Dashboard ของ Web application 
-แสดงผลการวัด ZOI และผลลัพธ์การจัดกลุ่ม 
- []
-
-
-Overfull \hbox (9.53046pt too wide) in paragraph at lines 24--24
- \TU/THSarabunNew(0)/m/n/12 S/I/R แต่ละแถวสอดคล้องกับแผ่นยาปฏิชีวนะหนึ่งแผ่นที่
-ตรวจพบ คอลัมน์ “Edit” 
- []
-
-
-Overfull \hbox (52.1821pt too wide) in paragraph at lines 25--25
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 หน้าอัปโหลดภาพของระบบ ZoneAnalyzer แสดง 
-Interface สำหรับลากหรือเลือกไฟล์ภาพ 
- []
-
-[12]
-Overfull \hbox (23.99284pt too wide) in paragraph at lines 26--26
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 หน้าแรกของระบบ ZoneAnalyzer (Landing pag
-e) แสดงชื่อระบบ คำอธิบายโดยย่อ 
- []
-
-)
+[7]
+No file main.lof.
 \tf@lof=\write6
 \openout6 = `main.lof'.
 
- [13] (main.lot
-Overfull \hbox (38.12643pt too wide) in paragraph at lines 4--4
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 องค์ประกอบของชุดข้อมูลและการแบ่งส่วนสำหร
-ับการฝึกฝน/การตรวจสอบ/การทดสอบ 
- []
-
-
-Overfull \hbox (13.43051pt too wide) in paragraph at lines 6--6
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 ZOI Measurement Results — Per-Antibiotic
- Comparison (ทุกค่ามีหน่วยเป็น 
- []
-
-
-Overfull \hbox (49.71614pt too wide) in paragraph at lines 6--6
- \TU/THSarabunNew(0)/m/n/12 mm) Expert GT คือเส้นผ่านศูนย์กลางที่เป็นเอกฉันท์เพ
-ียงค่าเดียวจากผู้เชี่ยวชาญทางคลินิก 
- []
-
-
-Overfull \hbox (109.90567pt too wide) in paragraph at lines 6--6
- \OMS/cmsy/m/n/12 ^^@$ \TU/THSarabunNew(0)/m/n/12 Expert GT (ค่าบวก = ประมาณค่า
-สูงเกินไป) YOLOv11n แสดงให้เห็นถึงความแม่นยำที่เหนือกว่าด้วยค่า 
- []
-
-
-Overfull \hbox (39.87054pt too wide) in paragraph at lines 7--7
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 ตัวชี้วัดความแม่นยำในการตรวจจับ (mAP@0.5
-, Precision, Recall) สำหรับทั้งสองโมเดล 
- []
-
-
-Overfull \hbox (90.83897pt too wide) in paragraph at lines 8--8
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 Validation loss ณ จุดลู่เข้าสำหรับชุดย่อ
-ยของขนาดชุดข้อมูลแต่ละระดับ ค่าที่ต่ำกว่าบ่งบอกถึงการทำ 
- []
-
-
-Overfull \hbox (43.47505pt too wide) in paragraph at lines 9--9
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 การเปรียบเทียบประสิทธิภาพของ OCR: EasyOC
-R เทียบกับ TyphoonOCR ภายใต้การทำ 
- []
-
-
-Overfull \hbox (113.02222pt too wide) in paragraph at lines 9--9
- \TU/THSarabunNew(0)/m/n/12 Preprocessing ที่แตกต่างกัน “Correct Labels” รายงาน
-จำนวนป้ายชื่อแผ่นยาที่ระบุได้ถูกต้องจากทั้งหมด 
- []
-
-
-Overfull \hbox (84.34933pt too wide) in paragraph at lines 10--10
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 รายละเอียดเวลาการประมวลผลต่อภาพสำหรับแต่
-ละขั้นตอนของ Pipeline เวลารายงานเป็นค่าเฉลี่ย 
- []
-
-
-Overfull \hbox (144.46088pt too wide) in paragraph at lines 10--10
- \OMS/cmsy/m/n/12 ^^F$ \TU/THSarabunNew(0)/m/n/12 ส่วนเบี่ยงเบนมาตรฐานจากการทดส
-อบ 30 ภาพ เวลา Inference ของโมเดลทั้งหมดใช้การเร่งการประมวลผลด้วย 
- []
-
-
-Overfull \hbox (10.95117pt too wide) in paragraph at lines 12--12
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 อัตราความสำเร็จของการทดสอบตามสถานการณ์จำ
-ลอง (n=5) ภารกิจจะถูกนับว่า 
- []
-
-
-Overfull \hbox (44.64723pt too wide) in paragraph at lines 12--12
- \TU/THSarabunNew(0)/m/n/12 “เสร็จสิ้น” หากผู้เข้าร่วมสามารถทำจนจบได้โดยไม่ต้อง
-รับความช่วยเหลือภายในเวลาที่กำหนด[][] []  
- []
-
-
-Overfull \hbox (3.64105pt too wide) in paragraph at lines 13--13
- [][] [][][]\TU/THSarabunNew(0)/m/n/12 คะแนนความพึงพอใจของผู้ใช้งาน (1 = ไม่เห็
-นด้วยอย่างยิ่ง, 5 = เห็นด้วยอย่างยิ่ง, 
- []
-
-)
+[8]
+No file main.lot.
 \tf@lot=\write7
 \openout7 = `main.lot'.
 
- [14] (chapters/00_abbreviations.tex
+[9] (chapters/00_abbreviations.tex
 Underfull \hbox (badness 10000) in paragraph at lines 16--17
 []|\TU/THSarabunNew(0)/m/n/12 Antimicrobial Susceptibility Testing,
  []
@@ -1868,11 +1572,6 @@ Underfull \hbox (badness 10000) in paragraph at lines 20--21
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 24--25
-[]|\TU/THSarabunNew(0)/m/n/12 Chulabhorn Royal Academy,
- []
-
-
 Underfull \hbox (badness 3612) in paragraph at lines 27--28
 []|\TU/THSarabunNew(0)/m/n/12 European Committee on Antimicrobial Susceptibilit
 y Testing,
@@ -1883,9 +1582,9 @@ Overfull \hbox (5.96042pt too wide) in paragraph at lines 12--46
 [][] 
  []
 
-[15
+[10
 
-] [16]) (chapters/01_intro.tex
+] [11]) (chapters/01_intro.tex
 Chapter 1.
 
 LaTeX Warning: Citation `who_amr2022' on page 1 undefined on input line 6.
@@ -2021,13 +1720,13 @@ LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/b/n' will be
 
 Underfull \hbox (badness 10000) in paragraph at lines 17--17
 []\TU/THSarabunNew(0)/b/n/10.95 Figure 1.1: |\TU/THSarabunNew(0)/m/n/10.95 ตัวอ
-ย่างจานเพาะเชื้อแบบ Kirby-Bauer disk diffusion แสดงวงยับยั้ง (Zone of
+ย่างจานเพาะเชื้อแบบ Kirby-Bauer disk diffusion แสดงโซนการยับยั้ง (Zone
  []
 
 
 Underfull \hbox (badness 10000) in paragraph at lines 17--17
-\TU/THSarabunNew(0)/m/n/10.95 Inhibition, ZOI) รอบๆ แผ่นดิสก์ยาปฏิชีวนะ เส้นผ่า
-นศูนย์กลางของวงใสแต่ละวงจะถูกวัดเพื่อ
+\TU/THSarabunNew(0)/m/n/10.95 of Inhibition, ZOI) รอบๆ แผ่นดิสก์ยาปฏิชีวนะ เส้น
+ผ่านศูนย์กลางของวงใสแต่ละวงจะถูกวัดเพื่อ
  []
 
 [1
@@ -2069,6 +1768,8 @@ Overfull \hbox (473.86664pt too wide) in paragraph at lines 21--22
 
 LaTeX Warning: Citation `humphries2018' on page 3 undefined on input line 23.
 
+LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/m/it' will be
+(Font)              scaled to size 15.60004pt on input line 23.
 
 Overfull \hbox (169.13177pt too wide) in paragraph at lines 23--24
 []\TU/THSarabunNew(0)/m/n/12 แม้จะดูเรียบง่ายในการวัดเส้นผ่านศูนย์กลางของวงกลม 
@@ -2128,21 +1829,9 @@ Overfull \hbox (288.85013pt too wide) in paragraph at lines 23--24
  []
 
 
-Overfull \hbox (76.23723pt too wide) in paragraph at lines 25--26
-\TU/THSarabunNew(0)/m/n/12 และ Microscan WalkAway ช่วยแก้ปัญหาความท้าทายในการวั
-ดเหล่านี้ผ่านฮาร์ดแวร์เฉพาะและซอฟต์แวร์ที่เป็นกรรมสิทธิ์
- []
-
-
-Overfull \hbox (47.14316pt too wide) in paragraph at lines 25--26
-\TU/THSarabunNew(0)/m/n/12 ระบบเหล่านี้ให้ผลลัพธ์ที่รวดเร็วและทำซ้ำได้ และมีการ
-ใช้กันอย่างกว้างขวางในห้องปฏิบัติการโรงพยาบาลขนาดใหญ่
- []
-
-
-Overfull \hbox (15.5375pt too wide) in paragraph at lines 25--26
-\TU/THSarabunNew(0)/m/n/12 อย่างไรก็ตาม ระบบเหล่านี้ต้องการการลงทุนจำนวนมาก—มัก
-จะเป็นเงินหลายหมื่นดอลลาร์สหรัฐต่อยูนิต—
+Overfull \hbox (74.12756pt too wide) in paragraph at lines 25--26
+[]\TU/THSarabunNew(0)/m/n/12 ระบบ AST อัตโนมัติในปัจจุบันต้องการการลงทุนจำนวนมา
+ก—มักจะเป็นเงินหลายหมื่นดอลลาร์สหรัฐต่อยูนิต—
  []
 
 
@@ -2239,7 +1928,7 @@ Overfull \hbox (45.69238pt too wide) in paragraph at lines 31--32
 งอิงที่มีขนาดที่ทราบ (แผ่นดิสก์ยาปฏิชีวนะ) ที่ปรากฏในทุกภาพ
  []
 
-[3]
+
 Overfull \hbox (60.85303pt too wide) in paragraph at lines 33--34
 []\TU/THSarabunNew(0)/m/n/12 แรงจูงใจสำหรับโครงงานนี้เกิดขึ้นจากการสังเกตคู่ขนา
 นสองประการ ประการแรก โมเดลการตรวจจับวัตถุที่ใช้
@@ -2276,11 +1965,16 @@ Overfull \hbox (420.73285pt too wide) in paragraph at lines 33--34
 อักษรและตัวเลขที่พิมพ์บนแผ่นดิสก์ยาปฏิชีวนะแต่ละแผ่น—
  []
 
+[3]
+Overfull \hbox (103.6429pt too wide) in paragraph at lines 35--36
+[]\TU/THSarabunNew(0)/m/n/12 การรวมกันของ object detection model สำหรับการระบุต
+ำแหน่ง ZOI, ระบบ OCR สำหรับการอ่านฉลากยาปฏิชีวนะ
+ []
 
-Overfull \hbox (171.06984pt too wide) in paragraph at lines 35--36
-\TU/THSarabunNew(0)/m/n/12 สำหรับการอ่านฉลากยาปฏิชีวนะ และฐานข้อมูลจุดตัดที่มีโ
-ครงสร้างสำหรับการจำแนกทางคลินิก ก่อให้เกิดรากฐานแนวคิดของระบบที่พัฒนาขึ้นที่นี่
 
+Overfull \hbox (35.95792pt too wide) in paragraph at lines 35--36
+\TU/THSarabunNew(0)/m/n/12 และฐานข้อมูลจุดตัดที่มีโครงสร้างสำหรับการจำแนกทางคลิ
+นิก ก่อให้เกิดรากฐานแนวคิดของระบบที่พัฒนาขึ้นที่นี่
  []
 
 
@@ -2309,15 +2003,9 @@ Overfull \hbox (153.04922pt too wide) in paragraph at lines 37--38
  []
 
 
-Overfull \hbox (31.94872pt too wide) in paragraph at lines 37--38
-\TU/THSarabunNew(0)/m/n/12 ซึ่งเป็นเทคนิคที่จัดตั้งขึ้นเป็นอย่างดีสำหรับการตรวจ
-จับโครงสร้างวงกลม ให้เกณฑ์มาตรฐานที่มีหลักการซึ่งโมเดล
- []
-
-
-Overfull \hbox (79.91885pt too wide) in paragraph at lines 37--38
-\TU/THSarabunNew(0)/m/n/12 deep learning สามารถนำมาประเมินได้ การเปรียบเทียบดัง
-กล่าวมอบหลักฐานเชิงประจักษ์เกี่ยวกับประโยชน์เชิงปฏิบัติของ
+Overfull \hbox (53.49239pt too wide) in paragraph at lines 37--38
+\TU/THSarabunNew(0)/m/n/12 learning สามารถนำมาประเมินได้ การเปรียบเทียบดังกล่าว
+มอบหลักฐานเชิงประจักษ์เกี่ยวกับประโยชน์เชิงปฏิบัติของ
  []
 
 
@@ -2406,10 +2094,10 @@ ew(0)/m/n/12 โครงงานนี้ฝึกฝน ประเมิน
  []
 
 
-Overfull \hbox (284.09222pt too wide) in paragraph at lines 56--57
-\TU/THSarabunNew(0)/m/n/12 Ultralytics) และ Hough Circle Transform ที่ดำเนินการ
-ผ่าน OpenCV แต่ละโมเดลจะได้รับการประเมินบนชุดข้อมูลทดสอบที่แยกไว้ชุดเดียวกันภาย
-ใต้เงื่อนไขเดียวกัน 
+Overfull \hbox (212.50363pt too wide) in paragraph at lines 56--57
+\TU/THSarabunNew(0)/m/n/12 Hough Circle Transform ที่ดำเนินการผ่าน OpenCV แต่ละ
+โมเดลจะได้รับการประเมินบนชุดข้อมูลทดสอบที่แยกไว้ชุดเดียวกันภายใต้เงื่อนไขเดียวก
+ัน 
  []
 
 
@@ -2489,9 +2177,8 @@ Overfull \hbox (183.75902pt too wide) in paragraph at lines 64--65
 
  []
 
-[5]
 
-LaTeX Warning: Citation `humphries2018' on page 6 undefined on input line 72.
+LaTeX Warning: Citation `humphries2018' on page 5 undefined on input line 72.
 
 
 Overfull \hbox (152.32779pt too wide) in paragraph at lines 72--73
@@ -2506,7 +2193,7 @@ Overfull \hbox (89.98969pt too wide) in paragraph at lines 72--73
 าจะบรรลุค่า MAE ต่ำกว่า 3mm ในชุดข้อมูลทดสอบที่แยกไว้
  []
 
-
+[5]
 Overfull \hbox (79.62354pt too wide) in paragraph at lines 74--75
 []\TU/THSarabunNew(0)/b/n/12 การวิเคราะห์โมเดลเชิงเปรียบเทียบ (Comparative mode
 l analysis): \TU/THSarabunNew(0)/m/n/12 การเปรียบเทียบเชิงปริมาณที่เข้มงวดของ
@@ -2563,9 +2250,9 @@ Overfull \hbox (32.88477pt too wide) in paragraph at lines 83--2
  []
 
 
-Overfull \hbox (61.2196pt too wide) in paragraph at lines 83--2
+Overfull \hbox (41.71956pt too wide) in paragraph at lines 83--2
 \TU/THSarabunNew(0)/m/n/12 (Faster R-CNN, YOLOv11n และ Hough Circle Transform),
- เครื่องยนต์ OCR ที่ใช้สำหรับการจดจำฉลากยาปฏิชีวนะ,
+ ระบบ OCR ที่ใช้สำหรับการจดจำฉลากยาปฏิชีวนะ,
  []
 
 
@@ -2909,10 +2596,9 @@ n เป็นงานที่ดำเนินการระบุตำแ
  []
 
 
-Overfull \hbox (208.82195pt too wide) in paragraph at lines 33--34
-\TU/THSarabunNew(0)/m/n/12 [\TU/THSarabunNew(0)/b/n/12 ?\TU/THSarabunNew(0)/m/n
-/12 ] และการทบทวนแอปพลิเคชัน deep learning ทางการแพทย์อย่างเป็นระบบได้ยืนยันควา
-มเหมาะสมสำหรับงานการวิเคราะห์ภาพทางคลินิกที่หลากหลาย
+Overfull \hbox (195.95192pt too wide) in paragraph at lines 33--34
+\TU/THSarabunNew(0)/m/n/12 และการทบทวนแอปพลิเคชัน deep learning ทางการแพทย์อย่า
+งเป็นระบบได้ยืนยันความเหมาะสมสำหรับงานการวิเคราะห์ภาพทางคลินิกที่หลากหลาย
  []
 
 
@@ -2980,12 +2666,6 @@ Overfull \hbox (110.74452pt too wide) in paragraph at lines 39--40
 งเพื่อสร้างข้อเสนอภูมิภาค ซึ่งเป็นคอขวดของความเร็วในการประมวลผล
  []
 
-
-Overfull \hbox (82.86507pt too wide) in paragraph at lines 39--40
-\TU/THSarabunNew(0)/m/n/12 Faster R-CNN แทนที่สิ่งนี้ด้วย Region Proposal Netwo
-rk (RPN) ที่ใช้กระดูกสันหลังแบบคอนโวลูชันร่วมกับหัวการตรวจจับ
- []
-
 File: figures/faster_rcnn_architecture.png Graphic file (type bmp)
 <figures/faster_rcnn_architecture.png>
 
@@ -3005,9 +2685,10 @@ Underfull \hbox (badness 10000) in paragraph at lines 46--46
 LaTeX Warning: Citation `he2016deep' on page 10 undefined on input line 50.
 
 
-Overfull \hbox (37.28029pt too wide) in paragraph at lines 50--51
-[]\TU/THSarabunNew(0)/m/n/12 สถาปัตยกรรม Faster R-CNN ทำงานในสองขั้นตอน ในขั้นต
-อนแรก เครือข่ายคอนโวลูชันกระดูกสันหลัง
+Overfull \hbox (22.40152pt too wide) in paragraph at lines 50--51
+\TU/THSarabunNew(0)/m/n/12 bone (ในโครงงานนี้ใช้ ResNet-50 [\TU/THSarabunNew(0)
+/b/n/12 ?\TU/THSarabunNew(0)/m/n/12 ]) จะสกัดแผนผังคุณลักษณะเชิงพื้นที่ที่เข้มข
+้นจากรูปภาพอินพุตแบบเต็ม
  []
 
 
@@ -3030,23 +2711,17 @@ Overfull \hbox (8.45506pt too wide) in paragraph at lines 50--51
  []
 
 
-Overfull \hbox (92.56938pt too wide) in paragraph at lines 50--51
-\TU/THSarabunNew(0)/m/n/12 (หรือ RoI Align) จะสกัดเวกเตอร์คุณลักษณะขนาดคงที่สำห
-รับแต่ละข้อเสนอจากแผนผังคุณลักษณะกระดูกสันหลังที่แชร์ร่วมกัน
- []
-
-
-Overfull \hbox (8.73587pt too wide) in paragraph at lines 50--51
-\TU/THSarabunNew(0)/m/n/12 และหัวการจำแนกประเภทที่เชื่อมต่ออย่างสมบูรณ์จะกำหนดป
-้ายกำกับคลาสและปรับแต่ง bounding box
+Overfull \hbox (20.3891pt too wide) in paragraph at lines 50--51
+\TU/THSarabunNew(0)/m/n/12 map ที่แชร์ร่วมกัน และหัวการจำแนกประเภทที่เชื่อมต่ออ
+ย่างสมบูรณ์จะกำหนดป้ายกำกับคลาสและปรับแต่ง
  []
 
 
 LaTeX Warning: Citation `he2016deep' on page 10 undefined on input line 52.
 
 
-Overfull \hbox (29.73093pt too wide) in paragraph at lines 52--53
-[]\TU/THSarabunNew(0)/m/n/12 การใช้ ResNet-50 เป็นกระดูกสันหลังการสกัดคุณลักษณะ
+Overfull \hbox (35.15977pt too wide) in paragraph at lines 52--53
+[]\TU/THSarabunNew(0)/m/n/12 การใช้ ResNet-50 เป็น backbone สำหรับสกัดคุณลักษณะ
 มีความเหมาะสมอย่างยิ่งสำหรับโครงงานนี้
  []
 
@@ -3070,9 +2745,9 @@ Overfull \hbox (39.9204pt too wide) in paragraph at lines 52--53
  []
 
 
-Overfull \hbox (76.53255pt too wide) in paragraph at lines 52--53
-\TU/THSarabunNew(0)/m/n/12 AST ที่ติดป้ายกำกับจำนวนค่อนข้างน้อยก็ตาม กระดูกสันห
-ลัง ResNet-50 ในโครงงานนี้เริ่มต้นด้วยน้ำหนักที่ฝึกล่วงหน้าจาก
+Overfull \hbox (64.20853pt too wide) in paragraph at lines 52--53
+\TU/THSarabunNew(0)/m/n/12 AST ที่ติดป้ายกำกับจำนวนค่อนข้างน้อยก็ตาม backbone R
+esNet-50 ในโครงงานนี้เริ่มต้นด้วยน้ำหนักที่ฝึกล่วงหน้าจาก
  []
 
 
@@ -3146,28 +2821,22 @@ LaTeX Warning: Citation `wang2024yolov11' on page 11 undefined on input line 69
 .
 
 
-Overfull \hbox (6.66106pt too wide) in paragraph at lines 69--70
-\TU/THSarabunNew(0)/m/n/12 alytics ได้รวมความก้าวหน้าทางสถาปัตยกรรมหลายประการเห
-นือรุ่นก่อนหน้า [\TU/THSarabunNew(0)/b/n/12 ?\TU/THSarabunNew(0)/m/n/12 ] กระดู
-กสันหลังใช้บล็อก
- []
-
-
 Overfull \hbox (33.39954pt too wide) in paragraph at lines 69--70
 \TU/THSarabunNew(0)/m/n/12 C3k2 ที่ปรับปรุงใหม่ (การออกแบบคอนโวลูชันที่ปรับพารา
 มิเตอร์ใหม่) เพื่อเพิ่มประสิทธิภาพการสกัดคุณลักษณะ
  []
 
 
-Overfull \hbox (168.136pt too wide) in paragraph at lines 69--70
+Overfull \hbox (18.01685pt too wide) in paragraph at lines 69--70
 \TU/THSarabunNew(0)/m/n/12 ส่วนคอ (neck) ใช้ Path Aggregation Feature Pyramid N
-etwork (PA-FPN) เพื่อหลอมรวมคุณลักษณะจากมาตราส่วนกระดูกสันหลังหลายระดับ
+etwork (PA-FPN) เพื่อหลอมรวมคุณลักษณะจาก
  []
 
 
-Overfull \hbox (138.49696pt too wide) in paragraph at lines 69--70
-\TU/THSarabunNew(0)/m/n/12 ช่วยให้ตรวจจับวัตถุได้หลายขนาด ตั้งแต่แผ่นดิสก์ยาปฏิ
-ชีวนะขนาดเล็กไปจนถึงโซนการยับยั้งขนาดใหญ่ที่อาจครอบคลุมส่วนสำคัญของจาน
+Overfull \hbox (235.84122pt too wide) in paragraph at lines 69--70
+\TU/THSarabunNew(0)/m/n/12 backbone หลายระดับ ช่วยให้ตรวจจับวัตถุได้หลายขนาด ตั
+้งแต่แผ่นดิสก์ยาปฏิชีวนะขนาดเล็กไปจนถึงโซนการยับยั้งขนาดใหญ่ที่อาจครอบคลุมส่วนส
+ำคัญของจาน
  []
 
 
@@ -3345,10 +3014,9 @@ Overfull \hbox (2.83905pt too wide) in paragraph at lines 86--87
  []
 
 
-Overfull \hbox (320.15941pt too wide) in paragraph at lines 86--87
+Overfull \hbox (118.59134pt too wide) in paragraph at lines 86--87
 \TU/THSarabunNew(0)/m/n/12 search) บนชุดข้อมูลเต็มรูปแบบ ซึ่งแสดงถึงสถานการณ์ที
-่ดีที่สุดสำหรับวิธีนี้ วิธีนี้ทำหน้าที่เป็นเกณฑ์มาตรฐานแบบคลาสสิกที่มีหลักการซึ
-่งโมเดลที่เรียนรู้จะถูกนำมาประเมินเปรียบเทียบ 
+่ดีที่สุดสำหรับวิธีนี้ วิธีนี้ทำหน้าที่เป็นเกณฑ์เปรียบเทียบแบบคลาสสิกที่โมเดล
  []
 
 [12]
@@ -3402,10 +3070,10 @@ e 94.
 LaTeX Warning: Citation `baek2019craft' on page 13 undefined on input line 94.
 
 
-Overfull \hbox (16.2373pt too wide) in paragraph at lines 94--95
+Overfull \hbox (11.52611pt too wide) in paragraph at lines 94--95
 \TU/THSarabunNew(0)/m/n/12 EasyOCR [\TU/THSarabunNew(0)/b/n/12 ?\TU/THSarabunNe
-w(0)/m/n/12 ] เป็นเครื่องยนต์ OCR แบบเปิดเผยรหัสที่ใช้ deep learning ซึ่งรองรับ
-ภาษาและสคริปต์มากกว่า
+w(0)/m/n/12 ] เป็นระบบ OCR แบบ open-source ที่ใช้ deep learning ซึ่งรองรับภาษาแ
+ละสคริปต์มากกว่า
  []
 
 
@@ -5468,10 +5136,14 @@ Overfull \hbox (51.99483pt too wide) in paragraph at lines 4--9
  []
 
 
-Overfull \hbox (242.04897pt too wide) in paragraph at lines 15--23
-\TU/THSarabunNew(0)/m/n/12 ตารางที่ [][]4.1[][] สรุปผลลัพธ์การตรวจจับ ZOI จากโม
-เดล Deep Learning ทั้งสองโมเดล โดยแสดงขนาดเส้นผ่านศูนย์กลางที่วัดได้เปรียบเทียบ
-กับเส้นผ่านศูนย์กลางที่เป็น
+LaTeX Warning: Reference `tab:model_comparison' on page 30 undefined on input l
+ine 15.
+
+
+Overfull \hbox (237.24414pt too wide) in paragraph at lines 15--23
+\TU/THSarabunNew(0)/m/n/12 ตารางที่ [] สรุปผลลัพธ์การตรวจจับ ZOI จากโมเดล Deep 
+Learning ทั้งสองโมเดล โดยแสดงขนาดเส้นผ่านศูนย์กลางที่วัดได้เปรียบเทียบกับเส้นผ่
+านศูนย์กลางที่เป็น
  []
 
 
@@ -5537,6 +5209,10 @@ Overfull \hbox (400.04613pt too wide) in paragraph at lines 76--78
 วามคลาดเคลื่อนที่สูงกว่าถึง +7.48 mm ซึ่งเน้นย้ำถึงแนวโน้มที่โมเดลจะประสบปัญหาเ
 มื่อขอบเขตของบริเวณยับยั้งมีขนาดใหญ่และฟุ้งกระจายมาก 
  []
+
+
+LaTeX Warning: Reference `tab:model_comparison' on page 31 undefined on input l
+ine 84.
 
 
 Overfull \hbox (245.0869pt too wide) in paragraph at lines 80--85
@@ -5802,6 +5478,10 @@ LaTeX Warning: Citation `ren2015faster' on page 36 undefined on input line 219.
 
 
 
+LaTeX Warning: Reference `tab:model_comparison' on page 36 undefined on input l
+ine 220.
+
+
 Overfull \hbox (170.59932pt too wide) in paragraph at lines 219--221
 []\TU/THSarabunNew(0)/m/n/12 ทั้งสองโมเดลมีค่าเกินเกณฑ์ mAP@0.5 ที่ 95% ซึ่งมัก
 ถูกอ้างถึงว่าเป็นตัวบ่งชี้ประสิทธิภาพการตรวจจับวัตถุที่พร้อมสำหรับการใช้งานจริง
@@ -5815,9 +5495,9 @@ Overfull \hbox (81.91568pt too wide) in paragraph at lines 219--221
  []
 
 
-Overfull \hbox (47.33043pt too wide) in paragraph at lines 219--221
-\TU/THSarabunNew(0)/m/n/12 (ตารางที่ [][]4.1[][]) จึงมาจากค่า Offset ในการระบุต
-ำแหน่ง (Localization) มากกว่าความผิดพลาดในการจำแนกประเภท
+Overfull \hbox (42.5256pt too wide) in paragraph at lines 219--221
+\TU/THSarabunNew(0)/m/n/12 (ตารางที่ []) จึงมาจากค่า Offset ในการระบุตำแหน่ง (L
+ocalization) มากกว่าความผิดพลาดในการจำแนกประเภท
  []
 
 
@@ -5918,9 +5598,13 @@ Underfull \hbox (badness 3407) in paragraph at lines 257--257
  []
 
 
-Overfull \hbox (8.90492pt too wide) in paragraph at lines 275--278
-[]\TU/THSarabunNew(0)/m/n/12 ค่า Validation loss ในตารางที่ [][]4.3[][] แสดงแนว
-โน้มที่ลดลงอย่างต่อเนื่องเมื่อปริมาณข้อมูลเพิ่มขึ้น
+LaTeX Warning: Reference `tab:dataset_ablation' on page 37 undefined on input l
+ine 275.
+
+
+Overfull \hbox (4.1001pt too wide) in paragraph at lines 275--278
+[]\TU/THSarabunNew(0)/m/n/12 ค่า Validation loss ในตารางที่ [] แสดงแนวโน้มที่ลด
+ลงอย่างต่อเนื่องเมื่อปริมาณข้อมูลเพิ่มขึ้น
  []
 
 
@@ -6067,6 +5751,10 @@ Overfull \hbox (146.99904pt too wide) in paragraph at lines 310--312
 File: figures/ocr_pipeline.png Graphic file (type bmp)
 <figures/ocr_pipeline.png>
 
+LaTeX Warning: Reference `tab:ocr_comparison' on page 39 undefined on input lin
+e 325.
+
+
 Underfull \hbox (badness 1888) in paragraph at lines 330--330
 []\TU/THSarabunNew(0)/b/n/10.95 Table 4.4: |\TU/THSarabunNew(0)/m/n/10.95 การเป
 รียบเทียบประสิทธิภาพของ OCR: EasyOCR เทียบกับ TyphoonOCR ภายใต้การทำ
@@ -6194,10 +5882,15 @@ Overfull \hbox (112.64775pt too wide) in paragraph at lines 390--393
  []
 
 [40]
-Overfull \hbox (170.06895pt too wide) in paragraph at lines 394--396
+
+LaTeX Warning: Reference `eq:calibration' on page 41 undefined on input line 39
+4.
+
+
+Overfull \hbox (165.26413pt too wide) in paragraph at lines 394--396
 []\TU/THSarabunNew(0)/m/n/12 ค่า Bias เหล่านี้คือตัวเลขที่ \TU/THSarabunNew(0)/
 m/it/12 รายงานเป็นทางการขั้นสุดท้าย \TU/THSarabunNew(0)/m/n/12 สำหรับการทดลองใน
-เทอม 1 โดยใช้การปรับเทียบรายแผ่นยาผ่านสมการ ([][]4.1[][])
+เทอม 1 โดยใช้การปรับเทียบรายแผ่นยาผ่านสมการ ([])
  []
 
 
@@ -6248,9 +5941,13 @@ Overfull \hbox (3.60347pt too wide) in paragraph at lines 407--409
  []
 
 
-Overfull \hbox (89.41675pt too wide) in paragraph at lines 410--411
-[]\TU/THSarabunNew(0)/m/n/12 ตารางที่ [][]4.5[][] แสดงเวลาเฉลี่ยต่อขั้นตอนของ P
-ipeline สำหรับโมเดล Deep learning ทั้งสองบนฮาร์ดแวร์ที่ใช้ทดสอบ
+LaTeX Warning: Reference `tab:processing_time' on page 41 undefined on input li
+ne 410.
+
+
+Overfull \hbox (84.61192pt too wide) in paragraph at lines 410--411
+[]\TU/THSarabunNew(0)/m/n/12 ตารางที่ [] แสดงเวลาเฉลี่ยต่อขั้นตอนของ Pipeline ส
+ำหรับโมเดล Deep learning ทั้งสองบนฮาร์ดแวร์ที่ใช้ทดสอบ
  []
 
 
@@ -6271,6 +5968,11 @@ LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/b/n' will be
 LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/b/n' will be
 (Font)              scaled to size 7.80002pt on input line 430.
 [41]
+
+LaTeX Warning: Reference `tab:processing_time' on page 42 undefined on input li
+ne 437.
+
+
 Overfull \hbox (8.45403pt too wide) in paragraph at lines 439--440
 \TU/THSarabunNew(0)/m/n/12 Faster R-CNN จำเป็นต้องมีการประมวลผล Forward passes 
 ซ้ำๆ ผ่าน Classification head สำหรับทุกๆ
@@ -6301,9 +6003,13 @@ Overfull \hbox (161.16385pt too wide) in paragraph at lines 443--444
  []
 
 
-Overfull \hbox (31.38715pt too wide) in paragraph at lines 452--453
+LaTeX Warning: Reference `tab:user_profile' on page 42 undefined on input line 
+452.
+
+
+Overfull \hbox (26.58232pt too wide) in paragraph at lines 452--453
 \TU/THSarabunNew(0)/m/n/12 การประเมินผลโดยผู้ใช้งานได้ดำเนินการร่วมกับผู้เชี่ยว
-ชาญในสาขา 5 ท่าน ดังแสดงในรายละเอียดในตารางที่ [][]4.6[][]
+ชาญในสาขา 5 ท่าน ดังแสดงในรายละเอียดในตารางที่ []
  []
 
 
@@ -6926,16 +6632,25 @@ L3 programming layer <2025-12-24>
 
 LaTeX Warning: There were undefined references.
 
-Package rerunfilecheck Info: File `main.out' has not changed.
-(rerunfilecheck)             Checksum: 06F1CB77078AA8C10BF0C191671477CC;33897.
+
+LaTeX Warning: Label(s) may have changed. Rerun to get cross-references right.
+
+
+Package rerunfilecheck Warning: File `main.out' has changed.
+(rerunfilecheck)                Rerun to get outlines right
+(rerunfilecheck)                or use package `bookmark'.
+
+Package rerunfilecheck Info: Checksums for `main.out':
+(rerunfilecheck)             Before: <no file>
+(rerunfilecheck)             After:  06F1CB77078AA8C10BF0C191671477CC;33897.
  ) 
 Here is how much of TeX's memory you used:
- 38683 strings out of 402987
- 909786 string characters out of 5448524
- 1479204 words of memory out of 5000000
- 66806 multiletter control sequences out of 15000+600000
+ 38643 strings out of 402987
+ 909307 string characters out of 5448524
+ 1455073 words of memory out of 5000000
+ 66778 multiletter control sequences out of 15000+600000
  634450 words of font info for 87 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  99i,12n,108p,1337b,2373s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.pdf (69 pages).
+Output written on main.pdf (64 pages).
