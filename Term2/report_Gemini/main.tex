@@ -1,0 +1,258 @@
+% !TeX program = xelatex
+% ============================================================
+%  KMUTT Senior Project Final Report — XeLaTeX
+%  Compile: xelatex → bibtex → xelatex → xelatex
+% ============================================================
+\documentclass[12pt,a4paper,oneside]{report}
+
+% ── Fonts & Language ────────────────────────────────────────
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setdefaultlanguage{english}
+\setotherlanguage{thai}
+
+% ── Thai Line Breaking ───────────────────────────────────────
+\XeTeXlinebreaklocale "th"
+\XeTeXlinebreakskip = 0pt plus 1pt
+
+\setmainfont{THSarabunNew}[
+  Path           = fonts/,
+  Extension      = .ttf,
+  UprightFont    = *-Regular,
+  BoldFont       = *-Bold,
+  ItalicFont     = *-Italic,
+  BoldItalicFont = *-BoldItalic,
+  Scale          = 1.3
+]
+\setmonofont{FreeMono}
+
+% ── Page Layout ─────────────────────────────────────────────
+\usepackage[
+  a4paper,
+  top=2.54cm, bottom=2.54cm,
+  left=3.81cm, right=2.54cm,
+  headheight=15pt
+]{geometry}
+
+% ── Packages ────────────────────────────────────────────────
+\usepackage{graphicx}
+\usepackage{booktabs}
+\usepackage{array}
+\usepackage{tabularx}
+\usepackage{longtable}
+\usepackage{multirow}
+\usepackage{amsmath, amssymb}
+\usepackage{caption}
+\usepackage{subcaption}
+\usepackage{float}
+\usepackage{setspace}
+\usepackage{indentfirst}
+\usepackage{titlesec}
+\usepackage{tocloft}
+\usepackage{fancyhdr}
+\usepackage{xcolor}
+\usepackage{listings}
+\usepackage{cite}
+\usepackage{url}
+\usepackage{enumitem}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+\usepackage{tikz}
+\usepackage{hyperref}
+\hypersetup{colorlinks=true, linkcolor=black, citecolor=black, urlcolor=blue}
+
+% ── Helpers ──────────────────────────────────────────────────
+\newcommand{\safeimg}[3][width=\textwidth]{%
+  \IfFileExists{#2}{\includegraphics[#1]{#2}}%
+  {\fbox{\parbox{10cm}{\centering\small [Figure placeholder: #3]\\\texttt{#2}}}}}
+
+% ── Spacing & Indent ─────────────────────────────────────────
+\setstretch{1.5}
+\setlength{\parindent}{1.5cm}
+\setlength{\parskip}{0pt}
+
+% ── Thai Section Names ───────────────────────────────────────
+\renewcommand{\contentsname}{สารบัญ}
+\renewcommand{\listfigurename}{สารบัญรูป}
+\renewcommand{\listtablename}{สารบัญตาราง}
+\renewcommand{\bibname}{หนังสืออ้างอิง}
+\renewcommand{\appendixname}{ภาคผนวก}
+
+% ── Chapter/Section Formatting ───────────────────────────────
+\titleformat{\chapter}[block]
+  {\centering\large\bfseries}{บทที่ \thechapter}{1em}{}
+\titlespacing{\chapter}{0pt}{0pt}{24pt}
+\titleformat{\section}{\bfseries\normalsize}{\thesection}{1em}{}
+\titleformat{\subsection}{\bfseries\normalsize}{\thesubsection}{1em}{}
+\titleformat{\subsubsection}{\bfseries\normalsize}{\thesubsubsection}{1em}{}
+
+% ── TOC Chapter Format (add บทที่ prefix) ────────────────────
+\renewcommand{\cftchappresnum}{บทที่~}
+\renewcommand{\cftchapaftersnum}{}
+\setlength{\cftchapnumwidth}{2.8cm}
+\setlength{\cftbeforechapskip}{6pt}
+
+% ── Header/Footer ────────────────────────────────────────────
+\pagestyle{fancy}
+\fancyhf{}
+\fancyhead[R]{\thepage}
+\renewcommand{\headrulewidth}{0pt}
+
+% ── Captions ─────────────────────────────────────────────────
+\captionsetup{font=small, labelfont=bf}
+
+% ── Code Style ───────────────────────────────────────────────
+\lstset{basicstyle=\small\ttfamily, breaklines=true, frame=single,
+        numbers=left, numberstyle=\tiny}
+
+% ============================================================
+\begin{document}
+
+% ────────────────────────────────────────────────────────────
+%  COVER PAGE 1 — Thai Admin Form
+% ────────────────────────────────────────────────────────────
+\begin{titlepage}
+  \thispagestyle{empty}
+  \centering
+  \setstretch{1.8}
+
+  {\large\bfseries หัวข้อโครงงานวิศวกรรมคอมพิวเตอร์ หลักสูตรวิศวกรรมศาสตร์บัณฑิต}\\[0.1cm]
+  {\large\bfseries สาขาวิชาวิทยาศาสตร์ข้อมูลสุขภาพ}\\[0.1cm]
+  {\large\bfseries ปีการศึกษา 2568}\\[1.2cm]
+
+  \begin{tabular}{@{}lp{10cm}@{}}
+    \textbf{ชื่อโครงงาน:} &
+      An Exploration of Artificial Intelligence for Detection of \\
+    & Inhibition Zones in Antibiotic Susceptibility Testing \\[0.8cm]
+    \textbf{สมาชิกกลุ่ม:} &
+      1.\ นายพีรพัฒน์ ศิริพัฒนคุณ \quad 65070505214\\[0.2cm]
+    & 2.\ นายภัทรดนย์ ธนประสิทธิ์พัฒนา \quad 65070505223 \\[0.8cm]
+    \textbf{ที่ปรึกษา:}    & ผศ.\ ดร.\ นนทพรรษน์ ลีราช \\[0.3cm]
+    \textbf{ที่ปรึกษาร่วม:} & ผศ.\ ดร.\ ปณิธิ อัจฉราฤทธิ์ \\[0.2cm]
+    & ดร.\ คริษฐา แจ้งสามสี \\[0.3cm]
+    \textbf{Supervisor (WIL):} & ดร.\ จิรพันธ์ เปรมสุริยา \\[0.2cm]
+    & ดร.\ จุมพล พลวิชัย \\[1.5cm]
+  \end{tabular}
+
+  \vfill
+  \begin{flushleft}\setstretch{1.5}
+  By signing this, I hereby acknowledge that I have read the final report
+  and approved this attached draft.\\[1.8cm]
+  Advisor name:\ \underline{\hspace{8cm}}\\[1cm]
+  By date:\ \underline{\hspace{8.7cm}}
+  \end{flushleft}
+\end{titlepage}
+
+% ────────────────────────────────────────────────────────────
+%  COVER PAGE 2 — English Title Page
+% ────────────────────────────────────────────────────────────
+\begin{titlepage}
+  \thispagestyle{empty}
+  \centering\setstretch{1.5}
+
+  \IfFileExists{figures/kmutt_logo.png}{%
+    \includegraphics[width=3cm]{figures/kmutt_logo.png}\\[1cm]}%
+  {\\[2cm]}
+
+  {\normalsize\bfseries\MakeUppercase{%
+    An Exploration of Artificial Intelligence for\\
+    Detection of Inhibition Zones in\\
+    Antibiotic Susceptibility Testing}}\\[3.5cm]
+
+  {\normalsize
+    MR. PEERAPHAT SIRIPHATTHANAKHUN\\[0.2cm]
+    MR. PHATTARADON THANAPRASITPATTANA}\\[3.5cm]
+
+  {\normalsize
+    A PROJECT SUBMITTED IN PARTIAL FULFILLMENT\\
+    OF THE REQUIREMENTS FOR\\
+    THE DEGREE OF BACHELOR OF ENGINEERING (HEALTH DATA SCIENCE)\\
+    FACULTY OF ENGINEERING\\
+    KING MONGKUT'S UNIVERSITY OF TECHNOLOGY THONBURI\\
+    2025}
+\end{titlepage}
+
+% ────────────────────────────────────────────────────────────
+%  COVER PAGE 3 — Project Committee / Approval
+% ────────────────────────────────────────────────────────────
+\begin{titlepage}
+  \thispagestyle{empty}
+  \centering\setstretch{1.5}
+
+  {\normalsize
+    An Exploration of Artificial Intelligence for Detection of\\
+    Inhibition Zones in Antibiotic Susceptibility Testing}\\[2cm]
+
+  {\normalsize
+    Mr. Peeraphat Siriphatthanakhun\\[0.2cm]
+    Mr. Phattaradon Thanaprasitpattana}\\[2cm]
+
+  {\normalsize
+    A Project Submitted in Partial Fulfillment\\
+    of the Requirements for\\
+    the Degree of Bachelor of Engineering (Health Data Science)\\
+    Faculty of Engineering\\
+    King Mongkut's University of Technology Thonburi\\
+    2025}\\[1.5cm]
+
+  \begin{flushleft}
+  Project Committee\\[1cm]
+  \end{flushleft}
+
+  \begin{tabular}{@{}p{10cm}@{\quad}l@{}}
+    \dotfill & Project Advisor \\[0.3cm]
+    \multicolumn{2}{c}{(Asst.\ Prof.\ Dr.\ Nontapat Leeraj)} \\[1.2cm]
+    \dotfill & Project Co-Advisor \\[0.3cm]
+    \multicolumn{2}{c}{(Asst.\ Prof.\ Dr.\ Paniti Atchararit)} \\[1.2cm]
+    \dotfill & Project Co-Advisor \\[0.3cm]
+    \multicolumn{2}{c}{(Dr.\ Karittha Jangsamsi)} \\[1.2cm]
+  \end{tabular}
+
+  \vfill
+  {\normalsize Copyright reserved}
+\end{titlepage}
+
+% ────────────────────────────────────────────────────────────
+%  FRONT MATTER  (roman, start at ii — cover = i)
+% ────────────────────────────────────────────────────────────
+\pagestyle{fancy}
+\pagenumbering{roman}
+\setcounter{page}{2}
+
+\input{chapters/00_abstract}
+\input{chapters/00_acknowledgement}
+
+\clearpage
+\tableofcontents
+\newpage
+
+\clearpage
+\listoffigures
+\newpage
+
+\clearpage
+\listoftables
+\newpage
+
+\input{chapters/00_abbreviations}
+
+% ────────────────────────────────────────────────────────────
+%  MAIN CHAPTERS
+% ────────────────────────────────────────────────────────────
+\pagenumbering{arabic}
+\setcounter{page}{1}
+\input{chapters/01_intro}
+\input{chapters/02_theory}
+\input{chapters/03_methodology}
+\input{chapters/04_results}
+\input{chapters/05_conclusion}
+
+% ── References ───────────────────────────────────────────────
+\bibliographystyle{IEEEtran}
+\bibliography{references}
+
+% ── Appendix ─────────────────────────────────────────────────
+\appendix
+\input{chapters/appendix}
+
+\end{document}
