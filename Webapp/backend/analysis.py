@@ -13,7 +13,10 @@ from dotenv import load_dotenv
 # Load environment variables
 load_dotenv()
 
-PIXELS_PER_MM = float(os.getenv("PIXELS_PER_MM", "10.0"))
+try:
+    PIXELS_PER_MM = float(os.getenv("PIXELS_PER_MM", "10.0"))
+except (ValueError, TypeError):
+    PIXELS_PER_MM = 10.0
 
 # Load the YOLO model for zone detection
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -43,6 +46,9 @@ if GEMINI_API_KEY:
         gemini_model = None
 else:
     gemini_model = None
+
+# Once quota is hit, skip Gemini for all remaining disks in the session
+_gemini_quota_exceeded = False
 
 # Regex pattern for validating medicine name and dosage
 PATTERN = re.compile(
@@ -179,47 +185,63 @@ def adjust_confidence_with_regex(text, conf, penalty=0.15):
     
     return 0.0
 
-def extract_medicine_gemini(image_gray):
+GEMINI_PROMPT = (
+    "This is a cropped image of an antibiotic disk from a disk diffusion susceptibility test.\n"
+    "The disk has a short printed code: uppercase letters (antibiotic abbreviation) followed by a number (dosage in µg).\n"
+    "Examples: AMX 25, AMP 10, OX 1, CIP 5, CN 10, E 15, SXT 25, P 10, VA 30, TET 30, AZM 15, MEM 10.\n"
+    "Some disks have only letters without a number (e.g., OX, AMP).\n"
+    "Respond with ONLY the code printed on the disk. If the image is unclear, give your best estimate."
+)
+
+def extract_medicine_gemini(image):
     """
-    Primary OCR: Use Gemini AI for high-accuracy medicine code extraction.
+    Primary OCR: Use Gemini AI with original color/grayscale crop (not preprocessed).
     """
-    if not gemini_model:
+    global _gemini_quota_exceeded
+
+    if not gemini_model or _gemini_quota_exceeded:
         return None, 0.0
 
     try:
-        _, buffer = cv2.imencode('.jpg', image_gray)
+        _, buffer = cv2.imencode('.jpg', image)
         img_bytes = buffer.tobytes()
 
-        prompt = "Read the short alphanumeric code on this antibiotic disk (e.g., OX 1, AMX 25, CN 10). Respond ONLY with the code."
-        
         response = gemini_model.generate_content([
-            prompt,
+            GEMINI_PROMPT,
             {"mime_type": "image/jpeg", "data": img_bytes}
         ])
-        
+
         full_text = response.text.strip()
         if not full_text:
             return "Unknown", 0.0
 
         if PATTERN.match(full_text):
             return full_text, 0.98
-        
+
         return full_text, 0.90
 
     except Exception as e:
-        print(f"[DEBUG OCR] Gemini API failed or limit reached: {e}")
+        err = str(e).lower()
+        if any(k in err for k in ("quota", "resource_exhausted", "429", "rate limit", "ratequota")):
+            print(f"[DEBUG OCR] ⚠️ Gemini quota exceeded — switching to EasyOCR for all remaining disks")
+            _gemini_quota_exceeded = True
+        else:
+            print(f"[DEBUG OCR] Gemini API error: {e}")
         return None, 0.0
 
-def extract_medicine_ocr(image_gray):
+def extract_medicine_ocr(image_gray, image_original=None):
     """
-    Hybrid OCR Switcher: Try Gemini first, Fallback to EasyOCR.
+    Hybrid OCR Switcher: Try Gemini (with original color crop) first, fallback to EasyOCR.
+    image_original: original color 640x640 crop; if provided, sent to Gemini for better accuracy.
+    image_gray: preprocessed grayscale image used only by EasyOCR.
     """
-    # 1. Try Gemini
-    print(f"[DEBUG OCR] Attempting Gemini OCR...")
-    medicine_name, confidence = extract_medicine_gemini(image_gray)
-    
+    # 1. Try Gemini — prefer original color image over preprocessed grayscale
+    gemini_input = image_original if image_original is not None else image_gray
+    print(f"[DEBUG OCR] Attempting Gemini OCR (quota_exceeded={_gemini_quota_exceeded})...")
+    medicine_name, confidence = extract_medicine_gemini(gemini_input)
+
     if medicine_name and confidence > 0.5:
-        print(f"[DEBUG OCR] ✓ Gemini Success: '{medicine_name}' (conf: {confidence})")
+        print(f"[DEBUG OCR] ✓ Gemini: '{medicine_name}' (conf: {confidence})")
         return medicine_name, confidence, 0
 
     # 2. Fallback to EasyOCR
@@ -327,7 +349,7 @@ def analyze_disk_image(image_path: str):
                     crop_640 = crop_and_pad_640(img, disk_bbox)
                     gray_crop = cv2.cvtColor(crop_640, cv2.COLOR_BGR2GRAY) if len(crop_640.shape) == 3 else crop_640
                     processed_crop = denoise_otsu(gray_crop)
-                    medicine_name, ocr_conf, _ = extract_medicine_ocr(processed_crop)
+                    medicine_name, ocr_conf, _ = extract_medicine_ocr(processed_crop, image_original=crop_640)
                     
                     if medicine_name == "Unknown" or ocr_conf < 0.3:
                         medicine_name = f"Disk_{nearest_idx + 1}"
@@ -350,7 +372,7 @@ def analyze_disk_image(image_path: str):
                 crop_640 = crop_and_pad_640(img, disk['bbox'])
                 gray_crop = cv2.cvtColor(crop_640, cv2.COLOR_BGR2GRAY) if len(crop_640.shape) == 3 else crop_640
                 processed_crop = denoise_otsu(gray_crop)
-                medicine_name, ocr_conf, _ = extract_medicine_ocr(processed_crop)
+                medicine_name, ocr_conf, _ = extract_medicine_ocr(processed_crop, image_original=crop_640)
                 if medicine_name == "Unknown" or ocr_conf < 0.3:
                     medicine_name = f"Disk_{idx + 1}"
                     ocr_conf = 0.0
