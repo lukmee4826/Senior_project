@@ -174,7 +174,7 @@ J.~Wang, ``A study of the {OCR} development history and directions of
   vol.~72, pp. 409--415, 2023.
 
 \bibitem{google2025gemini}
-{Google DeepMind}, ``Gemini 2.0 flash: A multimodal ai model,''
+{Google DeepMind}, ``Gemini 3.1 flash lite: A multimodal ai model,''
   \url{https://deepmind.google/technologies/gemini/flash/}, 2025, accessed:
   2025.
 
@@ -291,6 +291,14 @@ B.~Dwyer and J.~Nelson, ``Roboflow (version 1.0) [software],'' 2022. [Online].
 Tzutalin, ``{LabelImg},'' 2015. [Online]. Available:
   \url{https://github.com/tzutalin/labelImg}
 \BIBentrySTDinterwordspacing
+
+\bibitem{qwen2025vl}
+{Qwen Team, Alibaba Cloud}, ``Qwen2.5-vl technical report,''
+  \url{https://github.com/QwenLM/Qwen2.5-VL}, 2025, accessed: 2025.
+
+\bibitem{qwen2025}
+------, ``Qwen3: Think deeper, act faster,''
+  \url{https://github.com/QwenLM/Qwen3}, 2025, accessed: 2025.
 
 \bibitem{iso20776_2}
 {International Organization for Standardization}, ``Clinical laboratory testing

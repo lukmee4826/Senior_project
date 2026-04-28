@@ -50,9 +50,10 @@ else:
 # Once quota is hit, skip Gemini for all remaining disks in the session
 _gemini_quota_exceeded = False
 
-# Regex pattern for validating medicine name and dosage
-PATTERN = re.compile(
-    r'^([A-Za-z]+(?:\s[A-Za-z]+){0,3})\s+(\d+(?:\.\d+)?)$')
+# Regex patterns for validating medicine name and dosage
+PATTERN_MAIN = re.compile(r'^([A-Za-z]+(?:\s[A-Za-z]+){0,3})\s+(\d+(?:\.\d+)?)$')
+PATTERN_UNDER = re.compile(r'^([A-Za-z]+(?:_[A-Za-z]+){0,3})_(\d+(?:\.\d+)?)$')
+PATTERN_SECOND = re.compile(r'^([A-Za-z]+)(\d+(?:\.\d+)?)$')
 
 # ==========================================
 # Preprocessing Functions for OCR
@@ -84,6 +85,45 @@ def sharpening(img):
 
     return sharpen
 
+def preprocess_pipeline_4(gray):
+    """
+    New optimized preprocessing pipeline (Pipeline 4) for antibiotic disks.
+    Uses Laplacian sharpening and adaptive thresholding with a circular mask.
+    """
+    h, w = gray.shape
+    # CLAHE for contrast
+    clahe = cv2.createCLAHE(clipLimit=3.0, tileGridSize=(8, 8))
+    img_clahe = clahe.apply(gray)
+    
+    # Gaussian Blur
+    img_gaussian = cv2.GaussianBlur(img_clahe, (7, 7), 0)
+    
+    # Laplacian Sharpening
+    lap = cv2.Laplacian(img_gaussian, cv2.CV_16S, ksize=5, scale=1, delta=0)
+    lap_abs = cv2.convertScaleAbs(lap)
+    sharpened = cv2.addWeighted(img_gaussian, 1.5, lap_abs, 0.5, 0)
+    
+    # Adaptive Thresholding
+    img_thresh = cv2.adaptiveThreshold(
+        sharpened, 255,
+        cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+        cv2.THRESH_BINARY,
+        blockSize=49,
+        C=6
+    )
+    
+    # Invert and Morphological operations
+    img_inverted = cv2.bitwise_not(img_thresh)
+    kernel = np.ones((2, 2), np.uint8)
+    kernel2 = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, (5, 5))
+    
+    img_dilated = cv2.dilate(img_inverted, kernel, iterations=1)
+    img_closing = cv2.morphologyEx(img_dilated, cv2.MORPH_CLOSE, kernel2, iterations=1)
+    result = cv2.erode(img_closing, kernel, iterations=1)
+    
+    # Final result is black text on white background
+    return cv2.bitwise_not(result)
+
 def denoise_otsu(gray):
     # 1. CLAHE normalize
     clahe = cv2.createCLAHE(clipLimit=2.0, tileGridSize=(8, 8))
@@ -114,8 +154,8 @@ def denoise_otsu(gray):
     result = cv2.bitwise_not(processed_fix)
     return result
 
-def crop_and_pad_640(img, box, target=640):
-    """Crop ROI from image and pad to target size (640x640)."""
+def crop_and_pad_640(img, box, target=640, circle_shrink=30):
+    """Crop ROI from image, pad to target size, and apply circular mask."""
     # Convert box to numpy array if it's a list
     if isinstance(box, list):
         box = np.array(box)
@@ -135,22 +175,34 @@ def crop_and_pad_640(img, box, target=640):
         return np.zeros((target, target, 3), dtype=np.uint8) if len(img.shape) == 3 else np.zeros((target, target), dtype=np.uint8)
     
     h, w = crop.shape[:2]
-    
-    square_size = min(h, w)  # Use the shorter dimension
+    square_size = min(h, w)
     
     # Center crop to square
     y_start = (h - square_size) // 2
     x_start = (w - square_size) // 2
-    
-    square = crop[
-        y_start:y_start + square_size,
-        x_start:x_start + square_size
-    ]
+    square = crop[y_start:y_start + square_size, x_start:x_start + square_size]
     
     # Resize to target size
     square_resized = cv2.resize(square, (target, target))
     
-    return square_resized
+    # Apply Circle Mask to remove background noise around the circular disk
+    h2, w2 = square_resized.shape[:2]
+    mask = np.zeros((h2, w2), dtype=np.uint8)
+    cv2.circle(mask, (w2//2, h2//2), min(h2, w2)//2 - circle_shrink, 255, -1)
+    
+    if len(square_resized.shape) == 3:
+        mask_3ch = cv2.merge([mask, mask, mask])
+        result = cv2.bitwise_and(square_resized, mask_3ch)
+        # Set background to white for OCR (instead of black)
+        bg_mask = cv2.bitwise_not(mask_3ch)
+        result = cv2.add(result, bg_mask)
+    else:
+        result = cv2.bitwise_and(square_resized, square_resized, mask=mask)
+        # Set background to white for OCR
+        bg_mask = cv2.bitwise_not(mask)
+        result = cv2.add(result, bg_mask)
+    
+    return result
 
 def rotate_image(img, angle):
     """Rotate image by given angle."""
@@ -166,24 +218,32 @@ def rotate_image(img, angle):
     )
     return rotated
 
-def adjust_confidence_with_regex(text, conf, penalty=0.15):
-    """Adjust confidence based on regex match for medicine name + dosage."""
+def adjust_confidence_with_regex(text, conf, penalty=0.3):
+    """
+    Adjust confidence based on regex match for medicine name + dosage.
+    Provides bonuses for well-formatted matches.
+    """
     if text is None or text.strip() == "":
         return 0.0
     
-    text_clean = text.strip()
+    t = text.strip()
+    
+    # Bonus for standard "MEM 10" format
+    if PATTERN_MAIN.match(t):
+        return min(conf + 0.3, 1.0)
+    # Bonus for "MEM_10" format
+    elif PATTERN_UNDER.match(t):
+        return min(conf + 0.2, 1.0)
+    # Smaller bonus for "MEM10" format
+    elif PATTERN_SECOND.match(t):
+        return min(conf + 0.15, 1.0)
+    
+    # Fallback to lenient checks or penalty
     lenient_pattern = re.compile(r'^[A-Za-z]+(?:\s+\d+(?:\.\d+)?)?(?:\s*[a-zA-Z]*)?$')
-    
-    if lenient_pattern.match(text_clean):
-        return conf
-    
-    if re.match(r'^[A-Za-z\s]+$', text_clean):
+    if lenient_pattern.match(t):
         return max(0.0, conf - 0.05)
-    
-    if len(text_clean) >= 2 and re.search(r'[A-Za-z0-9]', text_clean):
-        return max(0.0, conf - penalty)
-    
-    return 0.0
+        
+    return max(0.0, conf - penalty)
 
 GEMINI_PROMPT = (
     "This is a cropped image of an antibiotic disk from a disk diffusion susceptibility test.\n"
@@ -215,7 +275,7 @@ def extract_medicine_gemini(image):
         if not full_text:
             return "Unknown", 0.0
 
-        if PATTERN.match(full_text):
+        if PATTERN_MAIN.match(full_text):
             return full_text, 0.98
 
         return full_text, 0.90
@@ -263,7 +323,8 @@ def extract_medicine_ocr(image_gray, image_original=None):
             confs = [c for _, _, c in result]
             display_text = " ".join(texts) if texts else ""
             avg_conf = np.mean(confs) if confs else 0.0
-            adj_conf = adjust_confidence_with_regex(display_text, avg_conf, penalty=0.10)
+            # Use the upgraded regex adjuster with bonuses
+            adj_conf = adjust_confidence_with_regex(display_text, avg_conf)
             
             if adj_conf > best_conf:
                 best_conf = adj_conf
@@ -346,9 +407,12 @@ def analyze_disk_image(image_path: str):
                     if disk_avg_px > 0:
                         current_pixels_per_mm = disk_avg_px / 6.35
                     
+                    # Crop and mask the disk area
                     crop_640 = crop_and_pad_640(img, disk_bbox)
                     gray_crop = cv2.cvtColor(crop_640, cv2.COLOR_BGR2GRAY) if len(crop_640.shape) == 3 else crop_640
-                    processed_crop = denoise_otsu(gray_crop)
+                    
+                    # Use Pipeline 4 for the EasyOCR path (within extract_medicine_ocr)
+                    processed_crop = preprocess_pipeline_4(gray_crop)
                     medicine_name, ocr_conf, _ = extract_medicine_ocr(processed_crop, image_original=crop_640)
                     
                     if medicine_name == "Unknown" or ocr_conf < 0.3:
@@ -371,7 +435,7 @@ def analyze_disk_image(image_path: str):
             if idx not in used_disk_indices:
                 crop_640 = crop_and_pad_640(img, disk['bbox'])
                 gray_crop = cv2.cvtColor(crop_640, cv2.COLOR_BGR2GRAY) if len(crop_640.shape) == 3 else crop_640
-                processed_crop = denoise_otsu(gray_crop)
+                processed_crop = preprocess_pipeline_4(gray_crop)
                 medicine_name, ocr_conf, _ = extract_medicine_ocr(processed_crop, image_original=crop_640)
                 if medicine_name == "Unknown" or ocr_conf < 0.3:
                     medicine_name = f"Disk_{idx + 1}"

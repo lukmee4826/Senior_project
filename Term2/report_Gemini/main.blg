@@ -18,45 +18,45 @@ Warning--missing institution in iso20776_2
 Warning--missing institution in clsi_mm17
 
 Done.
-You've used 51 entries,
+You've used 53 entries,
             4087 wiz_defined-function locations,
-            1069 strings with 15988 characters,
-and the built_in function-call counts, 29568 in all, are:
-= -- 2413
-> -- 724
+            1076 strings with 16174 characters,
+and the built_in function-call counts, 30370 in all, are:
+= -- 2485
+> -- 732
 < -- 134
-+ -- 378
-- -- 158
-* -- 1307
-:= -- 4764
-add.period$ -- 102
-call.type$ -- 51
-change.case$ -- 55
++ -- 382
+- -- 160
+* -- 1333
+:= -- 4913
+add.period$ -- 106
+call.type$ -- 53
+change.case$ -- 59
 chr.to.int$ -- 276
-cite$ -- 54
-duplicate$ -- 2293
-empty$ -- 2435
-format.name$ -- 184
-if$ -- 6763
+cite$ -- 56
+duplicate$ -- 2361
+empty$ -- 2511
+format.name$ -- 186
+if$ -- 6944
 int.to.chr$ -- 0
-int.to.str$ -- 51
-missing$ -- 466
-newline$ -- 204
-num.names$ -- 51
-pop$ -- 1189
+int.to.str$ -- 53
+missing$ -- 482
+newline$ -- 210
+num.names$ -- 53
+pop$ -- 1229
 preamble$ -- 1
 purify$ -- 0
 quote$ -- 2
-skip$ -- 2307
+skip$ -- 2373
 stack$ -- 0
-substring$ -- 787
-swap$ -- 1657
+substring$ -- 793
+swap$ -- 1697
 text.length$ -- 42
 text.prefix$ -- 0
 top$ -- 5
-type$ -- 51
+type$ -- 53
 warning$ -- 3
-while$ -- 99
-width$ -- 53
-write$ -- 509
+while$ -- 101
+width$ -- 55
+write$ -- 527
 (There were 3 warnings)
