@@ -1,4 +1,4 @@
-This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.4.24)  29 APR 2026 00:36
+This is XeTeX, Version 3.141592653-2.6-0.999997 (MiKTeX 25.12) (preloaded format=xelatex 2026.4.24)  29 APR 2026 02:07
 entering extended mode
  restricted \write18 enabled.
  %&-line parsing enabled.
@@ -96,47 +96,46 @@ File: gloss-thai.ldf polyglossia: module for Thai
 )
 
 Package fontspec Info: 
-(fontspec)             TH SarabunPSK scale = 1.3.
+(fontspec)             TH Sarabun New scale = 1.23.
 
 
 Package fontspec Info: 
-(fontspec)             TH SarabunPSK scale = 1.3.
+(fontspec)             TH Sarabun New scale = 1.23.
 
 
 Package fontspec Info: 
-(fontspec)             TH SarabunPSK/B scale = 1.3.
+(fontspec)             TH Sarabun New/B scale = 1.23.
 
 
 Package fontspec Info: 
-(fontspec)             TH SarabunPSK/I scale = 1.3.
+(fontspec)             TH Sarabun New/I scale = 1.23.
 
 
 Package fontspec Info: 
-(fontspec)             TH SarabunPSK/BI scale = 1.3.
+(fontspec)             TH Sarabun New/BI scale = 1.23.
 
 
 Package fontspec Info: 
-(fontspec)             Font family 'THSarabunPSK(0)' created for font 'TH
-(fontspec)             SarabunPSK' with options [Ligatures=TeX,Scale = 1.3].
+(fontspec)             Font family 'THSarabunNew(0)' created for font 'TH
+(fontspec)             Sarabun New' with options [Ligatures=TeX,Scale = 1.23].
 (fontspec)              
 (fontspec)              This font family consists of the following NFSS
 (fontspec)             series/shapes:
 (fontspec)              
-(fontspec)             - 'normal' (m/n) with NFSS spec.: <->s*[1.3]"TH
-(fontspec)             SarabunPSK/OT:script=latn;language=dflt;mapping=tex-text
-;"
-(fontspec)             - 'bold' (b/n) with NFSS spec.: <->s*[1.3]"TH
-(fontspec)             SarabunPSK/B/OT:script=latn;language=dflt;mapping=tex-te
-xt;"
-(fontspec)             - 'italic' (m/it) with NFSS spec.: <->s*[1.3]"TH
-(fontspec)             SarabunPSK/I/OT:script=latn;language=dflt;mapping=tex-te
-xt;"
-(fontspec)             - 'bold italic' (b/it) with NFSS spec.: <->s*[1.3]"TH
-(fontspec)             SarabunPSK/BI/OT:script=latn;language=dflt;mapping=tex-t
-ext;"
+(fontspec)             - 'normal' (m/n) with NFSS spec.: <->s*[1.23]"TH
+(fontspec)             Sarabun
+(fontspec)             New/OT:script=latn;language=dflt;mapping=tex-text;"
+(fontspec)             - 'bold' (b/n) with NFSS spec.: <->s*[1.23]"TH Sarabun
+(fontspec)             New/B/OT:script=latn;language=dflt;mapping=tex-text;"
+(fontspec)             - 'italic' (m/it) with NFSS spec.: <->s*[1.23]"TH
+(fontspec)             Sarabun
+(fontspec)             New/I/OT:script=latn;language=dflt;mapping=tex-text;"
+(fontspec)             - 'bold italic' (b/it) with NFSS spec.: <->s*[1.23]"TH
+(fontspec)             Sarabun
+(fontspec)             New/BI/OT:script=latn;language=dflt;mapping=tex-text;"
 
-LaTeX Font Info:    Font shape `TU/THSarabunPSK(0)/m/n' will be
-(Font)              scaled to size 15.60004pt on input line 20.
+LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/m/n' will be
+(Font)              scaled to size 14.75995pt on input line 20.
 
 Package fontspec Info: 
 (fontspec)             Font family 'CourierNew(0)' created for font 'Courier
@@ -1144,21 +1143,21 @@ LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
 (Font)              `operators' in the math version `normal' on input line 103.
 
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  OT1/cmr/m/n --> TU/THSarabunPSK(0)/m/n on input line 10
+(Font)                  OT1/cmr/m/n --> TU/THSarabunNew(0)/m/n on input line 10
 3.
 LaTeX Font Info:    Encoding `OT1' has changed to `TU' for symbol font
 (Font)              `operators' in the math version `bold' on input line 103.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  OT1/cmr/bx/n --> TU/THSarabunPSK(0)/m/n on input line 1
+(Font)                  OT1/cmr/bx/n --> TU/THSarabunNew(0)/m/n on input line 1
 03.
 LaTeX Font Info:    Overwriting symbol font `operators' in version `normal'
-(Font)                  TU/THSarabunPSK(0)/m/n --> TU/THSarabunPSK(0)/m/n on in
+(Font)                  TU/THSarabunNew(0)/m/n --> TU/THSarabunNew(0)/m/n on in
 put line 103.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `normal'
-(Font)                  OT1/cmr/m/it --> TU/THSarabunPSK(0)/m/it on input line 
+(Font)                  OT1/cmr/m/it --> TU/THSarabunNew(0)/m/it on input line 
 103.
 LaTeX Font Info:    Overwriting math alphabet `\mathbf' in version `normal'
-(Font)                  OT1/cmr/bx/n --> TU/THSarabunPSK(0)/b/n on input line 1
+(Font)                  OT1/cmr/bx/n --> TU/THSarabunNew(0)/b/n on input line 1
 03.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `normal'
 (Font)                  OT1/cmss/m/n --> TU/lmss/m/n on input line 103.
@@ -1166,10 +1165,10 @@ LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `normal'
 (Font)                  OT1/cmtt/m/n --> TU/CourierNew(0)/m/n on input line 103
 .
 LaTeX Font Info:    Overwriting symbol font `operators' in version `bold'
-(Font)                  TU/THSarabunPSK(0)/m/n --> TU/THSarabunPSK(0)/b/n on in
+(Font)                  TU/THSarabunNew(0)/m/n --> TU/THSarabunNew(0)/b/n on in
 put line 103.
 LaTeX Font Info:    Overwriting math alphabet `\mathit' in version `bold'
-(Font)                  OT1/cmr/bx/it --> TU/THSarabunPSK(0)/b/it on input line
+(Font)                  OT1/cmr/bx/it --> TU/THSarabunNew(0)/b/it on input line
  103.
 LaTeX Font Info:    Overwriting math alphabet `\mathsf' in version `bold'
 (Font)                  OT1/cmss/bx/n --> TU/lmss/b/n on input line 103.
@@ -1185,15 +1184,15 @@ LaTeX Font Info:    Overwriting math alphabet `\mathtt' in version `bold'
 * layout: <same size as paper>
 * layoutoffset:(h,v)=(0.0pt,0.0pt)
 * modes: 
-* h-part:(L,W,R)=(108.40492pt, 416.83315pt, 72.2698pt)
-* v-part:(T,H,B)=(72.2698pt, 700.50723pt, 72.2698pt)
+* h-part:(L,W,R)=(113.81102pt, 426.79135pt, 56.9055pt)
+* v-part:(T,H,B)=(85.35826pt, 702.78308pt, 56.9055pt)
 * \paperwidth=597.50787pt
 * \paperheight=845.04684pt
-* \textwidth=416.83315pt
-* \textheight=700.50723pt
-* \oddsidemargin=36.13493pt
-* \evensidemargin=36.13493pt
-* \topmargin=-40.00018pt
+* \textwidth=426.79135pt
+* \textheight=702.78308pt
+* \oddsidemargin=41.54103pt
+* \evensidemargin=41.54103pt
+* \topmargin=-26.91173pt
 * \headheight=15.0pt
 * \headsep=25.0pt
 * \topskip=12.0pt
@@ -1225,14 +1224,14 @@ Package hyperref Info: Link coloring ON on input line 103.
 \@outlinefile=\write4
 \openout4 = `main.out'.
 
-LaTeX Font Info:    Font shape `TU/THSarabunPSK(0)/m/n' will be
-(Font)              scaled to size 18.72003pt on input line 113.
-LaTeX Font Info:    Font shape `TU/THSarabunPSK(0)/b/n' will be
-(Font)              scaled to size 18.72003pt on input line 113.
-LaTeX Font Info:    Font shape `TU/THSarabunPSK(0)/m/n' will be
-(Font)              scaled to size 10.40002pt on input line 117.
-LaTeX Font Info:    Font shape `TU/THSarabunPSK(0)/m/n' will be
-(Font)              scaled to size 7.80002pt on input line 117.
+LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/m/n' will be
+(Font)              scaled to size 17.71193pt on input line 113.
+LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/b/n' will be
+(Font)              scaled to size 17.71193pt on input line 113.
+LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/m/n' will be
+(Font)              scaled to size 9.83997pt on input line 117.
+LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/m/n' will be
+(Font)              scaled to size 7.37997pt on input line 117.
 LaTeX Font Info:    Trying to load font information for U+msa on input line 117
 .
 
@@ -1245,406 +1244,286 @@ LaTeX Font Info:    Trying to load font information for U+msb on input line 117
 (C:\Users\Lukme\AppData\Local\Programs\MiKTeX\tex/latex/amsfonts\umsb.fd
 File: umsb.fd 2013/01/14 v3.01 AMS symbols B
 )
-LaTeX Font Info:    Font shape `TU/THSarabunPSK(0)/b/n' will be
-(Font)              scaled to size 15.60004pt on input line 118.
+LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/b/n' will be
+(Font)              scaled to size 14.75995pt on input line 118.
 
 [1
 
 ]
 File: figures/kmutt_logo.png Graphic file (type bmp)
 <figures/kmutt_logo.png>
- [1] [1] (chapters/00_abstract.tex
-Overfull \hbox (11.46451pt too wide) in paragraph at lines 10--26
-[][] 
+ [1] [1] (chapters/00_abstract.tex [2
+
+] [3] [4
+
+]
+Overfull \hbox (2.54027pt too wide) in paragraph at lines 92--94
+\TU/THSarabunNew(0)/b/n/12 คำ สำคัญ: \TU/THSarabunNew(0)/m/n/12 การ ทดสอบ ความ 
+ไว ต่อ ยา ต้าน จุลชีพ, บริเวณ ยับยั้ง เชื้อ, Deep Learning, การ ตรวจ จับ วัตถุ,
+ YOLOv11,
  []
 
-[2
-
-] [3]
-Overfull \hbox (4.32054pt too wide) in paragraph at lines 64--81
-[][] 
+[5]) (chapters/00_acknowledgement.tex
+Overfull \hbox (1.87523pt too wide) in paragraph at lines 21--26
+[]\TU/THSarabunNew(0)/m/n/12 ขอ ขอบคุณ ทีม บุคลากร ทางการ แพทย์ และ ห้อง ปฏิบัต
+ิ การ ราช วิทยา ลัย จุฬา ภ รณ์ วิทยาลัย แพทยศาสตร์
  []
 
 
-Overfull \hbox (25.532pt too wide) in paragraph at lines 85--87
-[] \TU/THSarabunPSK(0)/m/n/12 ปัญหา การ ดื้อยา ต้าน จุลชีพ (Antibiotic Resistan
-ce) ถือ เป็น ความ ท้าทาย ด้าน สาธารณสุข
- []
-
-
-Overfull \hbox (3.7428pt too wide) in paragraph at lines 88--89
-\TU/THSarabunPSK(0)/m/n/12 ประมวล ผล ภาพ แบบ ดั้งเดิม อย่าง Hough Circle Transf
-orm เพื่อ ระบุ ตำแหน่ง และ วัด ขนาด ZOI นอกจาก
- []
-
-[4
-
-] [5]) (chapters/00_acknowledgement.tex
-Overfull \hbox (35.98659pt too wide) in paragraph at lines 27--31
-[]\TU/THSarabunPSK(0)/m/n/12 ขอ ขอบคุณ ภาค วิชา วิศวกรรม คอมพิวเตอร์ คณะ วิศวกร
+Overfull \hbox (3.94162pt too wide) in paragraph at lines 27--31
+[]\TU/THSarabunNew(0)/m/n/12 ขอ ขอบคุณ ภาค วิชา วิศวกรรม คอมพิวเตอร์ คณะ วิศวกร
 รมศาสตร์ มหาวิทยาลัย เทคโนโลยี พระจอมเกล้า
  []
 
 [6
 
 ])
-LaTeX Font Info:    Font shape `TU/THSarabunPSK(0)/m/n' will be
-(Font)              scaled to size 32.34407pt on input line 220.
-LaTeX Font Info:    Font shape `TU/THSarabunPSK(0)/b/n' will be
-(Font)              scaled to size 32.34407pt on input line 220.
- (main.toc [7
+LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/m/n' will be
+(Font)              scaled to size 30.6023pt on input line 220.
+LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/b/n' will be
+(Font)              scaled to size 30.6023pt on input line 220.
+ (main.toc
+Overfull \hbox (3.29892pt too wide) in paragraph at lines 21--21
+ [][] [][][]\TU/THSarabunNew(0)/m/n/12 การ จดจำ อักขระ ด้วย แสง สำหรับ ฉลาก แผ่
+น ดิสก์ ยา ปฏิชีวนะ (Optical Character Recog- 
+ []
+
+[7
 
 ]
-Overfull \hbox (2.01123pt too wide) in paragraph at lines 43--43
- [][] [][][]\TU/THSarabunPSK(0)/m/n/12 ขั้น ตอน หลัก: Gemini 3.1 Flash lite OCR
- (Primary Stage: Gem- 
+Overfull \hbox (0.58304pt too wide) in paragraph at lines 46--46
+ [][] [][][]\TU/THSarabunNew(0)/m/n/12 สภาพ แวดล้อม เซิร์ฟเวอร์ และ บริการ Back
+end (Server Environment and 
  []
 
 [8]
-Overfull \hbox (1.65347pt too wide) in paragraph at lines 49--49
- [][] [][][]\TU/THSarabunPSK(0)/m/n/12 การ ประมวล ผล ข้อความ และ จับ คู่ ชื่อ ย
-า ปฏิชีวนะ (Post-Processing 
+Overfull \hbox (2.33946pt too wide) in paragraph at lines 102--102
+ [][] [][][]\TU/THSarabunNew(0)/m/n/12 โมดูล การ วิเคราะห์ ระบาด วิทยา และ แนว 
+โน้ม การ ดื้อยา (Epidemiology and 
  []
 
-
-Overfull \hbox (0.2807pt too wide) in paragraph at lines 53--53
- [][] [][][]\TU/THSarabunPSK(0)/m/n/12 การ วิเคราะห์ ค่า ความคลาด เคลื่อน ราย ย
-า ปฏิชีวนะ (Per-Antibiotic 
- []
-
-[9])
+)
 \tf@toc=\write5
 \openout5 = `main.toc'.
 
- [10] [11] (main.lof
-LaTeX Font Info:    Font shape `TU/THSarabunPSK(0)/m/it' will be
-(Font)              scaled to size 15.60004pt on input line 4.
+ [9] [10] (main.lof
+LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/m/it' will be
+(Font)              scaled to size 14.75995pt on input line 4.
 
-Overfull \hbox (6.19318pt too wide) in paragraph at lines 4--4
- [][] [][][]\TU/THSarabunPSK(0)/m/n/12 ตัวอย่าง ตาราง เกณฑ์ การ แปล ผล เส้น ผ่า
-น ศูนย์กลาง โซน (Zone diameter break- 
+Overfull \hbox (0.40594pt too wide) in paragraph at lines 4--4
+ [][] [][][]\TU/THSarabunNew(0)/m/n/12 ตัวอย่าง ตาราง เกณฑ์ การ แปล ผล เส้น ผ่า
+น ศูนย์กลาง โซน (Zone diameter breakpoints) 
  []
 
 
-Overfull \hbox (10.98239pt too wide) in paragraph at lines 6--6
- [][] [][][]\TU/THSarabunPSK(0)/m/n/12 สถาปัตยกรรม ของ YOLOv11 แสดง เครือ ข่าย 
-Backbone สำหรับ สกัด คุณลักษณะ, 
+Overfull \hbox (1.37128pt too wide) in paragraph at lines 10--10
+ \TU/THSarabunNew(0)/m/n/12 เข้า ภาพ ผ่าน การ ตรวจ จับ, OCR, การ ปรับ เทียบ และ
+ การ จำแนก ความ ไว ต่อ ยา ตาม Break- 
  []
 
+[11
 
-Overfull \hbox (0.65517pt too wide) in paragraph at lines 6--6
- \TU/THSarabunPSK(0)/m/n/12 และ หัว การ ตรวจ จับ แยก ส่วน (Decoupled heads) สำห
-รับ การ ถดถอย Bound- 
- []
-
-
-Overfull \hbox (3.49332pt too wide) in paragraph at lines 10--10
- [][] [][][]\TU/THSarabunPSK(0)/m/n/12 Pipeline การ วิเคราะห์ รูปภาพ แบบ End-to
--end ของ ระบบ AST อัตโนมัติ ตั้งแต่ 
- []
-
-[12
-
-]
-Overfull \hbox (57.35507pt too wide) in paragraph at lines 15--15
- \TU/THSarabunPSK(0)/m/n/12 ระหว่าง ตาราง Users, AnalysisBatch, Plates, PlateRe
-sults, Breakpoints_DiskDiffusion, 
- []
-
-[13])
+])
 \tf@lof=\write6
 \openout6 = `main.lof'.
 
- [14] (main.lot)
+ [12] (main.lot
+Overfull \hbox (3.66788pt too wide) in paragraph at lines 4--4
+ [][] [][][]\TU/THSarabunNew(0)/m/n/12 องค์ ประกอบ ของ ชุด ข้อมูล และ การ แบ่ง 
+ส่วน สำหรับ การ ฝึกฝน/ การ ตรวจ สอบ/ การ ทดสอบ 
+ []
+
+
+Overfull \hbox (1.70482pt too wide) in paragraph at lines 10--10
+ [][] [][][]\TU/THSarabunNew(0)/m/n/12 ราย ละเอียด เวลา การ ประมวล ผล ต่อ ภาพ ส
+ำหรับ แต่ละ ขั้น ตอน ของ Pipeline เวลา รายงาน 
+ []
+
+
+Overfull \hbox (4.33209pt too wide) in paragraph at lines 12--12
+ [][] [][][]\TU/THSarabunNew(0)/m/n/12 อัตรา ความ สำเร็จ ของ การ ทดสอบ ตาม สถาน
+การณ์ จำลอง (n=5) ภารกิจ จะ ถูก นับ ว่า “เสร็จ 
+ []
+
+)
 \tf@lot=\write7
 \openout7 = `main.lot'.
 
- [15
+ [13
 
-] (chapters/00_abbreviations.tex)
-(chapters/01_intro.tex [1
+] (chapters/00_abbreviations.tex) (chapters/01_intro.tex [1
 
 ]
 Chapter 1.
+File: figures/kirby_bauer_example.png Graphic file (type bmp)
+<figures/kirby_bauer_example.png>
+LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/m/n' will be
+(Font)              scaled to size 13.46844pt on input line 17.
+LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/b/n' will be
+(Font)              scaled to size 13.46844pt on input line 17.
 [2
 
 ]
-File: figures/kirby_bauer_example.png Graphic file (type bmp)
-<figures/kirby_bauer_example.png>
-LaTeX Font Info:    Font shape `TU/THSarabunPSK(0)/m/n' will be
-(Font)              scaled to size 14.23502pt on input line 17.
-LaTeX Font Info:    Font shape `TU/THSarabunPSK(0)/b/n' will be
-(Font)              scaled to size 14.23502pt on input line 17.
- [3]
-Overfull \hbox (9.27821pt too wide) in paragraph at lines 25--26
-[]\TU/THSarabunPSK(0)/m/n/12 ระบบ AST อัตโนมัติ ใน ปัจจุบัน ต้องการ การ ลงทุน จ
-ำนวน มาก —มัก จะ เป็น เงิน หลาย หมื่น ดอลลาร์
+Overfull \hbox (0.32439pt too wide) in paragraph at lines 21--22
+[]\TU/THSarabunNew(0)/m/n/12 เส้น ผ่าน ศูนย์กลาง ของ แต่ละ ZOI วัด และ นำ ไป เป
+รียบ เทียบ กับ จุด ตัด การ ตีความ (interpretive break-
+ []
+
+[3] [4] [5]
+Overfull \hbox (4.09872pt too wide) in paragraph at lines 61--62
+[]\TU/THSarabunNew(0)/b/n/12 การ ปรับ เทียบ (Calibration): \TU/THSarabunNew(0)/
+m/n/12 การ แปลง หน่วย จาก พิกเซล เป็น มิลลิเมตร จะ ทำ โดย ใช้ แผ่น ดิสก์ ยา ปฏิ
+ชีวนะ
  []
 
 
-Overfull \hbox (1.52498pt too wide) in paragraph at lines 27--28
-[]\TU/THSarabunPSK(0)/m/n/12 ดัง นั้น จึง มี เหตุผล ที่ น่า สนใจ ใน การ พัฒนา เ
-ครื่อง มือ ซอฟต์แวร์ ที่ ขับ เคลื่อน ด้วย AI ราคา ประหยัด
+Overfull \hbox (0.97458pt too wide) in paragraph at lines 75--76
+[]\TU/THSarabunNew(0)/b/n/12 การ วิเคราะห์ เปรียบ เทียบ โมเดล (Comparative Mode
+l Analysis): \TU/THSarabunNew(0)/m/n/12 ได้ ผล การ เปรียบ เทียบ เชิง ปริมาณ
  []
 
-[4]
-Overfull \hbox (3.71274pt too wide) in paragraph at lines 31--32
-\TU/THSarabunPSK(0)/m/n/12 ความ ก้าวหน้า ล่าสุด ใน สาขา Deep Learning และ Compu
-ter Vision ได้ ก่อ ให้ เกิด โมเดล ที่ มี ประสิทธิภาพ
- []
-
-[5]
-Overfull \hbox (3.84377pt too wide) in paragraph at lines 56--57
-[]\TU/THSarabunPSK(0)/b/n/12 แอปพลิเคชัน ที่ พร้อม ใช้ งาน (Deployed Applicatio
-n): \TU/THSarabunPSK(0)/m/n/12 แอปพลิเคชัน ที่ ทำงาน ได้ อย่าง สมบูรณ์
- []
-
-[6] [7]) (chapters/02_theory.tex
-Overfull \hbox (0.23392pt too wide) in paragraph at lines 84--2
-\TU/THSarabunPSK(0)/m/n/12 ส่วน ที่ เหลือ ของ รายงาน นี้ จัด ลำดับ ดังนี้: บท ท
-ี่ 2 ทบทวน ทฤษฎี พื้น ฐาน และ งาน วิจัย ที่ เกี่ยวข้อง ครอบคลุม
- []
-
-[8]
+[6]) (chapters/02_theory.tex [7]
 Chapter 2.
-[9
+[8
 
 ]
 File: figures/_review/clsi_breakpoint_table.png Graphic file (type bmp)
 <figures/_review/clsi_breakpoint_table.png>
-LaTeX Font Info:    Font shape `TU/THSarabunPSK(0)/m/it' will be
-(Font)              scaled to size 14.23502pt on input line 23.
- [10] [11]
+LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/m/it' will be
+(Font)              scaled to size 13.46844pt on input line 23.
+ [9]
 File: figures/faster_rcnn_architecture.png Graphic file (type bmp)
 <figures/faster_rcnn_architecture.png>
- [12] [13]
+ [10] [11]
 File: figures/yolov11_architecture.png Graphic file (type bmp)
 <figures/yolov11_architecture.png>
- [14] [15]
-Overfull \hbox (0.17152pt too wide) in paragraph at lines 75--76
-\TU/THSarabunPSK(0)/m/n/12 Hough Circle Transform เป็น เทคนิค Computer Vision แ
-บบ ดั้งเดิม ที่ ใช้ สำหรับ การ ตรวจ จับ โครงสร้าง
- []
-
+ [12]
 File: figures/hough_circle_diagram.png Graphic file (type bmp)
 <figures/hough_circle_diagram.png>
-[16] [17]
-Overfull \hbox (20.1875pt too wide) in paragraph at lines 109--110
-\TU/THSarabunPSK(0)/m/n/12 สว่าง ที่ เป็น เกณฑ์ (Threshold) ที่ เหมาะ สม ที่สุด
- โดย อัตโนมัติ เพื่อ ใช้ แปลง ภาพ ระดับ สี เทา (Grayscale)
- []
-
-[18] [19]
+ [13] [14] [15]
 File: figures/_review/related_work_existing_system.png Graphic file (type bmp)
 <figures/_review/related_work_existing_system.png>
- [20] [21]
-Overfull \hbox (0.87225pt too wide) in paragraph at lines 142--142
-|[]\TU/THSarabunPSK(0)/b/n/12 มาตรฐาน การ ประเมิน สำหรับ วิธี AST อัตโนมัติ (Ev
-aluation Standards for Automated
+ [16]
+Overfull \hbox (10.56886pt too wide) in paragraph at lines 140--141
+[]\TU/THSarabunNew(0)/m/n/12 หนึ่ง ใน ข้อ ค้น พบ ที่ สำคัญ ที่สุด ของ Rajasekar
+ และ คณะ คือ Deep Learning แสดง ให้ เห็น ถึง ประสิทธิภาพ
  []
 
-) (chapters/03_methodology.tex [22] [23]
+[17]) (chapters/03_methodology.tex [18]
 Chapter 3.
-
-Overfull \hbox (29.90517pt too wide) in paragraph at lines 6--7
-\TU/THSarabunPSK(0)/m/n/12 ระบบ ที่ นำ เสนอ พัฒนา ใน รูป แบบ เว็บ แอปพลิเคชัน ค
-รบ วงจร (Full-stack Web Application) ตาม สถาปัตยกรรม
- []
-
-
-Overfull \hbox (24.48938pt too wide) in paragraph at lines 8--10
-[]\TU/THSarabunPSK(0)/m/n/12 สำหรับ ฝั่ง Frontend ได้ รับ การ พัฒนา ด้วย React 
-ซึ่ง เป็น เฟรม เวิร์ก JavaScript แบบ Component-
- []
-
-
-Overfull \hbox (6.7662pt too wide) in paragraph at lines 13--14
-[]\TU/THSarabunPSK(0)/b/n/12 การนำ เข้า และ ประมวล ผล ภาพ เบื้อง ต้น (Image Acq
-uisition and Preprocessing): \TU/THSarabunPSK(0)/m/n/12 ภาพถ่าย
- []
-
-[24
-
-]
-Overfull \hbox (16.17827pt too wide) in paragraph at lines 16--17
-\TU/THSarabunPSK(0)/m/n/12 ศูนย์กลาง จาก หน่วย พิกเซล ให้ เป็น หน่วย มิลลิเมตร 
-ทาง กายภาพ โดย อาศัย เส้น ผ่าน ศูนย์กลาง มาตรฐาน
- []
-
 File: figures/pipeline_flowchart.png Graphic file (type bmp)
 <figures/pipeline_flowchart.png>
+[19
+
+]
 File: figures/system_architecture.png Graphic file (type bmp)
 <figures/system_architecture.png>
-[25]
 File: figures/_review/use_case_diagram.png Graphic file (type bmp)
 <figures/_review/use_case_diagram.png>
- [26]
-Overfull \hbox (2.97949pt too wide) in paragraph at lines 54--55
-\TU/THSarabunPSK(0)/m/n/12 เทคนิค การ เพิ่ม ข้อมูล (Data Augmentation) ทั้ง ใน 
-เชิง เรขาคณิต และ เชิง แสง ผ่าน แพลตฟอร์ม Roboflow
- []
-
-[27]
+ [20] [21]
 File: figures/_review/synthetic_plate_example.png Graphic file (type bmp)
 <figures/_review/synthetic_plate_example.png>
- [28]
-Overfull \hbox (42.55908pt too wide) in paragraph at lines 78--91
+ [22]
+Overfull \hbox (11.09297pt too wide) in paragraph at lines 78--91
  [][] 
  []
 
-
-Overfull \hbox (10.54558pt too wide) in paragraph at lines 93--94
-\TU/THSarabunPSK(0)/m/n/12 ทั้งหมด ที่ รายงาน ใน บท ที่ 4 คำนวณ จาก ชุด ทดสอบ ร
-ูปภาพ จริง (55 ภาพ) เพื่อ ให้ แน่ใจ ว่า ตัวเลข ประสิทธิภาพ
- []
-
-[29]
 File: figures/_review/annotation_roboflow.png Graphic file (type bmp)
 <figures/_review/annotation_roboflow.png>
- [30] [31]
-Overfull \hbox (14.87224pt too wide) in paragraph at lines 130--131
-\TU/THSarabunPSK(0)/m/n/12 Hough Circle Transform ถูก นำ มา ใช้ เป็น เกณฑ์ มาตร
-ฐาน แบบ คลาส สิ ก โดย ใช้ ฟังก์ชัน \TU/CourierNew(0)/m/n/12 HoughCircles
+[23] [24] [25] [26]
+Overfull \hbox (94.91917pt too wide) in paragraph at lines 162--163
+[]\TU/THSarabunNew(0)/m/n/12 เมื่อ Gemini API ส่ง กลับ Error หรือ ตรวจ พบ สัญญา
+ณ Quota Exhausted (HTTP 429 หรือ \TU/CourierNew(0)/m/n/12 resource_exhausted\TU
+/THSarabunNew(0)/m/n/12 )
  []
 
-
-Overfull \hbox (1.61743pt too wide) in paragraph at lines 132--133
-\TU/THSarabunPSK(0)/m/n/12 space), \TU/CourierNew(0)/m/n/12 minDist \TU/THSarab
-unPSK(0)/m/n/12 (ระยะ ห่าง ขั้น ต่ำ ที่ อนุญาต ระหว่าง จุดศูนย์กลาง ของ วงกลม ท
-ี่ ตรวจ จับ ได้ เพื่อ ป้องกัน
+[27]
+Overfull \hbox (9.72435pt too wide) in paragraph at lines 196--196
+|[]\TU/THSarabunNew(0)/b/n/12 การ ประมวล ผล ข้อความ และ จับ คู่ ชื่อ ยา ปฏิชีวน
+ะ (Post-Processing and Antibiotic Name Match-
  []
 
-[32] [33] [34]
-Overfull \hbox (13.60161pt too wide) in paragraph at lines 180--181
-\TU/THSarabunPSK(0)/m/n/12 ground process) ที่ ได้ รับ การ จัดการ เพื่อ ให้ มั่
-นใจ ใน เสถียรภาพ ของ ระบบ จึง มี สคริปต์ จัดการ \TU/CourierNew(0)/m/n/12 start.
-sh
- []
-
-[35]
-Overfull \hbox (17.50642pt too wide) in paragraph at lines 190--191
-\TU/THSarabunPSK(0)/m/n/12 การ กำหนด ค่า นี้ ช่วย ให้ ใช้ จุด เชื่อม ต่อ โดเมน 
-เดียว (\TU/CourierNew(0)/m/n/12 https:// paniti- jupyter.cra.ac.th/
- []
-
-
-Overfull \hbox (7.93507pt too wide) in paragraph at lines 196--196
-|[]\TU/THSarabunPSK(0)/b/n/12 การ ประมวล ผล ข้อความ และ จับ คู่ ชื่อ ยา ปฏิชีวน
-ะ (Post-Processing and Antibiotic Name
- []
-
-[36]
+[28]
 File: figures/_review/database_schema.png Graphic file (type bmp)
 <figures/_review/database_schema.png>
-) (chapters/04_results.tex [37] [38]
+ [29]) (chapters/04_results.tex [30]
 Chapter 4.
 
-Overfull \hbox (6.11249pt too wide) in paragraph at lines 4--5
-[]\TU/THSarabunPSK(0)/m/n/12 ใน บท นี้ จะ นำ เสนอ ผล การ ทดลอง และ การ ประเมิน 
-ประสิทธิภาพ ของ ระบบ ใน แต่ละ ส่วน ประกอบ
- []
-
-
-Overfull \hbox (31.19153pt too wide) in paragraph at lines 21--45
+Overfull \hbox (5.57913pt too wide) in paragraph at lines 21--45
  [][] 
  []
 
 File: figures/_review/detection_frcnn_round_plate.png Graphic file (type bmp)
 <figures/_review/detection_frcnn_round_plate.png>
-[39
+[31
 
-]
-Overfull \hbox (5.1635pt too wide) in paragraph at lines 57--58
-\TU/THSarabunPSK(0)/m/n/12 อย่าง เห็น ได้ ชัด เมื่อ เทียบ กับ การ ใช้ มาตราส่วน
- คงที่ (Fixed-scale) อย่างไร ก็ตาม โมเดล แต่ละ สถาปัตยกรรม
- []
-
-[40]
+] [32]
 File: figures/detection_result.png Graphic file (type bmp)
 <figures/detection_result.png>
- [41]
-Overfull \hbox (11.32553pt too wide) in paragraph at lines 85--88
-\TU/THSarabunPSK(0)/m/n/12 อธิบาย ได้ ด้วย ความ แตก ต่าง พื้น ฐาน ทาง สถาปัตยกร
-รม ระหว่าง สอง กระบวน ทัศน์ (Paradigms) ซึ่ง สอดคล้อง
- []
-
-[42]
-Overfull \hbox (6.00333pt too wide) in paragraph at lines 98--107
-[]\TU/THSarabunPSK(0)/m/n/12 YOLOv11n [[][]4[][]] เป็น ตัว ตรวจ จับ แบบ \TU/THS
-arabunPSK(0)/m/it/12 Single-stage \TU/THSarabunPSK(0)/m/n/12 anchor-free ซึ่ง ด
-ำเนิน การ จำแนก ประเภท
- []
-
+ [33] [34]
 Package pgfplots info on input line 122: Using 'lua backend=false' for axis: x 
 coord trafo unsupported.
-[43]
 File: figures/_review/detection_hough_square.png Graphic file (type bmp)
 <figures/_review/detection_hough_square.png>
- [44] [45] [46]
+ [35] [36] [37]
 File: figures/training_curves.png Graphic file (type bmp)
 <figures/training_curves.png>
- [47]
-Overfull \hbox (30.83145pt too wide) in paragraph at lines 278--293
+ [38]
+Overfull \hbox (0.64313pt too wide) in paragraph at lines 278--293
  [][] 
  []
 
 File: figures/ocr_pipeline.png Graphic file (type bmp)
 <figures/ocr_pipeline.png>
-[48] [49]
-Overfull \hbox (4.63052pt too wide) in paragraph at lines 340--341
-[]\TU/THSarabunPSK(0)/m/n/12 ปัจจัย เหล่า นี้ รวม กัน ทำให้ เกิด Scale factor ท
-ี่ ไม่ สามารถ คาด เดา ได้ ใน แต่ละ ภาพ ซึ่ง หมายความ
+[39]
+Overfull \hbox (2.37393pt too wide) in paragraph at lines 312--313
+[] []\TU/THSarabunNew(0)/b/n/12 Qwen2.5-VL:7b — ปานกลาง:[] \TU/THSarabunNew(0)/
+m/n/12 ให้ ความ แม่นยำ ประมาณ \TU/THSarabunNew(0)/b/n/12 49% \TU/THSarabunNew(0
+)/m/n/12 ไม่ ว่า จะ ผ่าน Preprocessing หรือ ไม่ สะท้อน
  []
 
-
-Overfull \hbox (5.42873pt too wide) in paragraph at lines 344--346
-\TU/THSarabunPSK(0)/m/n/12 แนวทาง การ ปรับ เทียบ ใน แต่ละ ภาพ นั้น ใช้ ประโยชน์
- จาก ค่า คงที่ ทาง กายภาพ ที่ ทราบ กัน ดี: แผ่น ยา ปฏิชีวนะ
+[40] [41]
+Overfull \hbox (4.16304pt too wide) in paragraph at lines 368--370
+[]\TU/THSarabunNew(0)/m/n/12 ค่า ความคลาด เคลื่อนที่ ยัง คง เหลือ อยู่ ประมาณ 3
+.9–4.8 mm หลัง จาก การ ปรับ เทียบ ราย แผ่น ยา สะท้อน
  []
 
-
-Overfull \hbox (1.47813pt too wide) in paragraph at lines 352--356
-[]\TU/THSarabunPSK(0)/m/n/12 โดยที่ $\OML/cmm/m/it/12 d[]$ \TU/THSarabunPSK(0)/
-m/n/12 คือ เส้น ผ่าน ศูนย์กลาง ที่ ปรับ เทียบ แล้ว ใน หน่วย มิลลิเมตร, $\OML/cm
-m/m/it/12 d[]$ \TU/THSarabunPSK(0)/m/n/12 คือ เส้น ผ่าน ศูนย์กลาง
+LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/b/n' will be
+(Font)              scaled to size 9.83997pt on input line 401.
+LaTeX Font Info:    Font shape `TU/THSarabunNew(0)/b/n' will be
+(Font)              scaled to size 7.37997pt on input line 401.
+[42]
+Overfull \hbox (3.74976pt too wide) in paragraph at lines 462--463
+[]\TU/THSarabunNew(0)/m/n/12 ความ ล้ม เหลว เพียง ครั้ง เดียว ใน ภารกิจ การ แก้ไ
+ข ผล ด้วย มือ (Manual correction) (U2) เกิด ขึ้น เนื่องจาก
  []
 
-[50] [51]
-LaTeX Font Info:    Font shape `TU/THSarabunPSK(0)/b/n' will be
-(Font)              scaled to size 10.40002pt on input line 401.
-LaTeX Font Info:    Font shape `TU/THSarabunPSK(0)/b/n' will be
-(Font)              scaled to size 7.80002pt on input line 401.
- [52] [53]
+[43]
 Package pgfplots info on input line 498: Using 'lua backend=false' for axis: x 
 coord trafo unsupported.
-
-Overfull \hbox (3.8973pt too wide) in paragraph at lines 512--514
-[]\TU/THSarabunPSK(0)/m/n/12 ข้อมูล เชิง คุณภาพ หลัง การ ทดสอบ ระบุ ถึง ความ คา
-ด หวัง ที่ ยัง ไม่ ได้ รับ การ ตอบ สนอง สอง ประการ: 
- []
-
-[54] [55]
+ [44]
 File: figures/webapp_screenshot.png Graphic file (type bmp)
 <figures/webapp_screenshot.png>
+ [45]
 File: figures/_review/webapp_03_upload.png Graphic file (type bmp)
 <figures/_review/webapp_03_upload.png>
 File: figures/_review/webapp_01_home_landing.png Graphic file (type bmp)
 <figures/_review/webapp_01_home_landing.png>
-) (chapters/05_conclusion.tex [56] [57]
+) (chapters/05_conclusion.tex [46]
 Chapter 5.
 
-Overfull \hbox (1.1543pt too wide) in paragraph at lines 17--18
-[]\TU/THSarabunPSK(0)/b/n/12 การ ระบุ ชื่อ ยา ปฏิชีวนะ (Antibiotic Label Recogn
-ition): \TU/THSarabunPSK(0)/m/n/12 พัฒนา เป็น Hybrid OCR Pipeline
+Overfull \hbox (14.54588pt too wide) in paragraph at lines 29--30
+\TU/THSarabunNew(0)/m/n/12 สามารถ รองรับ ความ แปรปรวน ของ ระยะ ถ่าย ภาพ และ ควา
+ม บิด เบี้ยว ของ เลนส์ กล้อง ที่ แตก ต่าง กัน ใน แต่ละ สถานการณ์
  []
 
-[58
+[47
 
-] [59] [60]) (main.bbl [61] [62
+] [48]) (main.bbl [49] [50
 
-] [63] [64] [65] [66]) (chapters/appendix.tex [67]
+] [51] [52]) (chapters/appendix.tex [53]
 Appendix A.
-) [68
+) [54
 
 ] (main.aux)
  ***********
@@ -1656,11 +1535,11 @@ Package rerunfilecheck Info: File `main.out' has not changed.
  ) 
 Here is how much of TeX's memory you used:
  38743 strings out of 402987
- 910984 string characters out of 5448524
- 1487073 words of memory out of 5000000
+ 911021 string characters out of 5448524
+ 1489064 words of memory out of 5000000
  66847 multiletter control sequences out of 15000+600000
  634578 words of font info for 103 fonts, out of 8000000 for 9000
  1348 hyphenation exceptions out of 8191
  99i,12n,108p,1531b,2377s stack positions out of 10000i,1000n,20000p,200000b,200000s
 
-Output written on main.pdf (85 pages).
+Output written on main.pdf (69 pages).

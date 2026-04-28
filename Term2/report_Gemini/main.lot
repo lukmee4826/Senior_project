@@ -1,15 +1,15 @@
 \addvspace {10\p@ }
 \addvspace {10\p@ }
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {3.1}{\ignorespaces \xpg@aux {}{english}\ignorespaces องค์ประกอบของชุดข้อมูลและการแบ่งส่วนสำหรับการฝึกฝน/การตรวจสอบ/การทดสอบ ที่ใช้ในการฝึกฝนและประเมินผลโมเดล}}{29}{table.caption.15}%
+\contentsline {table}{\numberline {3.1}{\ignorespaces \xpg@aux {}{english}\ignorespaces องค์ประกอบของชุดข้อมูลและการแบ่งส่วนสำหรับการฝึกฝน/การตรวจสอบ/การทดสอบ ที่ใช้ในการฝึกฝนและประเมินผลโมเดล}}{23}{table.caption.15}%
 \addvspace {10\p@ }
-\contentsline {table}{\numberline {4.1}{\ignorespaces \xpg@aux {}{english}\ignorespaces ผลการวัดขนาด ZOI เปรียบเทียบรายยาปฏิชีวนะ (หน่วย: มม.) โดยเทียบกับค่าเฉลี่ยเอกฉันท์จากผู้เชี่ยวชาญ (Expert GT) คอลัมน์ Error คำนวณจาก โมเดล $-$ Expert GT (ค่าบวก = ประมาณค่าสูงเกินไป, ค่าลบ = ประมาณค่าต่ำเกินไป)}}{39}{table.caption.18}%
-\contentsline {table}{\numberline {4.2}{\ignorespaces \xpg@aux {}{english}\ignorespaces ตัวชี้วัดความแม่นยำในการตรวจจับ (mAP@0.5, Precision, Recall) สำหรับทั้งสองโมเดล ผลลัพธ์มาจากการประเมินผลเทอม 1 บนชุดข้อมูลทดสอบที่แยกไว้}}{45}{table.caption.29}%
-\contentsline {table}{\numberline {4.3}{\ignorespaces \xpg@aux {}{english}\ignorespaces Validation loss ณ จุดลู่เข้าสำหรับชุดย่อยของขนาดชุดข้อมูลแต่ละระดับ ค่าที่ต่ำกว่าบ่งบอกถึงการทำ Generalization ที่ดีกว่า คอลัมน์ ``Gap'' รายงานส่วนต่างเชิงสัมบูรณ์ระหว่าง Training loss และ Validation loss ขั้นสุดท้าย}}{46}{table.caption.30}%
-\contentsline {table}{\numberline {4.4}{\ignorespaces \xpg@aux {}{english}\ignorespaces การเปรียบเทียบประสิทธิภาพ OCR Engine บนชุดทดสอบแบบครอบคลุม (198 ป้ายยา, 25 ภาพ) จาก 2 รอบการทดลองอิสระ (EXP1 และ EXP2)}}{48}{table.caption.32}%
-\contentsline {table}{\numberline {4.5}{\ignorespaces \xpg@aux {}{english}\ignorespaces รายละเอียดเวลาการประมวลผลต่อภาพสำหรับแต่ละขั้นตอนของ Pipeline เวลารายงานเป็นค่าเฉลี่ย $\pm $ ส่วนเบี่ยงเบนมาตรฐานจากการทดสอบ 30 ภาพ เวลา Inference ของโมเดลทั้งหมดใช้การเร่งการประมวลผลด้วย GPU}}{52}{table.caption.38}%
-\contentsline {table}{\numberline {4.6}{\ignorespaces \xpg@aux {}{english}\ignorespaces ข้อมูลเบื้องต้นของผู้เข้าร่วมการประเมินผลโดยผู้ใช้งาน}}{53}{table.caption.39}%
-\contentsline {table}{\numberline {4.7}{\ignorespaces \xpg@aux {}{english}\ignorespaces อัตราความสำเร็จของการทดสอบตามสถานการณ์จำลอง (n=5) ภารกิจจะถูกนับว่า ``เสร็จสิ้น'' หากผู้เข้าร่วมสามารถทำจนจบได้โดยไม่ต้องรับความช่วยเหลือภายในเวลาที่กำหนด}}{53}{table.caption.40}%
-\contentsline {table}{\numberline {4.8}{\ignorespaces \xpg@aux {}{english}\ignorespaces คะแนนความพึงพอใจของผู้ใช้งาน (1 = ไม่เห็นด้วยอย่างยิ่ง, 5 = เห็นด้วยอย่างยิ่ง, n=5)}}{54}{table.caption.41}%
+\contentsline {table}{\numberline {4.1}{\ignorespaces \xpg@aux {}{english}\ignorespaces ผลการวัดขนาด ZOI เปรียบเทียบรายยาปฏิชีวนะ (หน่วย: มม.) โดยเทียบกับค่าเฉลี่ยเอกฉันท์จากผู้เชี่ยวชาญ (Expert GT) คอลัมน์ Error คำนวณจาก โมเดล $-$ Expert GT (ค่าบวก = ประมาณค่าสูงเกินไป, ค่าลบ = ประมาณค่าต่ำเกินไป)}}{31}{table.caption.18}%
+\contentsline {table}{\numberline {4.2}{\ignorespaces \xpg@aux {}{english}\ignorespaces ตัวชี้วัดความแม่นยำในการตรวจจับ (mAP@0.5, Precision, Recall) สำหรับทั้งสองโมเดล ผลลัพธ์มาจากการประเมินผลเทอม 1 บนชุดข้อมูลทดสอบที่แยกไว้}}{37}{table.caption.29}%
+\contentsline {table}{\numberline {4.3}{\ignorespaces \xpg@aux {}{english}\ignorespaces Validation loss ณ จุดลู่เข้าสำหรับชุดย่อยของขนาดชุดข้อมูลแต่ละระดับ ค่าที่ต่ำกว่าบ่งบอกถึงการทำ Generalization ที่ดีกว่า คอลัมน์ ``Gap'' รายงานส่วนต่างเชิงสัมบูรณ์ระหว่าง Training loss และ Validation loss ขั้นสุดท้าย}}{38}{table.caption.30}%
+\contentsline {table}{\numberline {4.4}{\ignorespaces \xpg@aux {}{english}\ignorespaces การเปรียบเทียบประสิทธิภาพ OCR Engine บนชุดทดสอบแบบครอบคลุม (198 ป้ายยา, 25 ภาพ) จาก 2 รอบการทดลองอิสระ (EXP1 และ EXP2)}}{39}{table.caption.32}%
+\contentsline {table}{\numberline {4.5}{\ignorespaces \xpg@aux {}{english}\ignorespaces รายละเอียดเวลาการประมวลผลต่อภาพสำหรับแต่ละขั้นตอนของ Pipeline เวลารายงานเป็นค่าเฉลี่ย $\pm $ ส่วนเบี่ยงเบนมาตรฐานจากการทดสอบ 30 ภาพ เวลา Inference ของโมเดลทั้งหมดใช้การเร่งการประมวลผลด้วย GPU}}{42}{table.caption.38}%
+\contentsline {table}{\numberline {4.6}{\ignorespaces \xpg@aux {}{english}\ignorespaces ข้อมูลเบื้องต้นของผู้เข้าร่วมการประเมินผลโดยผู้ใช้งาน}}{43}{table.caption.39}%
+\contentsline {table}{\numberline {4.7}{\ignorespaces \xpg@aux {}{english}\ignorespaces อัตราความสำเร็จของการทดสอบตามสถานการณ์จำลอง (n=5) ภารกิจจะถูกนับว่า ``เสร็จสิ้น'' หากผู้เข้าร่วมสามารถทำจนจบได้โดยไม่ต้องรับความช่วยเหลือภายในเวลาที่กำหนด}}{43}{table.caption.40}%
+\contentsline {table}{\numberline {4.8}{\ignorespaces \xpg@aux {}{english}\ignorespaces คะแนนความพึงพอใจของผู้ใช้งาน (1 = ไม่เห็นด้วยอย่างยิ่ง, 5 = เห็นด้วยอย่างยิ่ง, n=5)}}{44}{table.caption.41}%
 \addvspace {10\p@ }
 \addvspace {10\p@ }
