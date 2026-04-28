@@ -257,38 +257,37 @@ Training loss ยังคงลดลงอย่างต่อเนื่อ
 % ─────────────────────────────────────────────────────────────
 
 การระบุตัวย่อของยาปฏิชีวนะที่พิมพ์บนแผ่นยาแต่ละแผ่นได้อย่างถูกต้อง (เช่น \texttt{P}, \texttt{OX}, \texttt{C}, \texttt{CN}) เป็นสิ่งจำเป็นอย่างยิ่งในการจับคู่ ZOI ที่ตรวจจับได้กับยาปฏิชีวนะที่ถูกต้องและเกณฑ์ CLSI interpretive breakpoints ที่เกี่ยวข้อง \cite{clsi2025}
-ระบบ OCR ขั้นสุดท้ายใช้สถาปัตยกรรมแบบ \textbf{Hybrid} ที่มี Gemini 2.0 Flash \cite{google2025gemini} เป็น Engine หลัก และ EasyOCR \cite{jaidedai2024easyocr} เป็น Fallback ทั้งนี้ ได้มีการประเมินเปรียบเทียบ Engine หลายตัวในขั้นตอนการวิจัย ได้แก่ EasyOCR, TyphoonOCR \cite{typhoonocr2025} และ Gemini 2.0 Flash เพื่อเลือกกลยุทธ์ที่เหมาะสมที่สุด
+ระบบ OCR ขั้นสุดท้ายใช้สถาปัตยกรรมแบบ \textbf{Hybrid} ที่มี Gemini 3.1 Flash lite \cite{google2025gemini} เป็น Engine หลัก และ EasyOCR \cite{jaidedai2024easyocr} เป็น Fallback ทั้งนี้ ในขั้นตอนการวิจัยได้มีการประเมินเปรียบเทียบ Engine ทั้งหมด 4 ตัว ได้แก่ Gemini 3.1 Flash lite \cite{google2025gemini}, Qwen2.5-VL:7b \cite{qwen2025vl}, Qwen3.5:9b \cite{qwen2025} และ EasyOCR \cite{jaidedai2024easyocr} บนชุดทดสอบแบบครอบคลุม 25 ภาพ เพื่อเลือกกลยุทธ์ที่เหมาะสมที่สุด
 
 \subsection{ความท้าทายของภาพแผ่นดิสก์ยาสำหรับ OCR (Disk Image Challenges for OCR)}
 
 ภาพตัด (Crops) ของแผ่นยาปฏิชีวนะถือเป็นสถานการณ์ที่ท้าทายสำหรับระบบ OCR แบบดั้งเดิม ด้วยปัจจัยหลายประการ ได้แก่ ข้อความที่พิมพ์มีขนาดเล็กมาก (ประมาณ 4--8 มม. ในขนาดจริง) พื้นหลังเป็นวุ้นอาหารเลี้ยงเชื้อสีขาวขุ่นที่มีลักษณะแปรผัน พื้นผิวของแผ่นยาอาจสะท้อนแสง (Specular highlights) จากไฟวงแหวน และแผ่นดิสก์อาจถูกวางในทิศทางใดก็ได้ ปัจจัยเหล่านี้ทำให้การใช้ OCR Engine โดยตรงกับภาพดิบให้ผลลัพธ์ที่ไม่สม่ำเสมอ
 
-\subsection{ผลการประเมิน Gemini 2.0 Flash ในฐานะ OCR Engine หลัก (Gemini 2.0 Flash as Primary OCR)}
+\subsection{การเปรียบเทียบ OCR Engine แบบครอบคลุม (Comprehensive Multi-Model OCR Evaluation)}
+\label{subsec:ocr_multimodel}
 
-Gemini 2.0 Flash ได้รับการทดสอบโดยส่งภาพสีต้นฉบับของแผ่นดิสก์พร้อม Structured Prompt ที่ระบุบริบทของรหัสยาปฏิชีวนะ ผลการทดสอบกับชุดข้อมูลทดสอบ 4 ชนิดยา ได้แก่ Penicillin (P), Oxacillin (OX), Chloramphenicol (C) และ Kanamycin (CN) พบว่า Gemini 2.0 Flash สามารถระบุรหัสยาได้ถูกต้อง \textbf{4/4 ป้าย (100\%)} โดยไม่ต้องผ่านการประมวลผลภาพเบื้องต้นใดๆ และจัดการทิศทางการวางแผ่นดิสก์ได้โดยอัตโนมัติ
+เพื่อเปรียบเทียบประสิทธิภาพของ OCR Engine หลายตัวอย่างเป็นกลาง ได้ออกแบบการทดลองบนชุดข้อมูลที่ประกอบด้วย \textbf{25 ภาพ} (ทั้งภาพถ่ายจริงจากห้องปฏิบัติการและภาพสังเคราะห์) รวม \textbf{198 ป้ายยาทั้งหมด} ซึ่งครอบคลุมรหัสยาปฏิชีวนะหลายชนิดที่หลากหลายกว่าชุดทดสอบแบบจำกัดขอบเขต การทดลองดำเนินการ 2 รอบอิสระ (EXP1 และ EXP2) เพื่อตรวจสอบความเสถียรของผลลัพธ์
 
-ข้อได้เปรียบสำคัญของ Gemini 2.0 Flash เหนือ OCR Engine แบบดั้งเดิม คือความสามารถในการใช้บริบทเชิงความหมาย (Semantic Context) ช่วยในการตีความ กล่าวคือ แม้ตัวอักษรบนแผ่นดิสก์จะไม่ชัดเจนเต็มที่ โมเดลสามารถอนุมานได้ว่าข้อความที่เห็นน่าจะเป็นรหัสยาปฏิชีวนะรหัสใด เนื่องจากมีความรู้เกี่ยวกับรูปแบบรหัสยาจากขั้นตอน Pretraining อย่างไรก็ตาม การใช้ Gemini API มีข้อจำกัดด้าน Quota Rate Limit ซึ่งอาจทำให้ระบบต้องสลับไปใช้ EasyOCR Fallback เมื่อปริมาณการวิเคราะห์สูง
-
-\subsection{ผลการประเมิน EasyOCR Fallback ร่วมกับ Preprocessing (EasyOCR Fallback with Preprocessing)}
-
-เพื่อประเมินประสิทธิภาพของ EasyOCR ในฐานะ Fallback Engine ได้มีการทดสอบเปรียบเทียบภายใต้เงื่อนไข Preprocessing ที่แตกต่างกัน รวมถึงเปรียบเทียบกับ TyphoonOCR \cite{typhoonocr2025} ตารางที่~\ref{tab:ocr_comparison} สรุปผลการเปรียบเทียบ
+Engine ที่นำมาทดสอบมี 4 ตัว ได้แก่ (1) \textbf{Gemini 3.1 Flash lite} \cite{google2025gemini} --- Multimodal LLM จาก Google DeepMind; (2) \textbf{Qwen2.5-VL:7b} \cite{qwen2025vl} --- Vision-Language Model แบบ Open-source รันบนเครื่องท้องถิ่นผ่าน Ollama; (3) \textbf{Qwen3.5:9b} \cite{qwen2025} --- Language Model แบบ Text-only; และ (4) \textbf{EasyOCR} \cite{jaidedai2024easyocr} --- OCR Engine แบบดั้งเดิมที่รันบนเครื่องท้องถิ่น แต่ละ Engine ถูกทดสอบในสองเงื่อนไข ได้แก่ \emph{with Preprocessing} (ผ่าน Otsu binarization) และ \emph{without Preprocessing} (ภาพสีต้นฉบับ) ยกเว้น EasyOCR ที่ทดสอบเฉพาะ with Preprocessing เนื่องจากต้องการภาพขาวดำ
 
 \begin{table}[H]
   \centering
-  \caption{การเปรียบเทียบประสิทธิภาพ OCR ภายใต้การทำ Preprocessing ที่แตกต่างกัน ``Correct Labels'' รายงานจำนวนป้ายชื่อแผ่นยาที่ระบุได้ถูกต้องจากทั้งหมด 4 ป้ายในชุดทดสอบ (P, OX, C, CN)}
-  \label{tab:ocr_comparison}
-  \begin{tabular}{llcc}
+  \caption{การเปรียบเทียบประสิทธิภาพ OCR Engine บนชุดทดสอบแบบครอบคลุม (198 ป้ายยา, 25 ภาพ) จาก 2 รอบการทดลองอิสระ (EXP1 และ EXP2)}
+  \label{tab:ocr_multimodel}
+  \renewcommand{\arraystretch}{1.15}
+  \begin{tabular}{llcccc}
     \toprule
-    \textbf{OCR Engine} & \textbf{Preprocessing} & \textbf{Correct Labels} & \textbf{Accuracy (\%)} \\
+    \multirow{2}{*}{\textbf{OCR Engine}} & \multirow{2}{*}{\textbf{Preprocessing}} &
+    \multicolumn{2}{c}{\textbf{EXP1 (198 ป้าย)}} & \multicolumn{2}{c}{\textbf{EXP2 (198 ป้าย)}} \\
+    \cmidrule(lr){3-4}\cmidrule(lr){5-6}
+    & & Correct & Acc.~(\%) & Correct & Acc.~(\%) \\
     \midrule
-    TyphoonOCR       & None (raw)       & 3/4 & 75.0 \\
-    TyphoonOCR       & Otsu threshold   & 3/4 & 75.0 \\
-    EasyOCR          & None (raw)       & --  & $\approx$60 \\
-    EasyOCR          & CLAHE only       & --  & $\approx$80 \\
-    TyphoonOCR       & CLAHE + Otsu     & --  & $\approx$85 \\
-    EasyOCR          & Otsu threshold   & 4/4 & $\approx$\textbf{95} \\
-    \midrule
-    \textbf{Gemini 2.0 Flash} & \textbf{None (original color)} & \textbf{4/4} & $\approx$\textbf{100} \\
+    \textbf{Gemini 3.1 Flash lite} & \textbf{None (original color)} & \textbf{142/198} & \textbf{71.72} & \textbf{142/198} & \textbf{71.72} \\
+    Gemini 3.1 Flash lite          & With Preprocessing (Otsu)     & 99/198  & 50.00 & 117/198 & 59.09 \\
+    Qwen2.5-VL:7b                  & With Preprocessing (Otsu)     & 98/198  & 49.49 & 98/198  & 49.49 \\
+    Qwen2.5-VL:7b                  & None (raw)                    & 97/198  & 48.99 & 97/198  & 48.99 \\
+    Qwen3.5:9b                     & With Preprocessing            & 0/198   & 0.00  & ---     & ---   \\
+    EasyOCR                        & With Preprocessing (Otsu)     & 57/198  & 28.79 & 63/198  & 31.82 \\
     \bottomrule
   \end{tabular}
 \end{table}
@@ -300,15 +299,27 @@ Gemini 2.0 Flash ได้รับการทดสอบโดยส่งภ
            (a) ภาพตัด RGB ดิบที่มีแสงสะท้อน (Specular highlight)
            (b) หลังจากผ่านการปรับปรุงด้วย CLAHE --- Contrast เฉพาะจุดดีขึ้น
            (c) หลังจากผ่านการทำ Otsu binarization --- ตัวอักษรบนป้ายถูกแยกออกมาเป็นสีดำบนพื้นหลังสีขาว
-           สำหรับ Gemini 2.0 Flash จะรับภาพ (a) โดยตรงโดยไม่ต้องผ่านการ Preprocess}
+           สำหรับ Gemini 3.1 Flash lite จะรับภาพ (a) โดยตรงโดยไม่ต้องผ่านการ Preprocess}
   \label{fig:ocr_pipeline}
 \end{figure}
 
-Gemini 2.0 Flash ให้ผลลัพธ์ดีที่สุดโดยไม่ต้องใช้การประมวลผลภาพเบื้องต้นใดๆ ในขณะที่ EasyOCR ร่วมกับ Otsu thresholding เป็น Fallback ที่ดีที่สุดในกลุ่ม Local Engine ($\approx$95\%) ผลลัพธ์นี้ยืนยันว่าสำหรับ EasyOCR ขั้นตอนการ Preprocessing มีผลอย่างมีนัยสำคัญต่อประสิทธิภาพ โดย EasyOCR กับภาพดิบทำได้เพียง $\approx$60\% แต่เพิ่มขึ้นเป็น $\approx$95\% เมื่อใช้ร่วมกับ Otsu thresholding
+ผลการทดลองชี้ให้เห็นข้อค้นพบสำคัญหลายประการ
 
-TyphoonOCR แม้จะเป็นโมเดลแบบ Transformer-based แต่ทำความแม่นยำได้สูงสุดเพียง $\approx$85\% ซึ่งสะท้อนถึงความไม่สอดคล้องของ Domain (Domain mismatch) เนื่องจาก TyphoonOCR ถูกฝึกสอนเป็นหลักบนข้อความภาษาไทยในภาพถ่ายทิวทัศน์ธรรมชาติ ในขณะที่รหัสยาปฏิชีวนะเป็นตัวย่ออักษรละตินเฉพาะทาง
+\paragraph{Gemini 3.1 Flash lite (without Preprocessing) — ดีที่สุด:}
+ให้ความแม่นยำ \textbf{71.72\%} ที่สอดคล้องกันในทั้งสองรอบการทดลอง สะท้อนให้เห็นว่าโมเดล Multimodal ใช้ข้อมูลสีและบริบทเชิงความหมายในการตีความรหัสยา การ Preprocessing แบบ Binarization จะทำลายข้อมูลสีดังกล่าวและทำให้ความแม่นยำลดลงอย่างมีนัยสำคัญ (50.00--59.09\%) นอกจากนี้ในชุดทดสอบแบบจำกัดขอบเขต 4 ชนิดยา (P, OX, C, CN) Gemini สามารถระบุได้ถูกต้อง \textbf{4/4 ป้าย (100\%)} ยืนยันความสามารถในการอ่านรหัสยาที่เป็นมาตรฐานได้อย่างแม่นยำ
 
-ด้วยเหตุนี้ ระบบบูรณาการขั้นสุดท้ายจึงใช้ \textbf{Gemini 2.0 Flash เป็น Primary OCR} และ \textbf{EasyOCR + Otsu เป็น Fallback} เพื่อรับประกันความแม่นยำในการระบุรหัสยาภายใต้ทุกสภาวะการใช้งาน
+\paragraph{Qwen2.5-VL:7b — ปานกลาง:}
+ให้ความแม่นยำประมาณ \textbf{49\%} ไม่ว่าจะผ่าน Preprocessing หรือไม่ สะท้อนถึงความแตกต่างในศักยภาพของโมเดล Multimodal ระดับ Commercial กับ Open-source โดย Qwen2.5-VL ต่ำกว่า Gemini ประมาณ 22\%
+
+\paragraph{Qwen3.5:9b — ไม่เหมาะสม:}
+ได้ผลลัพธ์ \textbf{0\%} ในทุกภาพ เนื่องจากเป็นโมเดลประเภท Text-only ที่ไม่มีความสามารถประมวลผลภาพ (Vision capability) จึงไม่เหมาะกับงานนี้โดยสิ้นเชิง
+
+\paragraph{EasyOCR — ต่ำสุด:}
+ให้ความแม่นยำ \textbf{28.79--31.82\%} สะท้อนถึงข้อจำกัดของ OCR Engine แบบดั้งเดิมเมื่อต้องจัดการกับรหัสยาหลายชนิดบนพื้นผิวที่มีความแปรปรวนสูง อย่างไรก็ตาม EasyOCR ยังคงถูกเลือกเป็น Fallback เนื่องจากรันบนเครื่องท้องถิ่นได้โดยไม่ต้องพึ่งพา Cloud API
+
+\subsection{สรุปผลและการเลือก OCR Engine สำหรับระบบ (OCR Engine Selection)}
+
+ด้วยเหตุนี้ ระบบบูรณาการขั้นสุดท้ายจึงใช้ \textbf{Gemini 3.1 Flash lite เป็น Primary OCR} และ \textbf{EasyOCR + Otsu เป็น Fallback} โดย Gemini ให้ความแม่นยำสูงสุดทั้งในชุดทดสอบแบบจำกัดขอบเขต (100\% บน 4 ชนิดยา) และแบบครอบคลุม (\textbf{71.72\%} บน 198 ป้ายยา) ข้อจำกัดหลักของ Gemini คือการพึ่งพา Cloud API ที่มี Quota Rate Limit ทำให้ระบบออกแบบ Fallback ด้วย EasyOCR + Otsu Thresholding เพื่อรับประกันความต่อเนื่องในการทำงานภายใต้ทุกสภาวะการใช้งาน
 
 % ─────────────────────────────────────────────────────────────
 \section{การปรับเทียบและการแปลงพิกเซลเป็นมิลลิเมตร}
