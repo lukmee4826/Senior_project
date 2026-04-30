@@ -1,4 +1,4 @@
-% ============================================================
+﻿% ============================================================
 %  Abstract (ภาษาอังกฤษ + ภาษาไทย)
 % ============================================================
 
@@ -11,7 +11,7 @@
   Project Title   & An Exploration of Artificial Intelligence for Detection of \\
                   & Inhibition Zones in Antibiotic Susceptibility Testing \\[0.3cm]
   Credits         & 3 \\[0.2cm]
-  Member(s)       & Mr. Peeraphat Siriphatthanakhun \\
+  Member(s)       & Mr. Pheeraphat Siriphatthanakhun \\
                   & Mr. Phattaradon Thanaprasitpattana \\[0.3cm]
   Project Advisor & Asst.\ Prof.\ Dr.\ Nontapat Leeraj \\[0.2cm]
   Co-advisor      & Asst.\ Prof.\ Dr.\ Paniti Atchararit \\
@@ -44,10 +44,10 @@ to classify bacteria as Susceptible (S), Intermediate (I), or Resistant (R).
 A dataset of 287 real laboratory images was augmented to 543 training images and supplemented with 2,000 synthetic images
 to improve model generalization.
 Experimental results demonstrate that both deep learning models outperform Hough Transform in ZOI detection accuracy.
-YOLOv11n achieved superior accuracy with a mean absolute error (MAE) of approximately \textbf{2.5--2.7\,mm}
+YOLOv11n achieved superior accuracy with a mean absolute error (MAE) of approximately 2.5--2.7\,mm
 and a mAP@0.5 of 95.91\%, significantly outperforming the Faster R-CNN baseline (MAE 4.65\,mm).
 The complete system, including the React frontend, FastAPI backend, and SQLite database, is fully integrated
-and has been \textbf{successfully deployed for production use at the Princess Srisavangavadhana School of Medicine, Chulabhorn Royal Academy} hospital server.
+and has been successfully deployed for production use at the Princess Srisavangavadhana School of Medicine, Chulabhorn Royal Academy hospital server.
 User evaluation by five domain experts yielded an overall usefulness score of 3.60 out of 5.00,
 confirming the system's readiness for real-world microbiological laboratory workflows.
 
@@ -87,7 +87,7 @@ Faster R-CNN, YOLOv11, Hough Transform, EasyOCR, Image Processing, CLSI, EUCAST,
 
 ระบบที่พัฒนาขึ้นได้บูรณาการโมเดลตรวจจับวัตถุ (Object Detection) ด้วยเทคนิค Deep Learning อันได้แก่ YOLOv11n และ Faster R-CNN (พร้อม ResNet-50 backbone) เข้ากับวิธีการประมวลผลภาพแบบดั้งเดิมอย่าง Hough Circle Transform เพื่อระบุตำแหน่งและวัดขนาด ZOI นอกจากนี้ ระบบยังประกอบด้วย Pipeline สำหรับการจดจำอักขระด้วยแสง (OCR) ซึ่งใช้ EasyOCR ร่วมกับเทคนิคการประมวลผลภาพเบื้องต้น (เช่น Global Thresholding, Adaptive Binarization และ Image Rotation) เพื่ออ่านรหัสชื่อยาปฏิชีวนะบนแผ่นยา จากนั้นระบบนำค่าเส้นผ่านศูนย์กลางที่ได้ไปเทียบกับเกณฑ์มาตรฐาน CLSI 2025 และ EUCAST 2023 แล้วจำแนกผลความไวต่อยาของเชื้อแบคทีเรียเป็น ไวต่อยา (Susceptible: S), กึ่งไว (Intermediate: I) หรือ ดื้อยา (Resistant: R) โดยอัตโนมัติ
 
-ในด้านการฝึกสอนโมเดล งานวิจัยนี้ใช้ภาพถ่ายจริงจากห้องปฏิบัติการ 287 ภาพ ที่ผ่านการขยายข้อมูล (Data Augmentation) เป็น 543 ภาพ และเสริมด้วยภาพสังเคราะห์ (Synthetic Images) อีก 2,000 ภาพ เพื่อเพิ่มความสามารถในการเรียนรู้รูปแบบทั่วไป (Generalization) ผลการประเมินประสิทธิภาพพบว่าโมเดลกลุ่ม Deep Learning มีความแม่นยำสูงกว่าวิธี Hough Transform อย่างชัดเจน โดยเฉพาะ YOLOv11n ที่ทำความแม่นยำได้ดีที่สุด ด้วยค่าความคลาดเคลื่อนสัมบูรณ์เฉลี่ย (MAE) เพียง \textbf{2.5--2.7 มม.} และค่า mAP@0.5 ถึง 95.91\% ทิ้งห่างโมเดล Faster R-CNN อย่างมีนัยสำคัญ ท้ายที่สุด โครงงานนี้ได้รวบรวมองค์ประกอบทั้งหมด (React Frontend, FastAPI Backend และฐานข้อมูล SQLite) เป็นเว็บแอปพลิเคชันแบบ Full-stack และประสบความสำเร็จในการติดตั้งเพื่อใช้งานจริงบนระบบเซิร์ฟเวอร์ของวิทยาลัยแพทยศาสตร์ศรีสวางควัฒน ราชวิทยาลัยจุฬาภรณ์ ผลการประเมินความพึงพอใจและประโยชน์การใช้งานโดยผู้เชี่ยวชาญ 5 ท่าน อยู่ที่ 3.60 จากคะแนนเต็ม 5.00 ยืนยันว่าระบบสามารถนำไปประยุกต์ใช้สนับสนุนงานในห้องปฏิบัติการจุลชีววิทยาคลินิกได้จริง
+ในด้านการฝึกสอนโมเดล งานวิจัยนี้ใช้ภาพถ่ายจริงจากห้องปฏิบัติการ 287 ภาพ ที่ผ่านการขยายข้อมูล (Data Augmentation) เป็น 543 ภาพ และเสริมด้วยภาพสังเคราะห์ (Synthetic Images) อีก 2,000 ภาพ เพื่อเพิ่มความสามารถในการเรียนรู้รูปแบบทั่วไป (Generalization) ผลการประเมินประสิทธิภาพพบว่าโมเดลกลุ่ม Deep Learning มีความแม่นยำสูงกว่าวิธี Hough Transform อย่างชัดเจน โดยเฉพาะ YOLOv11n ที่ทำความแม่นยำได้ดีที่สุด ด้วยค่าความคลาดเคลื่อนสัมบูรณ์เฉลี่ย (MAE) เพียง 2.5--2.7 มม. และค่า mAP@0.5 ถึง 95.91\% ทิ้งห่างโมเดล Faster R-CNN อย่างมีนัยสำคัญ ท้ายที่สุด โครงงานนี้ได้รวบรวมองค์ประกอบทั้งหมด (React Frontend, FastAPI Backend และฐานข้อมูล SQLite) เป็นเว็บแอปพลิเคชันแบบ Full-stack และประสบความสำเร็จในการติดตั้งเพื่อใช้งานจริงบนระบบเซิร์ฟเวอร์ของวิทยาลัยแพทยศาสตร์ศรีสวางควัฒน ราชวิทยาลัยจุฬาภรณ์ ผลการประเมินความพึงพอใจและประโยชน์การใช้งานโดยผู้เชี่ยวชาญ 5 ท่าน อยู่ที่ 3.60 จากคะแนนเต็ม 5.00 ยืนยันว่าระบบสามารถนำไปประยุกต์ใช้สนับสนุนงานในห้องปฏิบัติการจุลชีววิทยาคลินิกได้จริง
 
 \noindent\textbf{คำสำคัญ:} การทดสอบความไวต่อยาต้านจุลชีพ, บริเวณยับยั้งเชื้อ, Deep Learning, การตรวจจับวัตถุ,
 YOLOv11, การประมวลผลภาพ, มาตรฐาน CLSI, มาตรฐาน EUCAST, เว็บแอปพลิเคชัน

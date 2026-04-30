@@ -71,17 +71,25 @@
 \setlength{\parindent}{1.5cm}
 \setlength{\parskip}{0pt}
 
-% ── Thai Section Names ───────────────────────────────────────
-\renewcommand{\contentsname}{สารบัญ}
-\renewcommand{\listfigurename}{สารบัญรูป}
-\renewcommand{\listtablename}{สารบัญตาราง}
-\renewcommand{\bibname}{หนังสืออ้างอิง}
-\renewcommand{\appendixname}{ภาคผนวก}
+% ── Thai Section Names (ต้องใช้ \addto เพราะ polyglossia override \renewcommand) ──
+\addto\captionsenglish{%
+  \renewcommand\contentsname{สารบัญ}%
+  \renewcommand\listfigurename{สารบัญรูปภาพ}%
+  \renewcommand\listtablename{สารบัญตาราง}%
+  \renewcommand\bibname{หนังสืออ้างอิง}%
+  \renewcommand\appendixname{ภาคผนวก}%
+}
 
 % ── Chapter/Section Formatting ───────────────────────────────
+% Numbered chapters: "บทที่ X" on first line, title on second line
 \titleformat{\chapter}[block]
-  {\centering\large\bfseries}{บทที่ \thechapter}{1em}{}
+  {\centering\large\bfseries}{บทที่ \thechapter\\}{0pt}{}
+% Unnumbered chapters (TOC, LOF, LOT, References): title only, centered
+\titleformat{name=\chapter,numberless}[block]
+  {\centering\large\bfseries}{}{0pt}{}
+% no extra top space — 3 cm page margin is sufficient
 \titlespacing{\chapter}{0pt}{0pt}{24pt}
+\titlespacing{name=\chapter,numberless}{0pt}{0pt}{24pt}
 \titleformat{\section}{\bfseries\normalsize}{\thesection}{1em}{}
 \titleformat{\subsection}{\bfseries\normalsize}{\thesubsection}{1em}{}
 \titleformat{\subsubsection}{\bfseries\normalsize}{\thesubsubsection}{1em}{}
@@ -160,7 +168,7 @@
     Antibiotic Susceptibility Testing}}\\[3.5cm]
 
   {\normalsize
-    MR. PEERAPHAT SIRIPHATTHANAKHUN\\[0.2cm]
+    MR. PHEERAPHAT SIRIPHATTHANAKHUN\\[0.2cm]
     MR. PHATTARADON THANAPRASITPATTANA}\\[3.5cm]
 
   {\normalsize
@@ -184,7 +192,7 @@
     Inhibition Zones in Antibiotic Susceptibility Testing}\\[2cm]
 
   {\normalsize
-    Mr. Peeraphat Siriphatthanakhun\\[0.2cm]
+    Mr. Pheeraphat Siriphatthanakhun\\[0.2cm]
     Mr. Phattaradon Thanaprasitpattana}\\[2cm]
 
   {\normalsize

@@ -1,4 +1,4 @@
-% ── บทที่ 4: ผลลัพธ์และการอภิปรายผล ────────────────────────
+﻿% ── บทที่ 4: ผลลัพธ์และการอภิปรายผล ────────────────────────
 \chapter{ผลลัพธ์และการอภิปราย (Results and Discussion)}
 
 ในบทนี้จะนำเสนอผลการทดลองและการประเมินประสิทธิภาพของระบบในแต่ละส่วนประกอบหลัก ได้แก่ ประสิทธิภาพของโมเดลการตรวจจับวัตถุ (Object Detection) และการวัดขนาด ZOI, การวิเคราะห์ผลกระทบของขนาดชุดข้อมูล (Dataset Size) ที่มีต่อการฝึกสอน, ประสิทธิภาพของระบบ OCR, การประเมินความแม่นยำในการปรับเทียบสเกล (Pixel-to-millimeter Calibration), ความเร็วในการประมวลผลแบบครบวงจร (End-to-end Processing Time), ตลอดจนผลการประเมินความพึงพอใจจากผู้ใช้งานจริงบนเว็บแอปพลิเคชัน ทั้งนี้ ผลลัพธ์เชิงปริมาณทั้งหมดที่รายงานจะอ้างอิงจากการทดสอบบนชุดข้อมูลทดสอบ (Test Partition) ที่แยกไว้โดยเฉพาะ เว้นแต่จะระบุเป็นอย่างอื่น
@@ -167,10 +167,44 @@ YOLOv11n ทำค่า mAP@0.5 ได้ที่ \textbf{95.91\%}
 ในส่วนของ Precision และ Recall ก็มีค่าเข้าใกล้ประมาณ \textbf{1.0} เช่นกัน โดยมีการลู่เข้าที่รวดเร็วตั้งแต่ Epoch ที่ 1 ของการฝึกฝน
 ค่า mAP ที่ต่ำกว่าเล็กน้อยเมื่อเทียบกับ Faster R-CNN นั้นสอดคล้องกับสถาปัตยกรรมแบบ Single-stage anchor-free ที่ยอมแลกความแม่นยำในการทับซ้อน (Overlap accuracy) เพียงเล็กน้อย เพื่อแลกกับการลดเวลา Inference ลงประมาณ 154 เท่า
 
+
+\begin{figure}[H]
+  \centering
+  \begin{subfigure}[b]{0.32\textwidth}
+    \centering
+    \safeimg[width=\textwidth]{figures/frcnn_train_val_loss.jpg}{Faster R-CNN Training vs Validation Loss}
+    \caption*{Training vs Validation Loss}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.32\textwidth}
+    \centering
+    \safeimg[width=\textwidth]{figures/frcnn_val_map50.jpg}{Faster R-CNN Validation mAP@50}
+    \caption*{Validation mAP@50}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.32\textwidth}
+    \centering
+    \safeimg[width=\textwidth]{figures/frcnn_val_map50_95.jpg}{Faster R-CNN Validation mAP@50-95}
+    \caption*{Validation mAP@50-95 (COCO)}
+  \end{subfigure}
+  \caption{กราฟ Learning curve ของ Faster R-CNN แสดง Training/Validation loss (ซ้าย),
+           Validation mAP@50 (กลาง) และ Validation mAP@50-95 แบบ COCO style (ขวา)
+           ทั้ง Loss และ mAP ลู่เข้าสู่จุดสมดุลภายใน Epoch แรกๆ
+           และ Train/Val loss เคลื่อนที่ตามกันอย่างใกล้ชิดตลอดการฝึกฝน}
+  \label{fig:frcnn_learning_curves}
+\end{figure}
+
+\begin{figure}[H]
+  \centering
+  \safeimg[width=\textwidth]{figures/yolo_training_curves.jpg}{YOLOv11n full training curves}
+  \caption{กราฟ Learning curve ของ YOLOv11n แสดงตัวชี้วัดทั้งหมด 10 ตัว ได้แก่
+           train/val box loss, cls loss, dfl loss, Precision, Recall, mAP@50 และ mAP@50-95
+           โมเดลลู่เข้าอย่างรวดเร็วตั้งแต่ Epoch แรก และ val loss เคลื่อนที่ตาม train loss อย่างสม่ำเสมอ
+           ยืนยันว่าโมเดลไม่เกิด Overfitting บนชุดข้อมูล 1,884 ภาพ}
+  \label{fig:yolo_learning_curves}
+\end{figure}
 \begin{table}[H]
   \centering
   \caption{ตัวชี้วัดความแม่นยำในการตรวจจับ (mAP@0.5, Precision, Recall) สำหรับทั้งสองโมเดล
-           ผลลัพธ์มาจากการประเมินผลเทอม 1 บนชุดข้อมูลทดสอบที่แยกไว้}
+           ผลลัพธ์จากการประเมินบนชุดข้อมูลทดสอบที่แยกไว้}
   \label{tab:map_metrics}
   \begin{tabular}{lccc}
     \toprule
@@ -184,6 +218,16 @@ YOLOv11n ทำค่า mAP@0.5 ได้ที่ \textbf{95.91\%}
 
 ทั้งสองโมเดลทำค่า mAP@0.5 ได้เกิน 95\% ซึ่งถือเป็นระดับที่ยอมรับได้สำหรับงานตรวจจับวัตถุในบริบทการแพทย์
 ค่า Precision และ Recall ที่สูงยืนยันว่าการตรวจจับที่พลาดไป (Missed detections) และการตรวจจับที่ผิดพลาด (False positives) นั้นมีน้อยมาก ดังนั้นแหล่งที่มาหลักของความคลาดเคลื่อนในการวัด (ตารางที่~\ref{tab:model_comparison}) จึงมาจากค่า Offset ในการระบุตำแหน่ง (Localization) มากกว่าความผิดพลาดในการจำแนกประเภท (Classification)
+
+\begin{figure}[H]
+  \centering
+  \safeimg[width=\textwidth]{figures/final_model_summary.png}{Comprehensive AST model comparison across all metrics}
+  \caption{ภาพรวมการเปรียบเทียบโมเดล AST บนชุดข้อมูล 235 ภาพ (Hough, CNN, Faster R-CNN และ YOLOv11n)
+           แสดงผลลัพธ์ทุกตัวชี้วัด ได้แก่ mAP@0.5, mAP@0.5:0.95, AP50 Antibiotic, AP50 Zone,
+           Top-1/Top-5 Accuracy, EntBox-Anti, EntBox-Zone, EntBox-Overall และ Avg Inference Time
+           พร้อม Radar chart แสดงภาพรวมประสิทธิภาพเชิงเปรียบเทียบ และตารางสรุปค่าชี้วัดทุกตัวในแถวล่าง}
+  \label{fig:final_model_summary}
+\end{figure}
 
 % ─────────────────────────────────────────────────────────────
 \section{ผลของขนาดชุดข้อมูลต่อการฝึกฝน (Effect of Dataset Size on Training)}
@@ -242,14 +286,6 @@ Training loss ยังคงลดลงอย่างต่อเนื่อ
 ยืนยันว่าโมเดลได้รับประโยชน์จากการเพิ่มตัวอย่างที่มีการทำ Label ตลอดช่วงการทดสอบ
 การค้นพบนี้ช่วยกระตุ้นการเก็บข้อมูลอย่างต่อเนื่อง: การพยากรณ์จากแนวโน้มบ่งชี้ว่าการเพิ่มชุดข้อมูลเป็นสองเท่า (ประมาณ 3,700 ภาพ) จะสามารถลด Validation loss ลงได้อีกประมาณ 20--25\% แม้ว่าคาดว่าจุดคุ้มทุน (Diminishing returns) จะเริ่มเกิดขึ้นหลังจากนั้นก็ตาม
 
-\begin{figure}[H]
-  \centering
-  \safeimg[width=0.85\textwidth]{figures/training_curves.png}{Training loss curves across dataset sizes}
-  \caption{กราฟ Training และ Validation loss ในแต่ละขนาดชุดข้อมูล (54, 274, 702, 1884 ภาพ)
-           เส้นทึบแสดงถึง Training loss ส่วนเส้นประแสดงถึง Validation loss
-           ช่องว่างการลู่เข้าแคบลงอย่างเห็นได้ชัดเมื่อขนาดชุดข้อมูลเพิ่มขึ้น}
-  \label{fig:training_curves}
-\end{figure}
 
 % ─────────────────────────────────────────────────────────────
 \section{ประสิทธิภาพ OCR (OCR Performance)}
@@ -292,16 +328,6 @@ Engine ที่นำมาทดสอบมี 4 ตัว ได้แก่
   \end{tabular}
 \end{table}
 
-\begin{figure}[H]
-  \centering
-  \safeimg[width=\textwidth]{figures/ocr_pipeline.png}{OCR preprocessing pipeline: (a) original crop, (b) CLAHE enhanced, (c) Otsu thresholded}
-  \caption{ขั้นตอน Preprocessing ของ OCR ที่ใช้กับภาพตัดแผ่นยา Kanamycin (CN)
-           (a) ภาพตัด RGB ดิบที่มีแสงสะท้อน (Specular highlight)
-           (b) หลังจากผ่านการปรับปรุงด้วย CLAHE --- Contrast เฉพาะจุดดีขึ้น
-           (c) หลังจากผ่านการทำ Otsu binarization --- ตัวอักษรบนป้ายถูกแยกออกมาเป็นสีดำบนพื้นหลังสีขาว
-           สำหรับ Gemini 3.1 Flash lite จะรับภาพ (a) โดยตรงโดยไม่ต้องผ่านการ Preprocess}
-  \label{fig:ocr_pipeline}
-\end{figure}
 
 ผลการทดลองชี้ให้เห็นข้อค้นพบสำคัญหลายประการ
 
@@ -315,7 +341,72 @@ Engine ที่นำมาทดสอบมี 4 ตัว ได้แก่
 ได้ผลลัพธ์ \textbf{0\%} ในทุกภาพ เนื่องจากเป็นโมเดลประเภท Text-only ที่ไม่มีความสามารถประมวลผลภาพ (Vision capability) จึงไม่เหมาะกับงานนี้โดยสิ้นเชิง
 
 \paragraph{EasyOCR — ต่ำสุด:}
-ให้ความแม่นยำ \textbf{28.79--31.82\%} สะท้อนถึงข้อจำกัดของ OCR Engine แบบดั้งเดิมเมื่อต้องจัดการกับรหัสยาหลายชนิดบนพื้นผิวที่มีความแปรปรวนสูง อย่างไรก็ตาม EasyOCR ยังคงถูกเลือกเป็น Fallback เนื่องจากรันบนเครื่องท้องถิ่นได้โดยไม่ต้องพึ่งพา Cloud API
+ให้ความแม่นยำ \textbf{28.79--31.82\%} สะท้อนถึงข้อจำกัดของ OCR Engine แบบดั้งเดิมเมื่อต้องจัดการกับรหัสยาหลายชนิดบนพื้นผิวที่มีความแปรปรวนสูง อย่างไรก็ตาม EasyOCR ยังคงถูกเลือกเป็น Fallback เนื่องจากรันบนเครื่อง Local ได้โดยไม่ต้องพึ่งพา Cloud API
+
+\subsection{ผลของ Preprocessing และการค้นหามุมในระบบ EasyOCR (Preprocessing and Angle-Search Results)}
+
+รูปที่~\ref{fig:ocr_preprocess_grid} แสดงผลลัพธ์ของขั้นตอน Preprocessing ด้วย Otsu Thresholding บนภาพตัดแผ่นดิสก์ยาปฏิชีวนะ 4 ชนิด พร้อมผลการอ่านของระบบ EasyOCR ภายใต้สองเงื่อนไขการทดสอบ ได้แก่ (1)~แผ่นดิสก์ที่วางในแนวตั้งปกติ ซึ่งระบบสามารถอ่านได้โดยตรงโดยไม่ต้องค้นหามุม และ (2)~แผ่นดิสก์ที่วางในทิศทางกลับหัว ($-165^\circ$) ซึ่งต้องอาศัยระบบค้นหามุมที่เหมาะสมจาก 24 มุมจึงจะอ่านได้ถูกต้อง
+
+\begin{figure}[H]
+  \centering
+  % ── แถวบน: แผ่นดิสก์แนวตั้งปกติ (standard orientation) ───────
+  \begin{subfigure}[b]{0.23\textwidth}
+    \centering
+    \safeimg[width=\textwidth]{figures/ocr_easyocr_cn10.jpg}{EasyOCR result: CN 10, Conf 1.00}
+    \caption*{CN~10\\Conf:~1.00}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.23\textwidth}
+    \centering
+    \safeimg[width=\textwidth]{figures/ocr_easyocr_c30.jpg}{EasyOCR result: C 30, Conf 1.00}
+    \caption*{C~30\\Conf:~1.00}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.23\textwidth}
+    \centering
+    \safeimg[width=\textwidth]{figures/ocr_easyocr_x8.jpg}{EasyOCR result: OX, reads X8, Conf 0.80}
+    \caption*{OX $\to$ ``X8''\\Conf:~0.80}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.23\textwidth}
+    \centering
+    \safeimg[width=\textwidth]{figures/ocr_easyocr_p10.jpg}{EasyOCR result: P 10, Conf 1.00}
+    \caption*{P~10\\Conf:~1.00}
+  \end{subfigure}
+
+  \vspace{6pt}
+  \begin{center}\small\textit{(ก) แผ่นดิสก์แนวตั้งปกติ — EasyOCR อ่านโดยตรง ไม่ต้องค้นหามุม}\end{center}
+
+  \vspace{8pt}
+  % ── แถวล่าง: แผ่นดิสก์กลับหัว ต้องค้นหามุม -165° ────────────
+  \begin{subfigure}[b]{0.23\textwidth}
+    \centering
+    \safeimg[width=\textwidth]{figures/ocr_angle_cn10.jpg}{EasyOCR angle search: CN 10, Conf 0.90, angle -165°}
+    \caption*{CN~10\\Conf:~0.90 | $-165^\circ$}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.23\textwidth}
+    \centering
+    \safeimg[width=\textwidth]{figures/ocr_angle_c30.jpg}{EasyOCR angle search: C 30, Conf 0.90, angle -165°}
+    \caption*{C~30\\Conf:~0.90 | $-165^\circ$}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.23\textwidth}
+    \centering
+    \safeimg[width=\textwidth]{figures/ocr_angle_to10.jpg}{EasyOCR angle search: TO 10, Conf 0.90, angle -165°}
+    \caption*{TO~10\\Conf:~0.90 | $-165^\circ$}
+  \end{subfigure}\hfill
+  \begin{subfigure}[b]{0.23\textwidth}
+    \centering
+    \safeimg[width=\textwidth]{figures/ocr_angle_io10.jpg}{EasyOCR angle search: IO 10, Conf 0.90, angle -165°}
+    \caption*{IO~10\\Conf:~0.90 | $-165^\circ$}
+  \end{subfigure}
+
+  \vspace{6pt}
+  \begin{center}\small\textit{(ข) แผ่นดิสก์วางกลับหัว — EasyOCR ค้นหามุมที่ดีที่สุดจาก 24 มุม พบที่ $-165^\circ$}\end{center}
+
+  \caption{ผลการ Preprocessing (Otsu Thresholding) และผลการอ่าน EasyOCR บนแผ่นดิสก์ยาปฏิชีวนะ 4 ชนิด
+           แถว (ก): แผ่นดิสก์ที่วางในแนวตั้งปกติ สามารถอ่านได้โดยตรง ค่า Confidence อยู่ที่ 1.00 ยกเว้น OX
+           ที่ระบบอ่านเป็น ``X8'' (Conf: 0.80) เนื่องจากตัวอักษรถูกบดบัง
+           แถว (ข): แผ่นดิสก์เดิมที่วางกลับหัว ($-165^\circ$) ระบบค้นหามุมจาก 24 มุมจนพบมุมที่ให้ค่า
+           Confidence สูงสุด (0.90) ยืนยันว่าระบบทนทานต่อการวางแผ่นดิสก์ในทิศทางต่างๆ}
+  \label{fig:ocr_preprocess_grid}
+\end{figure}
 
 \subsection{สรุปผลและการเลือก OCR Engine สำหรับระบบ (OCR Engine Selection)}
 
@@ -358,17 +449,16 @@ $d_{\mathrm{px}}$ คือเส้นผ่านศูนย์กลาง Z
 
 \subsection{การปรับเทียบเริ่มต้นเทียบกับที่ปรับปรุงแล้ว}
 
-ในการนำไปใช้ช่วงเริ่มต้น มีการประมาณค่า Scale factor แบบ Global เพียงค่าเดียวจากค่ามัธยฐานของเส้นผ่านศูนย์กลางแผ่นยาในชุดทดสอบทั้งหมด
-สิ่งนี้ทำให้เกิดการประมาณค่าต่ำกว่าความเป็นจริงอย่างเป็นระบบ: ค่าความคลาดเคลื่อนเฉลี่ย (Mean bias) อยู่ที่ $-$3.9025 mm สำหรับ Faster R-CNN (วิธี Diameter) และ $-$4.24 mm สำหรับวิธี Area (ตามที่รายงานในการประเมินเทอม 1)
-การประมาณค่าสูงเกินจริงเกิดจากการที่ Scale factor แบบมัธยฐาน Global นั้นถูกคำนวณจากภาพที่ถ่ายในระยะใกล้กว่าค่าเฉลี่ย ทำให้มันมีค่าที่ใหญ่เกินไปอย่างไม่เหมาะสมสำหรับภาพที่ถ่ายในระยะที่ไกลกว่า
+ในการทดสอบเบื้องต้น ระบบใช้ Scale factor แบบ Global ค่าเดียว คำนวณจากค่ามัธยฐานของเส้นผ่านศูนย์กลางแผ่นยาในชุดทดสอบทั้งหมด
+วิธีนี้ทำให้เกิดความคลาดเคลื่อนเชิงระบบ (Systematic bias) เนื่องจาก Scale factor ที่ได้ไม่สามารถสะท้อนระยะห่างกล้อง-จานวุ้นที่แตกต่างกันในแต่ละภาพได้
+ผลที่ตามมาคือระบบประมาณขนาด ZOI ต่ำกว่าความเป็นจริงอย่างสม่ำเสมอ โดยมีค่า Mean bias อยู่ที่ $-$3.90 mm สำหรับ Faster R-CNN (วิธี Diameter) และ $-$4.24 mm สำหรับวิธี Area
 
-ค่า Bias เหล่านี้คือตัวเลขที่ \emph{รายงานเป็นทางการขั้นสุดท้าย} สำหรับการทดลองในเทอม 1 โดยใช้การปรับเทียบรายแผ่นยาผ่านสมการ~(\ref{eq:calibration})
-ค่า MAE ที่เกี่ยวข้องคือ 4.6525 mm (แบบ Diameter-based) และ 4.845 mm (แบบ Area-based) สำหรับ Faster R-CNN จากยาปฏิชีวนะทั้งสี่ชนิดที่ทดสอบ
+เมื่อเปลี่ยนมาใช้การปรับเทียบรายแผ่นยา (Per-disk calibration) ตามสมการ~(\ref{eq:calibration}) ซึ่งคำนวณ Scale factor จากแผ่นยาในภาพนั้นโดยตรง ค่าความคลาดเคลื่อนเชิงระบบลดลงอย่างมีนัยสำคัญ
+ค่า MAE สุดท้ายอยู่ที่ 4.6525 mm (แบบ Diameter-based) และ 4.845 mm (แบบ Area-based) สำหรับ Faster R-CNN
 
-ค่าความคลาดเคลื่อนที่ยังคงเหลืออยู่ประมาณ 3.9--4.8 mm หลังจากการปรับเทียบรายแผ่นยา สะท้อนถึงขีดจำกัดของการใช้ ZOI Bounding box เพื่อเป็นตัวแทนของเส้นผ่านศูนย์กลางวงกลมที่แท้จริง Bounding boxes เป็นสี่เหลี่ยมผืนผ้าที่ขนานกับแกน (Axis-aligned rectangles) เมื่อบริเวณยับยั้งมีความเป็นวงรีเล็กน้อยหรือเมื่อจานวุ้นมีความเอียง ความกว้างของ Bounding-box จะประมาณค่าเส้นผ่านศูนย์กลางที่แท้จริงสูงเกินไปหรือต่ำเกินไป
-การเปลี่ยนไปใช้การวัดแบบอิงตามการทำ Segmentation (เช่น Mask R-CNN ร่วมกับ Ellipse fitting) จะช่วยแก้ไขความคลาดเคลื่อนส่วนที่เหลือนี้ได้โดยตรง
-
-% ─────────────────────────────────────────────────────────────
+ความคลาดเคลื่อนที่ยังคงเหลืออยู่ประมาณ 4.6--4.8 mm นั้นเกิดจากข้อจำกัดพื้นฐานของการใช้ Bounding box (รูปสี่เหลี่ยม) แทนวงกลม
+เมื่อบริเวณยับยั้งมีความเป็นวงรีเล็กน้อยหรือจานวุ้นมีความเอียง ความกว้างของ Bounding-box จะประมาณค่าเส้นผ่านศูนย์กลางที่แท้จริงสูงเกินหรือต่ำเกินไป
+การเปลี่ยนไปใช้ Segmentation (เช่น Mask R-CNN ร่วมกับ Ellipse fitting) จะแก้ไขความคลาดเคลื่อนส่วนนี้ได้โดยตรง
 \section{เวลาในการประมวลผล (Processing Time)}
 \label{sec:processing_time}
 % ─────────────────────────────────────────────────────────────
@@ -441,7 +531,7 @@ $d_{\mathrm{px}}$ คือเส้นผ่านศูนย์กลาง Z
 
 \subsection{ผลการทดสอบตามสถานการณ์จำลอง}
 
-ผู้เข้าร่วมแต่ละท่านได้รับมอบหมายให้ทำภารกิจมาตรฐาน 3 อย่างโดยใช้ Web application พร้อมภาพตัวอย่างจานวุ้นที่ผู้ประเมินจัดเตรียมไว้ให้ ไม่มีการให้คำแนะนำใดๆ นอกเหนือจากการปฐมนิเทศเวลา 2 นาทีแรกก่อนเริ่มทำภารกิจ
+ผู้เข้าร่วมแต่ละท่านได้รับมอบหมายให้ทำภารกิจมาตรฐาน 3 อย่างโดยใช้ Web application พร้อมภาพตัวอย่างจานวุ้นที่ผู้ประเมินจัดเตรียมไว้ให้ ไม่มีการให้คำแนะนำใดๆ นอกเหนือจากการปฐมนิเทศเวลา 2 นาทีแรกก่อนเริ่มทำการทดสอบ
 
 \begin{table}[H]
   \centering
