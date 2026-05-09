@@ -100,6 +100,22 @@
 \setlength{\cftchapnumwidth}{2.8cm}
 \setlength{\cftbeforechapskip}{6pt}
 
+% ── TOC/LOF/LOT Title Format (match chapter heading: \large\bfseries, centered, 0pt top) ──
+\renewcommand{\cfttoctitlefont}{\hfill\large\bfseries}
+\renewcommand{\cftaftertoctitle}{\hfill}
+\setlength{\cftbeforetoctitleskip}{0pt}
+\setlength{\cftaftertoctitleskip}{24pt}
+
+\renewcommand{\cftloftitlefont}{\hfill\large\bfseries}
+\renewcommand{\cftafterloftitle}{\hfill}
+\setlength{\cftbeforeloftitleskip}{0pt}
+\setlength{\cftafterloftitleskip}{24pt}
+
+\renewcommand{\cftlottitlefont}{\hfill\large\bfseries}
+\renewcommand{\cftafterlottitle}{\hfill}
+\setlength{\cftbeforelottitleskip}{0pt}
+\setlength{\cftafterlottitleskip}{24pt}
+
 % ── Header/Footer ────────────────────────────────────────────
 \pagestyle{fancy}
 \fancyhf{}
@@ -209,9 +225,9 @@
 
   \begin{tabular}{@{}p{10cm}@{\quad}l@{}}
     \dotfill & Project Advisor \\[0.3cm]
-    \multicolumn{2}{c}{(Asst.\ Prof.\ Dr.\ Nontapat Leeraj)} \\[1.2cm]
+    \multicolumn{2}{c}{(Asst.\ Prof.\ Dr.\ Nontaphat Leerach)} \\[1.2cm]
     \dotfill & Project Co-Advisor \\[0.3cm]
-    \multicolumn{2}{c}{(Asst.\ Prof.\ Dr.\ Paniti Atchararit)} \\[1.2cm]
+    \multicolumn{2}{c}{(Asst.\ Prof.\ Dr.\ Paniti Achararit)} \\[1.2cm]
     \dotfill & Project Co-Advisor \\[0.3cm]
     \multicolumn{2}{c}{(Dr.\ Karittha Jangsamsi)} \\[1.2cm]
   \end{tabular}

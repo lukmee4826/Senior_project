@@ -13,8 +13,8 @@
   Credits         & 3 \\[0.2cm]
   Member(s)       & Mr. Pheeraphat Siriphatthanakhun \\
                   & Mr. Phattaradon Thanaprasitpattana \\[0.3cm]
-  Project Advisor & Asst.\ Prof.\ Dr.\ Nontapat Leeraj \\[0.2cm]
-  Co-advisor      & Asst.\ Prof.\ Dr.\ Paniti Atchararit \\
+  Project Advisor & Asst.\ Prof.\ Dr.\ Nontaphat Leerach \\[0.2cm]
+  Co-advisor      & Asst.\ Prof.\ Dr.\ Paniti Achararit \\
                   & Dr.\ Karittha Jangsamsi \\[0.2cm]
   Supervisor (WIL)& Dr.\ Jirapan Premsuriya \\
                   & Dr.\ Jumphol Polvichai \\[0.3cm]
@@ -28,31 +28,30 @@
 \begin{center}\textbf{Abstract}\end{center}
 
 \hspace{\parindent}%
-Antibiotic resistance is a critical global health challenge that demands accurate and rapid diagnostic methods.
-The Kirby-Bauer disk diffusion method is the internationally accepted standard for Antimicrobial Susceptibility Testing (AST),
-yet manual measurement of zone of inhibition (ZOI) diameters remains time-consuming and prone to human error.
-This project develops an artificial intelligence (AI)-based web application to automate the detection
-and measurement of inhibition zones from photographs of antibiotic susceptibility testing plates.
+Antibiotic resistance is a critical global health challenge that demands accurate diagnostic methods.
+Manual measurement of zone of inhibition (ZOI) diameters in Kirby-Bauer disk diffusion testing---the internationally accepted Antimicrobial Susceptibility Testing (AST) standard---is time-consuming and prone to human error.
+This project develops an AI-based web application to automate ZOI detection and measurement from photographs of antibiotic culture plates.
 
-The system integrates deep learning object detection models---Faster R-CNN with a ResNet-50 backbone and
-YOLOv11n---together with classical image processing via Hough Circle Transform, to localize and measure ZOI diameters.
-An Optical Character Recognition (OCR) pipeline using EasyOCR with preprocessing (global thresholding,
-adaptive binarization, and image rotation) identifies antibiotic disk labels on the plate.
-Detected zone diameters are interpreted against CLSI 2025 and EUCAST 2023 breakpoints
+The system evaluates four ZOI detection approaches: a Convolutional Neural Network (CNN) baseline,
+Faster R-CNN with a ResNet-50 backbone, YOLOv11n, and the classical Hough Circle Transform.
+A Hybrid OCR pipeline---using Gemini 3.1 Flash lite as the primary engine and EasyOCR with preprocessing
+(Otsu thresholding, adaptive binarization, and 24-angle rotation search) as a fallback---identifies
+antibiotic disk labels. Detected zone diameters are interpreted against CLSI 2025 and EUCAST 2023 breakpoints
 to classify bacteria as Susceptible (S), Intermediate (I), or Resistant (R).
 
-A dataset of 287 real laboratory images was augmented to 543 training images and supplemented with 2,000 synthetic images
-to improve model generalization.
-Experimental results demonstrate that both deep learning models outperform Hough Transform in ZOI detection accuracy.
-YOLOv11n achieved superior accuracy with a mean absolute error (MAE) of approximately 2.5--2.7\,mm
-and a mAP@0.5 of 95.91\%, significantly outperforming the Faster R-CNN baseline (MAE 4.65\,mm).
-The complete system, including the React frontend, FastAPI backend, and SQLite database, is fully integrated
-and has been successfully deployed for production use at the Princess Srisavangavadhana School of Medicine, Chulabhorn Royal Academy hospital server.
+A dataset of 287 real laboratory images was augmented to produce a training set of 2,442 images,
+supplemented by 2,000 synthetic images split across train/validation/test partitions,
+yielding a combined test-and-validation set of 235 images.
+Experimental results indicate that deep learning-based approaches achieved better performance than the CNN classification baseline and classical Hough Circle Transform.
+YOLOv11n achieved the best accuracy with an MAE of approximately 2.5--2.7\,mm and mAP@0.5 of 95.91\%,
+outperforming Faster R-CNN (MAE 4.65\,mm), CNN (mAP@0.5 0.021), and Hough Transform (MAE $>$ 5\,mm).
+Gemini 3.1 Flash lite achieved 71.72\% OCR accuracy on a comprehensive 198-label test set, outperforming Qwen2.5-VL:7b (49\%) and EasyOCR (28--32\%).
+The complete system, including the React frontend, FastAPI backend, and SQLite database, was integrated into a deployable web application and evaluated in a real laboratory environment at the Princess Srisavangavadhana School of Medicine, Chulabhorn Royal Academy hospital server.
 User evaluation by five domain experts yielded an overall usefulness score of 3.60 out of 5.00,
 confirming the system's readiness for real-world microbiological laboratory workflows.
 
 \noindent\textbf{Keywords:} Antimicrobial Susceptibility Testing, Zone of Inhibition, Deep Learning, Object Detection,
-Faster R-CNN, YOLOv11, Hough Transform, EasyOCR, Image Processing, CLSI, EUCAST, Web Application
+CNN, Faster R-CNN, YOLOv11, Hough Transform, Gemini, EasyOCR, Image Processing, CLSI, EUCAST, Web Application
 
 \newpage
 
@@ -83,13 +82,13 @@ Faster R-CNN, YOLOv11, Hough Transform, EasyOCR, Image Processing, CLSI, EUCAST,
 \begin{center}\textbf{บทคัดย่อ}\end{center}
 
 \hspace{\parindent}%
-ปัญหาการดื้อยาต้านจุลชีพ (Antibiotic Resistance) ถือเป็นความท้าทายด้านสาธารณสุขระดับโลกที่ต้องการวิธีการวินิจฉัยที่รวดเร็วและแม่นยำ ปัจจุบัน การทดสอบความไวของเชื้อแบคทีเรียต่อยาปฏิชีวนะด้วยวิธี Kirby-Bauer disk diffusion ถือเป็นมาตรฐานที่ได้รับการยอมรับในระดับสากล อย่างไรก็ตาม การวัดขนาดเส้นผ่านศูนย์กลางของบริเวณยับยั้งเชื้อ (Zone of Inhibition: ZOI) โดยบุคลากรทางการแพทย์นั้นใช้เวลานานและมีโอกาสเกิดความผิดพลาดจากตัวบุคคล (Human Error) โครงงานนี้จึงนำเสนอการพัฒนาเว็บแอปพลิเคชันที่ขับเคลื่อนด้วยเทคโนโลยีปัญญาประดิษฐ์ (AI) เพื่อวิเคราะห์ ตรวจจับ และวัดขนาด ZOI จากภาพถ่ายจานเพาะเชื้อแบบอัตโนมัติ
+ปัญหาการดื้อยาต้านจุลชีพถือเป็นความท้าทายด้านสาธารณสุขระดับโลกที่ต้องการวิธีการวินิจฉัยที่แม่นยำ การวัดขนาดบริเวณยับยั้งเชื้อ (Zone of Inhibition: ZOI) ด้วยมือในการทดสอบ Kirby-Bauer disk diffusion---ซึ่งเป็นมาตรฐาน Antimicrobial Susceptibility Testing (AST) ที่ยอมรับในระดับสากล---ยังคงใช้เวลานานและมีโอกาสเกิดความผิดพลาดจากตัวบุคคล โครงงานนี้จึงพัฒนาเว็บแอปพลิเคชันที่ขับเคลื่อนด้วย AI เพื่อวิเคราะห์และวัดขนาด ZOI จากภาพถ่ายจานเพาะเชื้อแบบอัตโนมัติ
 
-ระบบที่พัฒนาขึ้นได้บูรณาการโมเดลตรวจจับวัตถุ (Object Detection) ด้วยเทคนิค Deep Learning อันได้แก่ YOLOv11n และ Faster R-CNN (พร้อม ResNet-50 backbone) เข้ากับวิธีการประมวลผลภาพแบบดั้งเดิมอย่าง Hough Circle Transform เพื่อระบุตำแหน่งและวัดขนาด ZOI นอกจากนี้ ระบบยังประกอบด้วย Pipeline สำหรับการจดจำอักขระด้วยแสง (OCR) ซึ่งใช้ EasyOCR ร่วมกับเทคนิคการประมวลผลภาพเบื้องต้น (เช่น Global Thresholding, Adaptive Binarization และ Image Rotation) เพื่ออ่านรหัสชื่อยาปฏิชีวนะบนแผ่นยา จากนั้นระบบนำค่าเส้นผ่านศูนย์กลางที่ได้ไปเทียบกับเกณฑ์มาตรฐาน CLSI 2025 และ EUCAST 2023 แล้วจำแนกผลความไวต่อยาของเชื้อแบคทีเรียเป็น ไวต่อยา (Susceptible: S), กึ่งไว (Intermediate: I) หรือ ดื้อยา (Resistant: R) โดยอัตโนมัติ
+ระบบที่พัฒนาขึ้นประเมินแนวทางการตรวจจับ ZOI สี่วิธี ได้แก่ Convolutional Neural Network (CNN) แบบ Classification-based, Faster R-CNN (พร้อม ResNet-50 backbone), YOLOv11n และ Hough Circle Transform ในด้าน OCR ระบบใช้สถาปัตยกรรมแบบ Hybrid โดยมี Gemini 3.1 Flash lite เป็น Engine หลัก และ EasyOCR ร่วมกับ Otsu Thresholding และการค้นหามุมหมุน 24 มุม เป็น Fallback เพื่ออ่านรหัสยาปฏิชีวนะบนแผ่นยา ค่าเส้นผ่านศูนย์กลาง ZOI ที่ได้จะถูกนำไปเทียบกับเกณฑ์ CLSI 2025 และ EUCAST 2023 เพื่อจำแนกความไวต่อยาเป็น ไวต่อยา (S), กึ่งไว (I) หรือ ดื้อยา (R) โดยอัตโนมัติ
 
-ในด้านการฝึกสอนโมเดล งานวิจัยนี้ใช้ภาพถ่ายจริงจากห้องปฏิบัติการ 287 ภาพ ที่ผ่านการขยายข้อมูล (Data Augmentation) เป็น 543 ภาพ และเสริมด้วยภาพสังเคราะห์ (Synthetic Images) อีก 2,000 ภาพ เพื่อเพิ่มความสามารถในการเรียนรู้รูปแบบทั่วไป (Generalization) ผลการประเมินประสิทธิภาพพบว่าโมเดลกลุ่ม Deep Learning มีความแม่นยำสูงกว่าวิธี Hough Transform อย่างชัดเจน โดยเฉพาะ YOLOv11n ที่ทำความแม่นยำได้ดีที่สุด ด้วยค่าความคลาดเคลื่อนสัมบูรณ์เฉลี่ย (MAE) เพียง 2.5--2.7 มม. และค่า mAP@0.5 ถึง 95.91\% ทิ้งห่างโมเดล Faster R-CNN อย่างมีนัยสำคัญ ท้ายที่สุด โครงงานนี้ได้รวบรวมองค์ประกอบทั้งหมด (React Frontend, FastAPI Backend และฐานข้อมูล SQLite) เป็นเว็บแอปพลิเคชันแบบ Full-stack และประสบความสำเร็จในการติดตั้งเพื่อใช้งานจริงบนระบบเซิร์ฟเวอร์ของวิทยาลัยแพทยศาสตร์ศรีสวางควัฒน ราชวิทยาลัยจุฬาภรณ์ ผลการประเมินความพึงพอใจและประโยชน์การใช้งานโดยผู้เชี่ยวชาญ 5 ท่าน อยู่ที่ 3.60 จากคะแนนเต็ม 5.00 ยืนยันว่าระบบสามารถนำไปประยุกต์ใช้สนับสนุนงานในห้องปฏิบัติการจุลชีววิทยาคลินิกได้จริง
+ชุดข้อมูลที่ใช้ประกอบด้วยภาพถ่ายจริง 287 ภาพ ผ่านกระบวนการ Data Augmentation จนได้ชุดฝึกสอนรวม 2,442 ภาพ และภาพสังเคราะห์อีก 2,000 ภาพที่แบ่งตามสัดส่วน 80/10/10 โดยชุดทดสอบและตรวจสอบรวมกันมี 235 ภาพ ผลการทดลองพบว่าโมเดล Deep Learning มีประสิทธิภาพเหนือกว่าทั้ง CNN และ Hough Transform อย่างชัดเจน โดย YOLOv11n ทำได้ดีที่สุดด้วยค่า MAE เพียง 2.5--2.7 มม. และ mAP@0.5 ถึง 95.91\% ทิ้งห่าง Faster R-CNN (MAE 4.65 มม.), CNN (mAP@0.5 0.021) และ Hough Transform (MAE $>$ 5 มม.) สำหรับ OCR พบว่า Gemini 3.1 Flash lite ให้ความแม่นยำสูงสุดที่ 71.72\% เหนือกว่า Qwen2.5-VL:7b (49\%) และ EasyOCR (28--32\%) ระบบทั้งหมดได้รับการบูรณาการเป็นเว็บแอปพลิเคชันที่พร้อมใช้งานจริง และได้รับการประเมินในสภาพแวดล้อมห้องปฏิบัติการจริงที่วิทยาลัยแพทยศาสตร์ศรีสวางควัฒน ราชวิทยาลัยจุฬาภรณ์ การประเมินความพึงพอใจจากผู้เชี่ยวชาญ 5 ท่านให้คะแนนรวม 3.60 จาก 5.00 ยืนยันความพร้อมของระบบสำหรับการใช้งานจริงในห้องปฏิบัติการจุลชีววิทยาคลินิก
 
 \noindent\textbf{คำสำคัญ:} การทดสอบความไวต่อยาต้านจุลชีพ, บริเวณยับยั้งเชื้อ, Deep Learning, การตรวจจับวัตถุ,
-YOLOv11, การประมวลผลภาพ, มาตรฐาน CLSI, มาตรฐาน EUCAST, เว็บแอปพลิเคชัน
+CNN, Faster R-CNN, YOLOv11, Hough Transform, Gemini, EasyOCR, การประมวลผลภาพ, มาตรฐาน CLSI, มาตรฐาน EUCAST, เว็บแอปพลิเคชัน
 
 \newpage
